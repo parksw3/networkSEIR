@@ -1,0 +1,91 @@
+---
+title: "Notes on network and generation"
+output: html_document
+---
+
+Suppose we have one infected individual and one susceptible individual. Infected individual makes effective contact at a constant rate $\beta$ and has a constant recovery rate of $\lambda$. Then, we can write the probability that the susceptible remains uninfected at time $t$ as follows:
+
+$$
+s(\tau)= \exp(-\beta \int_{t = 0}^\tau \exp(-\lambda t) dt)
+$$
+
+Solving the integral, we have
+
+$$
+\begin{aligned}
+s(\tau) = \exp\left(-\frac{\beta}{\lambda} (1 - \exp(-\lambda \tau)) \right)\\
+\end{aligned}
+$$
+
+Define $K(\tau) = F(\tau) \beta$ as the rate of secondary case, where $F(\tau) = \exp(-\lambda \tau)$ is the probability that an infectious individual has not recovered $t$ time units after infection.
+
+We define network generation interval as follows:
+
+$$
+g(\tau) = \frac{K(\tau)s(\tau)}{\int_0^\infty K(\tau)s(\tau)d\tau}
+$$
+
+which can be simplified into
+
+$$
+g(\tau) = \frac{F(\tau)s(\tau)}{\int_0^\infty F(\tau)s(\tau)d\tau}
+$$
+
+Let's try to solve the integral... First, let's do substitution: 
+
+$$
+\begin{aligned}
+dF &= -\lambda \exp(-\lambda \tau) d\tau\\
+&= -\lambda F d\tau
+\end{aligned}
+$$
+
+Substitute it:
+
+$$
+\begin{aligned}
+&\quad \int_0^\infty F(\tau) s(\tau) d\tau\\
+&= -\frac{1}{\lambda} \int_1^0 \exp(-\frac{\beta}{\lambda} (1 - F)) dF\\
+&= \frac{1}{\beta} \left[\exp(-\frac{\beta}{\lambda} (1 - F)) \right]_0^1\\
+&= \frac{1}{\beta} \left(1 - \exp(-\frac{\beta}{\lambda}) \right)
+\end{aligned}
+$$
+
+Therefore, the generation interval is
+
+$$
+g(\tau) = \beta \left(1 - \exp(-\frac{\beta}{\lambda}) \right)^{-1} \exp(-\lambda \tau) \exp\left(-\frac{\beta}{\lambda} (1 - \exp(-\lambda \tau)) \right)
+$$
+
+Comparison of intrinsic generation with network generation distribution for SIR model:
+
+```{r network gen, fig.width = 6, fig.height = 6, echo=FALSE}
+F <- function(t, lambda){
+    exp(-lambda * t)
+}
+
+intrinsic.gen <- function(t, lambda){
+    lambda * F(t, lambda)
+}
+
+network.gen <- function(t, beta, lambda){
+    beta * (1 - exp(-beta/lambda))^(-1) * F(t, lambda) *
+        exp(-beta/lambda * (1 - F(t, lambda)))
+}
+
+t <- seq(0, 5, 0.01)
+
+plot(t, intrinsic.gen(t, 1), type = "l", col = "blue",
+     ylab = "",
+     xlab = "Time since infection")
+
+for(i in 1:3){
+    m <- 0.2 * 5^(i-1)
+    lines(t, network.gen(t, m, 1), lty = i + 1)
+}
+
+arrows(1.5, 0.2, 1.1, 0.08, col = "red")
+```
+
+As we increase effective transmission rate, network generation follows the red arrow. Let's try to write a general equation...
+

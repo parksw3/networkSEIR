@@ -125,6 +125,6 @@ seir.gillespie <- function(g, parameters,
         
         return(list(result = output,
                     generation = generation,
-                    summary = g.summary))  
+                    summary = g.summary))
     })
 }

@@ -17,7 +17,7 @@ pars <- c(
 
 ## save("cmpGraph.sim", file = "cmpSim1.rda")
 
-load("compSim1.rda")
+load("cmpSim1.rda")
 
 print(cmpGraph.sim$summary)
 
