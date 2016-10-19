@@ -1,6 +1,6 @@
 ---
 title: "Notes on network and generation"
-output: html_document
+output: pdf_document
 ---
 
 Suppose we have one infected individual and one susceptible individual. Infected individual makes effective contact at a constant rate $\beta$ and has a constant recovery rate of $\lambda$. Then, we can write the probability that the susceptible remains uninfected at time $t$ as follows:
