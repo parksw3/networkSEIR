@@ -12,12 +12,16 @@ pars <- c(
     I0 = 10
 )
 
-## set.seed(101)
-## cmpGraph.sim <- seir.gillespie(cmpGraph, pars, verbose = TRUE)
+fn <- "cmpSim1.rda"
 
-## save("cmpGraph.sim", file = "cmpSim1.rda")
-
-load("cmpSim1.rda")
+if(!file.exists(fn)){
+    set.seed(101)
+    cmpGraph.sim <- seir.gillespie(cmpGraph, pars, verbose = TRUE)
+    
+    save("cmpGraph.sim", file = "cmpSim1.rda")
+}else{
+    load("cmpSim1.rda")
+}
 
 print(cmpGraph.sim$summary)
 
@@ -29,9 +33,12 @@ hist(gen, breaks = c(0:120))
 mean(gen)
 var(gen)
 
+
+
 # Homogeneous case
 #
 # set.seed(101)
+# g <- graph.full(100)
 # r <- seir.gillespie(g, pars)
 # mean(r$generation)
 # var(r$generation)

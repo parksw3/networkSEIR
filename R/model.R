@@ -1,5 +1,6 @@
 seir.gillespie <- function(g, parameters,
-                           verbose = FALSE){
+                           verbose = FALSE,
+                           seed = NULL){
     if(class(g) != "igraph"){
         stop("g must be an igraph object")
     }
@@ -10,24 +11,25 @@ seir.gillespie <- function(g, parameters,
         state <- rep("S", N)
         rate <- rep(0, N)
         
-        infected <- sample(N, I0)
-        state[infected] <- "I"
+        if(!is.null(seed)) set.seed(seed)
+        initial_I <- sample(N, I0)
+        state[initial_I] <- "I"
         
         inf.partner <- rep(0, N)
         
-        for(i in infected){
+        for(i in initial_I){
             inf.partner[neighbors(g, i)] <- inf.partner[neighbors(g,i)] + 1
         }
         
         rate <- beta * inf.partner
         
-        rate[infected] <- gamma
+        rate[initial_I] <- gamma
         
-        inf.t <- rep(NA, N)
-        inf.t[infected] <- 0
+        infected_time <- rep(NA, N)
+        infected_time[initial_I] <- 0
         infector <- rep(NA, N)
-        inf.order <- rep(NA, N)
-        inf.order[1:I0] <- infected
+        infected_order <- rep(NA, N)
+        infected_order[1:I0] <- initial_I
         
         
         rsum <- sum(rate)
@@ -57,7 +59,7 @@ seir.gillespie <- function(g, parameters,
                 
                 S <- S - 1; E <- E + 1
                 
-                inf.order[N - S] <- vchange
+                infected_order[N - S] <- vchange
             }else if(state[vchange] == "E"){
                 state[vchange] <- "I"
                 
@@ -67,7 +69,7 @@ seir.gillespie <- function(g, parameters,
                 rate[n.V.S] <- beta * inf.partner[n.V.S]
                 rate[vchange] <- gamma
                 
-                inf.t[vchange] <- t
+                infected_time[vchange] <- t
                 
                 E <- E - 1; I <- I + 1
             }else if(state[vchange] == "I"){
@@ -90,41 +92,46 @@ seir.gillespie <- function(g, parameters,
         
         output <- do.call('rbind', output)
         
-        R0.gen <- list()
-        R0.gen[[1]] <- which(infector %in% infected)
-        j <- 1
-        repeat{
-            j <- j + 1
-            R0.gen[[j]] <- which(infector %in% R0.gen[[j-1]])
-            if(length(R0.gen[[j-1]]) > 75){
-                break
-            }
-        }
-        R0.vec <- unlist(lapply(R0.gen, length))
-        R0.generation <- sum(R0.vec[-1])/sum(R0.vec[-length(R0.vec)])
-        
-        r.data <- data.frame(
-            tvec <- output[,1],
-            tot <- rowSums(output[,c("I", "R")])
-        )
-        r.lm <- lm(log(tot)~tvec, data = r.data, tot > 200 & tot < 400)
-        r <- unname(coef(r.lm)[2])
-        
-        mean.g <- mean(degree(g))
-        var.g <- var(degree(g))
-        kappa <- var.g/mean.g + mean.g - 1
-        
-        R0.Markov <- unname((gamma+r)/(gamma * sigma/(sigma + r) + r/kappa))
-        
-        g.summary <- list(R0.generation = R0.generation,
-                        R0.Markov = R0.Markov,
-                        r = r)
-        
-        generation <- inf.t - inf.t[infector]
-        generation <- generation[!is.na(generation)]
-        
         return(list(result = output,
-                    generation = generation,
-                    summary = g.summary))
+                    infected_time = infected_time,
+                    infector = infector,
+                    infected_order = infected_order))
+        # 
+        # R0.gen <- list()
+        # R0.gen[[1]] <- which(infector %in% initial_I)
+        # j <- 1
+        # repeat{
+        #     j <- j + 1
+        #     R0.gen[[j]] <- which(infector %in% R0.gen[[j-1]])
+        #     if(length(R0.gen[[j-1]]) > 75){
+        #         break
+        #     }
+        # }
+        # R0.vec <- unlist(lapply(R0.gen, length))
+        # R0.generation <- sum(R0.vec[-1])/sum(R0.vec[-length(R0.vec)])
+        # 
+        # r.data <- data.frame(
+        #     tvec <- output[,1],
+        #     tot <- rowSums(output[,c("I", "R")])
+        # )
+        # r.lm <- lm(log(tot)~tvec, data = r.data, tot > 200 & tot < 400)
+        # r <- unname(coef(r.lm)[2])
+        # 
+        # mean.g <- mean(degree(g))
+        # var.g <- var(degree(g))
+        # kappa <- var.g/mean.g + mean.g - 1
+        # 
+        # R0.Markov <- unname((gamma+r)/(gamma * sigma/(sigma + r) + r/kappa))
+        # 
+        # g.summary <- list(R0.generation = R0.generation,
+        #                 R0.Markov = R0.Markov,
+        #                 r = r)
+        # 
+        # generation <- infected_time - infected_time[infector]
+        # generation <- generation[!is.na(generation)]
+        # 
+        # return(list(result = output,
+        #             generation = generation,
+        #             summary = g.summary))
     })
 }
