@@ -1,5 +1,7 @@
 summarize.epidemic <- function(data){
-    
+    with(data,{
+        
+    })
 }
 
 
