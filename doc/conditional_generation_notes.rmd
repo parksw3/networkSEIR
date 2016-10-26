@@ -34,7 +34,7 @@ Now assume that we have exponentially distributed infectious period with mean $\
 
 $$
 \begin{aligned}
-\bigg< \beta \exp(-\beta a)\bigg>_i &= \int_a^\infty \beta \exp(-\beta a) \gamma \exp(-\gamma t) dt \\
+\bigg<l_i(a)\bigg>_i &= \int_a^\infty \beta \exp(-\beta a) \gamma \exp(-\gamma t) dt \\
 &= \beta \exp(-(\beta + \gamma) a)
 \end{aligned}
 $$
