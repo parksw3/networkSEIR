@@ -12,11 +12,11 @@ s_i(a) = \begin{cases}
 \end{cases}
 $$
 
-Define the probability that an infected person is still in the state, $\varphi$:
+Define $\varphi$:
 
 $$
 \varphi_i(a) = \begin{cases}
-1, \qquad a < r_i \\
+\beta, \qquad a < r_i \\
 0
 \end{cases}
 $$
@@ -25,7 +25,7 @@ Define
 
 $$
 l_i(a) = \varphi_i (a) s_i (a) = \begin{cases}
-\exp(- \beta a), \qquad a < r_i\\
+\beta \exp(- \beta a), \qquad a < r_i\\
 0
 \end{cases}
 $$
@@ -34,8 +34,8 @@ Now assume that we have exponentially distributed infectious period with mean $\
 
 $$
 \begin{aligned}
-\bigg< \exp(-\beta a)\bigg>_i &= \int_a^\infty \exp(-\beta a) \gamma \exp(-\gamma t) dt \\
-&= \exp(-(\beta + \gamma) a)
+\bigg< \beta \exp(-\beta a)\bigg>_i &= \int_a^\infty \beta \exp(-\beta a) \gamma \exp(-\gamma t) dt \\
+&= \beta \exp(-(\beta + \gamma) a)
 \end{aligned}
 $$
 
@@ -57,13 +57,25 @@ s_i(a) = \begin{cases}
 \end{aligned}
 $$
 
+Here, we have
+
+$$
+\begin{aligned}
+\varphi_i(a) = \begin{cases}
+0, \qquad &a < m_i\\
+\beta, \qquad &m_i \leq a < m_i + r_i\\
+0
+\end{cases}
+\end{aligned}
+$$
+
 Similarly, define
 
 $$
 \begin{aligned}
-l_i(a) = \begin{cases}
+l_i(a) = \varphi_i(a) s_i(a) \begin{cases}
 0, \qquad &a < m_i\\
-\exp(-\beta(a - m_i)), \qquad &m_i \leq a < m_i + r_i\\
+\beta \exp(-\beta(a - m_i)), \qquad &m_i \leq a < m_i + r_i\\
 0
 \end{cases}
 \end{aligned}
@@ -81,20 +93,20 @@ $$
 If latent and infectious periods have probability density function of $f_E$ and $f_I$, this is what we're interested in:
 
 $$
-\int_0^a f_E(s) \left(e^{-\beta(a - s)} \int_{a-s}^\infty f_I (t) dt \right) ds
+\int_0^a f_E(s) \left(\beta e^{-\beta(a - s)} \int_{a-s}^\infty f_I (t) dt \right) ds
 $$
 
 Now, assume that latent and infectious periods are exponentially distributed with mean $\sigma$ and $\gamma$.
 
 $$
 \begin{aligned}
-&\int_0^a f_E(s) \left(e^{-\beta(a - s)} \int_{a-s}^\infty f_I (t) dt \right) ds\\
-&= \int_0^a f_E(s) \left(e^{-\beta(a - s)} \int_{a-s}^\infty \gamma e^{-\gamma t} dt \right) ds\\
-&= \int_0^a f_E(s) \left(e^{-\beta(a - s)} e^{-\gamma(a - s)} \right) ds\\
-&= \int_0^a f_E(s) \left(e^{-(\beta + \gamma)(a - s)} \right) ds\\
-&= e^{-(\beta + \gamma) a } \int_0^a \sigma e^{-\sigma s} e^{(\beta + \gamma) s } ds\\
-&= \sigma e^{-(\beta + \gamma) a} \int_0^a  e^{(\beta + \gamma - \sigma) s } ds\\
-&= \sigma (e^{- \sigma a} - e^{-(\beta + \gamma) a})/(\beta + \gamma - \sigma)\\
+&\beta \int_0^a f_E(s) \left(e^{-\beta(a - s)} \int_{a-s}^\infty f_I (t) dt \right) ds\\
+&= \beta \int_0^a f_E(s) \left(e^{-\beta(a - s)} \int_{a-s}^\infty \gamma e^{-\gamma t} dt \right) ds\\
+&= \beta \int_0^a f_E(s) \left(e^{-\beta(a - s)} e^{-\gamma(a - s)} \right) ds\\
+&= \beta \int_0^a f_E(s) \left(e^{-(\beta + \gamma)(a - s)} \right) ds\\
+&= \beta e^{-(\beta + \gamma) a } \int_0^a \sigma e^{-\sigma s} e^{(\beta + \gamma) s } ds\\
+&= \beta \sigma e^{-(\beta + \gamma) a} \int_0^a  e^{(\beta + \gamma - \sigma) s } ds\\
+&= \beta \sigma (e^{- \sigma a} - e^{-(\beta + \gamma) a})/(\beta + \gamma - \sigma)\\
 \end{aligned}
 $$
 
