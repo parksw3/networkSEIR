@@ -19,7 +19,7 @@ pars <- c(
 
 fn <- "condmat_sim.rda"
 
-if(!file.exists(fn2)){
+if(!file.exists(fn)){
     set.seed(101)
     sumList <- list()
     datList <- list()
