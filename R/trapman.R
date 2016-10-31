@@ -13,6 +13,35 @@ cmpGraph <- delete_vertex_attr(cmpGraph, "name")
 load("../data/condmat_sim.rda")
 
 df <- as.data.frame(do.call("rbind", lapply(sumList, unlist)))
+
+if(FALSE){
+    ## calculate R0 using a different threshold...
+    newR0 <- lapply(datList, function(x){
+        with(x,{
+            genList <- list()
+            initial_I <- which(infected_time == 0)
+            R0_threshold <- 75
+            genList[[1]] <- which(infector %in% initial_I)
+            j <- 1
+            repeat{
+                j <- j + 1
+                genList[[j]] <- which(infector %in% genList[[j-1]])
+                l1 <- length(genList[[j-1]])
+                l2 <- length(genList[[j]])
+                
+                if(l1 > R0_threshold){
+                    break
+                }
+            }
+            generation_vec <- unlist(lapply(genList, length))
+            generation_R0 <- sum(generation_vec[-1])/sum(generation_vec[-length(generation_vec)])
+        })
+    })
+    
+    newR0 <- unlist(newR0)
+    df[,"generation_R0"] <- newR0
+}
+
 cut <- quantile(df[,1], c(0.05, 0.95))
 df2 <- subset(df, little_r > cut[1] & little_r < cut[2])
 
@@ -57,4 +86,6 @@ g_box <- ggplot(df3, aes(x = "", y = ratio)) +
     theme(axis.ticks.x = element_blank()) +
     theme_custom()
 
+png("Trapman.png", width = 8, height = 4, units = 'in', res = 600)
 grid.arrange(g_density, g_box, nrow = 1, widths = c(4,1))
+dev.off()
