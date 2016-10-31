@@ -1,4 +1,6 @@
 seir.gillespie <- function(g, parameters,
+                           R0_threshold = 75,
+                           r_interval = c(200, 400),
                            verbose = FALSE,
                            seed = NULL){
     if(class(g) != "igraph"){
@@ -30,7 +32,6 @@ seir.gillespie <- function(g, parameters,
         infector <- rep(NA, N)
         infected_order <- rep(NA, N)
         infected_order[1:I0] <- initial_I
-        
         
         rsum <- sum(rate)
         
@@ -90,48 +91,67 @@ seir.gillespie <- function(g, parameters,
             }
         }
         
-        output <- do.call('rbind', output)
+        result <- rbindlist(output)
+        class(result) <- "data.frame"
         
-        return(list(result = output,
-                    infected_time = infected_time,
-                    infector = infector,
-                    infected_order = infected_order))
-        # 
-        # R0.gen <- list()
-        # R0.gen[[1]] <- which(infector %in% initial_I)
-        # j <- 1
-        # repeat{
-        #     j <- j + 1
-        #     R0.gen[[j]] <- which(infector %in% R0.gen[[j-1]])
-        #     if(length(R0.gen[[j-1]]) > 75){
-        #         break
-        #     }
-        # }
-        # R0.vec <- unlist(lapply(R0.gen, length))
-        # R0.generation <- sum(R0.vec[-1])/sum(R0.vec[-length(R0.vec)])
-        # 
-        # r.data <- data.frame(
-        #     tvec <- output[,1],
-        #     tot <- rowSums(output[,c("I", "R")])
-        # )
-        # r.lm <- lm(log(tot)~tvec, data = r.data, tot > 200 & tot < 400)
-        # r <- unname(coef(r.lm)[2])
-        # 
-        # mean.g <- mean(degree(g))
-        # var.g <- var(degree(g))
-        # kappa <- var.g/mean.g + mean.g - 1
-        # 
-        # R0.Markov <- unname((gamma+r)/(gamma * sigma/(sigma + r) + r/kappa))
-        # 
-        # g.summary <- list(R0.generation = R0.generation,
-        #                 R0.Markov = R0.Markov,
-        #                 r = r)
-        # 
-        # generation <- infected_time - infected_time[infector]
-        # generation <- generation[!is.na(generation)]
-        # 
-        # return(list(result = output,
-        #             generation = generation,
-        #             summary = g.summary))
+        data <- list(
+            infected_time = infected_time,
+            infector = infector,
+            infected_order = infected_order
+        )
+        
+        ## calculate exponential growth rate
+        r_data <- data.frame(
+            tvec = result[,1],
+            tot = rowSums(result[,c("I", "R")])
+        )
+        
+        if(max(r_data[,"tot"]) < r_interval[2]){
+            return(NA)
+        }else{
+            r.lm <- lm(log(tot)~tvec, data = r_data, tot > r_interval[1] & tot < r_interval[2])
+            r <- unname(coef(r.lm)[2])
+            
+            ## calculate R0 based on generation
+            genList <- list()
+            genList[[1]] <- which(infector %in% initial_I)
+            j <- 1
+            repeat{
+                j <- j + 1
+                genList[[j]] <- which(infector %in% genList[[j-1]])
+                if(length(genList[[j-1]]) > R0_threshold){
+                    break
+                }
+            }
+            generation_vec <- unlist(lapply(genList, length))
+            generation_R0 <- sum(generation_vec[-1])/sum(generation_vec[-length(generation_vec)])
+            
+            ## calculate R0 based on the exponential growth rate 
+            ## under configuration model assumption
+            mean.g <- mean(degree(g))
+            var.g <- var(degree(g))
+            kappa <- var.g/mean.g + mean.g - 1
+            network_R0 <- (gamma+r)/(gamma * sigma/(sigma + r) + r/kappa)
+            
+            ## calculate R0 based on the exponential growth rate 
+            ## under homogeneous model assumption
+            homogeneous_R0 <- (1 + r/gamma) * (1 + r/sigma)
+            
+            ## store result in a list
+            summary <- list(
+                little_r = r,
+                generation_R0 = generation_R0,
+                network_R0 = network_R0,
+                homogeneous_R0 = homogeneous_R0
+            )
+            
+            return(
+                list(
+                    epidemic.summary = summary,
+                    edpidemic.result = result,
+                    epidemic.data = data
+                )
+            )
+        }
     })
 }
