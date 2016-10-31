@@ -1,12 +1,13 @@
 library(igraph)
 library(data.table)
 source("model.R")
-cmpGraph <- read.table("../data/CA-CondMat.txt") ##importing condensed matter physics data
+## importing condensed matter physics data
+cmpGraph <- read.table("../data/CA-CondMat.txt")
 cmpGraph <- graph.data.frame(cmpGraph)
 cmpGraph <- as.undirected(cmpGraph)
 cmpGraph <- delete_vertex_attr(cmpGraph, "name")
 
-## this parameter gives R0 of approximately 2
+## This parameter gives R0 of approximately 2
 ## These values seem to match orange vertical line of figure 5 
 
 pars <- c(
@@ -16,22 +17,7 @@ pars <- c(
     I0 = 10
 )
 
-## example simulation using this parameter
-
-fn <- "cmpSim1.rda"
-
-if(!file.exists(fn)){
-    cmpGraph.sim <- seir.gillespie(cmpGraph, pars, verbose = TRUE,
-                                   seed = 101)
-    
-    save("cmpGraph.sim", file = fn)
-}else{
-    load(fn)
-}
-
-## 10 simulations due to lack of computation horsepower...
-
-fn2 <- "cmpSim10.rda"
+fn <- "condmat_sim.rda"
 
 if(!file.exists(fn2)){
     set.seed(101)
@@ -39,7 +25,7 @@ if(!file.exists(fn2)){
     datList <- list()
     i <- 1
     
-    while(i <= 10){
+    while(i <= 1000){
         cat(i)
         sim <- seir.gillespie(cmpGraph, pars)
         if(!is.na(sim)){
@@ -48,8 +34,8 @@ if(!file.exists(fn2)){
             datList[[i]] <- sim$epidemic.data
             i <- i + 1
         }
+        save("sumList", "datList", file = fn)
     }
-    save("sumList", "datList", file = fn2)
 }else{
-    load(fn2)
+    load(fn)
 }
