@@ -17,25 +17,27 @@ df <- as.data.frame(do.call("rbind", lapply(sumList, unlist)))
 if(FALSE){
     ## calculate R0 using a different threshold...
     newR0 <- lapply(datList, function(x){
-        with(x,{
-            genList <- list()
-            initial_I <- which(infected_time == 0)
-            R0_threshold <- 75
-            genList[[1]] <- which(infector %in% initial_I)
-            j <- 1
-            repeat{
-                j <- j + 1
-                genList[[j]] <- which(infector %in% genList[[j-1]])
-                l1 <- length(genList[[j-1]])
-                l2 <- length(genList[[j]])
-                
-                if(l1 > R0_threshold){
-                    break
+        if(!is.null(x)){
+            with(x,{
+                genList <- list()
+                initial_I <- which(infected_time == 0)
+                R0_threshold <- 75
+                genList[[1]] <- which(infector %in% initial_I)
+                j <- 1
+                repeat{
+                    j <- j + 1
+                    genList[[j]] <- which(infector %in% genList[[j-1]])
+                    l1 <- length(genList[[j-1]])
+                    l2 <- length(genList[[j]])
+                    
+                    if(l1 > R0_threshold){
+                        break
+                    }
                 }
-            }
-            generation_vec <- unlist(lapply(genList, length))
-            generation_R0 <- sum(generation_vec[-1])/sum(generation_vec[-length(generation_vec)])
-        })
+                generation_vec <- unlist(lapply(genList, length))
+                
+            })
+        }
     })
     
     newR0 <- unlist(newR0)
@@ -62,7 +64,7 @@ theme_custom <- function(){
 
 g_density <- ggplot(subset(mL, !(variable == "little_r")), aes(value, col = variable, lty = variable)) + 
     geom_line(stat="density") +
-    geom_segment(aes(x = xint, y = 0, xend = xint, yend = 2), col = "orange") +
+    geom_segment(aes(x = xint, y = 0, xend = xint, yend = 2.4), col = "orange") +
     geom_hline(aes(yintercept = 0), col = "gray") +
     scale_x_continuous(name = expression(basic~reproduction~number~italic(R)[0]),
         breaks = seq(1.4, 2.6, 0.2),
