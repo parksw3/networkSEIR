@@ -65,7 +65,7 @@ g_density <- ggplot(subset(mL, !(variable == "little_r")), aes(value, col = vari
     geom_segment(aes(x = xint, y = 0, xend = xint, yend = 2), col = "orange") +
     geom_hline(aes(yintercept = 0), col = "gray") +
     scale_x_continuous(name = expression(basic~reproduction~number~italic(R)[0]),
-        breaks = seq(1.4, 2.4, 0.2),
+        breaks = seq(1.4, 2.6, 0.2),
         expand = c(0,0)) +
     scale_colour_manual(values = c("black", "blue", "red")) +
     theme(legend.position = "none") +
@@ -77,7 +77,7 @@ df3 <- transform(df2,
 g_box <- ggplot(df3, aes(x = "", y = ratio)) + 
     stat_boxplot(geom = "errorbar", width = 0.1) +
     geom_boxplot(
-        width = 0.3) +
+        width = 0.3, outlier.shape = 1) +
     xlab("") +
     scale_y_continuous(name = expression(ratio~of~estimates~of~italic(R)[0]),
         limit = c(0.75, 1.9),
@@ -89,3 +89,18 @@ g_box <- ggplot(df3, aes(x = "", y = ratio)) +
 png("Trapman.png", width = 8, height = 4, units = 'in', res = 600)
 grid.arrange(g_density, g_box, nrow = 1, widths = c(4,1))
 dev.off()
+
+## figures in supporting figures
+
+ggplot(df3, aes(homogeneous_R0, generation_R0)) +
+    geom_point(pch = 1) +
+    geom_abline(slope = 1) +
+    theme_custom()
+
+ggplot(df3, aes(ratio)) +
+    geom_histogram(fill = "white", col = "black", bins = 9) +
+    theme_custom()
+
+ggplot(df3, aes(homogeneous_R0 - generation_R0)) +
+    geom_histogram(fill = "white", col = "black", bins = 15) +
+    theme_custom()

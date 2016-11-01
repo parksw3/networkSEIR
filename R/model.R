@@ -37,7 +37,7 @@ seir.gillespie <- function(g, parameters,
         
         t <- 0; S <- N-I0; E <- 0; I <- I0; R <- 0
         
-        output <- list()
+        output <- vector("list", 20000)
         
         i <- 1
         
@@ -107,7 +107,7 @@ seir.gillespie <- function(g, parameters,
         )
         
         if(max(r_data[,"tot"]) < r_interval[2]){
-            return(NA)
+            stop("epidemic size is too small")
         }else{
             r.lm <- lm(log(tot)~tvec, data = r_data, tot > r_interval[1] & tot < r_interval[2])
             r <- unname(coef(r.lm)[2])

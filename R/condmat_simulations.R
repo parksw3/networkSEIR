@@ -10,23 +10,23 @@ cmpGraph <- delete_vertex_attr(cmpGraph, "name")
 
 fn <- "condmat_sim.rda"
 
-if(!file.exists(fn)){
-    set.seed(101)
-    sumList <- list()
-    datList <- list()
-    i <- 1
+set.seed(101)
     
-    while(i <= 1000){
-        cat(i)
-        sim <- seir.gillespie(cmpGraph, pars)
-        if(!is.na(sim)){
-            sumList[[i]] <- sim$epidemic.summary
-            print(sumList[[i]])
-            datList[[i]] <- sim$epidemic.data
-            i <- i + 1
-        }
-        save("sumList", "datList", file = fn)
+n <- 200
+    
+sumList <- vector("list", n)
+datList <- vector("list", n)
+i <- 1
+
+while(i <= n){
+    cat(i)
+    sim <- try(seir.gillespie(cmpGraph, pars))
+    
+    if(!inherits(sim, "try-error")){
+        sumList[[i]] <- sim$epidemic.summary
+        print(sumList[[i]])
+        datList[[i]] <- sim$epidemic.data
+        i <- i + 1
     }
-}else{
-    load(fn)
+    save("sumList", "datList", file = fn)
 }
