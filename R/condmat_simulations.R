@@ -20,7 +20,7 @@ i <- 1
 
 while(i <= n){
     cat(i)
-    sim <- try(seir.gillespie(cmpGraph, pars))
+    sim <- try(seir.gillespie(cmpGraph, pars, seed = 101))
     
     if(!inherits(sim, "try-error")){
         sumList[[i]] <- sim$epidemic.summary

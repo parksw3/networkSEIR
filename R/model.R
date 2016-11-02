@@ -16,7 +16,8 @@ seir.gillespie <- function(g, parameters,
         if(!is.null(seed)) set.seed(seed)
         initial_I <- sample(N, I0)
         state[initial_I] <- "I"
-        
+        if(!is.null(seed)) set.seed(Sys.time())
+            
         inf.partner <- rep(0, N)
         
         for(i in initial_I){
