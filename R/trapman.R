@@ -35,7 +35,7 @@ if(FALSE){
                     }
                 }
                 generation_vec <- unlist(lapply(genList, length))
-                
+                R0 <- sum(generation_vec[-1])/sum(generation_vec[-length(generation_vec)])
             })
         }
     })
@@ -64,7 +64,7 @@ theme_custom <- function(){
 
 g_density <- ggplot(subset(mL, !(variable == "little_r")), aes(value, col = variable, lty = variable)) + 
     geom_line(stat="density") +
-    geom_segment(aes(x = xint, y = 0, xend = xint, yend = 2.1), col = "orange") +
+    geom_segment(aes(x = xint, y = 0, xend = xint, yend = 2.6), col = "orange") +
     geom_hline(aes(yintercept = 0), col = "gray") +
     scale_x_continuous(name = expression(basic~reproduction~number~italic(R)[0]),
         breaks = seq(1.4, 2.6, 0.2),

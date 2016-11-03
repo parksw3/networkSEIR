@@ -10,9 +10,8 @@ cmpGraph <- delete_vertex_attr(cmpGraph, "name")
 
 fn <- "condmat_sim.rda"
 
-set.seed(101)
-    
-n <- 200
+set.seed(123)
+n <- 100
     
 sumList <- vector("list", n)
 datList <- vector("list", n)
@@ -20,7 +19,7 @@ i <- 1
 
 while(i <= n){
     cat(i)
-    sim <- try(seir.gillespie(cmpGraph, pars, seed = 101))
+    sim <- try(seir.gillespie(cmpGraph, pars))
     
     if(!inherits(sim, "try-error")){
         sumList[[i]] <- sim$epidemic.summary
