@@ -35,3 +35,7 @@ Calculation
     * Fit a straight line (Current method)
     * Estimation based on two points?
 
+Current result
+----------
+
+![figure 5](https://github.com/parksw3/networkSEIR/blob/master/figures/Trapman.png)
