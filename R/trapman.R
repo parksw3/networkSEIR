@@ -27,11 +27,12 @@ if(FALSE){
                 repeat{
                     j <- j + 1
                     genList[[j]] <- which(infector %in% genList[[j-1]])
-                    l1 <- length(genList[[j-1]])
-                    l2 <- length(genList[[j]])
-                    
-                    if(l1 > R0_threshold){
-                        break
+                    if(j > 2){
+                        l1 <- length(genList[[j-2]])
+                        
+                        if(l1 > R0_threshold){
+                            break
+                        }
                     }
                 }
                 generation_vec <- unlist(lapply(genList, length))
