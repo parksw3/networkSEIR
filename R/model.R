@@ -1,4 +1,5 @@
 seir.gillespie <- function(g, parameters,
+                           fullsim = TRUE,
                            R0_threshold = 75,
                            r_interval = c(200, 400),
                            verbose = FALSE,
@@ -89,6 +90,7 @@ seir.gillespie <- function(g, parameters,
             if(verbose & i %% 1000 == 0){
                 print(output[[i]])
             }
+            if(!fullsim & R > exp(log(400) + 0.5)) break
         }
         
         result <- rbindlist(output)
@@ -144,6 +146,8 @@ seir.gillespie <- function(g, parameters,
                 network_R0 = network_R0,
                 homogeneous_R0 = homogeneous_R0
             )
+            
+            print(summary)
             
             return(
                 list(

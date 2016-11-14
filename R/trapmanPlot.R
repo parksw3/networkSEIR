@@ -1,3 +1,23 @@
+library(igraph)
+library(Matrix)
+
+# track<-"/media/ptrap/suhome/inst/Rfiles/"
+edges0<-read.table("../data/CA-CondMat.txt",header=FALSE)
+edges0<-edges0[order(edges0[,1]), ] ###give edges right order
+graph0 <- graph.data.frame(edges0,directed=TRUE)
+degs=degree(graph0,v=V(graph0))/2 ####/2 because of summed in and oud degrees
+
+mu=mean(degs)
+sigma=sd(degs)
+kappa=sigma^2/mu+mu-1
+
+#############Parameters to set#############
+lambda<-0.1 ###Infection rate
+beta<-1 ###recovery rate
+gamma<-0.5 ###rate of leaving exposed period
+
+load("../data/trapman_sim.rda")
+
 hist(estimates[,1],xlab="alpha",prob=TRUE,breaks=10,main="Histogram of alpha",xlim=c(0,4))
 hist(estimates[,2],xlab="R0",prob=TRUE,breaks=10,main="Histogram of R0 based on alpha",xlim=c(1,5))
 hist(estimates[,3],xlab="R0",prob=TRUE,breaks=10,main="Histogram of R0 based on infectiontree",xlim=c(1,4))
@@ -27,7 +47,7 @@ hist(estimates2[,2]/estimates2[,3],
 hist(estimates2[,2]-estimates2[,3],
      main = paste(""),
      xlab = "Difference of estimates of R0", cex.lab=1.5, cex.axis=1.5)
-netest<-kappa*(beta+estimates2[,1])*(gamma+estimates2[,1])/(kappa*beta*gamma +(gamma+ estimates2[,1])*estimates2[,1])
+netest <- kappa*(beta+estimates2[,1])*(gamma+estimates2[,1])/(kappa*beta*gamma +(gamma+ estimates2[,1])*estimates2[,1])
 plot(density(estimates2[,3]),type="l",xlab="Transmission potential",ylim=c(0,2.8),main="")
 lines(density(netest),type="l",lty=3,col="blue")
 lines(density(estimates2[,2]),type="l",lty=2,col="red")
