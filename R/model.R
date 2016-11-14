@@ -119,7 +119,7 @@ seir.gillespie <- function(g, parameters,
             repeat{
                 j <- j + 1
                 genList[[j]] <- which(infector %in% genList[[j-1]])
-                if(length(genList[[j-1]]) > R0_threshold){
+                if(length(genList[[j-1]]) >= R0_threshold){
                     break
                 }
             }
