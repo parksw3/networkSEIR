@@ -60,15 +60,17 @@ simulationepidemic<-function(){
     Nseir=length(V(graphseir)) ##Number of vertices in graphseir (we do not consider the vertices which will have total degree 0 in graphseir)
 
     v=sample.int(Nseir,I0,replace=FALSE,prob=NULL)  ###Choose I0 vertices uniformly at random
+    
+    ## SWP: changed v=1:I0 to v=v
 
     realsum<-function(x){
-        realtime<-colSums(shortest.paths(graphseir,v=1:I0,to=1:length(V(graphseir)),mode = c("out"),weights = NULL)<=x)>0
+        realtime<-colSums(shortest.paths(graphseir,v=v,to=1:length(V(graphseir)),mode = c("out"),weights = NULL)<=x)>0
         timesiz<-sum(realtime)
         return(timesiz)
     }
     ##Number of vertices within distance x of initial infectives (using edge weights)
     genersum<-function(x){
-        gen<-colSums(shortest.paths(graphseir,v=1:I0,to=1:length(V(graphseir)),mode = c("out"),weights = NA)<=x)>0
+        gen<-colSums(shortest.paths(graphseir,v=v,to=1:length(V(graphseir)),mode = c("out"),weights = NA)<=x)>0
         gensiz<-sum(gen)
         return(gensiz)
     }
@@ -78,7 +80,7 @@ simulationepidemic<-function(){
 
     repeat{
         lvecreal<-length(vecreal);
-        vecreal<- cbind(vecreal,realsum(lvecreal/stepfreq));
+        vecreal<- c(vecreal,realsum(lvecreal/stepfreq));
         if ( (log(realsum(lvecreal/stepfreq)) > uppbound+0.5) | (lvecreal+1 > stepfreq*maxtime) ) 
             break;
     }
