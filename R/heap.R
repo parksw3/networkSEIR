@@ -28,7 +28,7 @@ seir.heap <- function(g,
     t_gillespie <- 0
     c_infected <- I0
     
-    forward_generation <- vector('list', length(V))
+    intrinsic_generation <- vector('list', length(V))
     
     done <- rep(FALSE, length(V))
     infected_by <- rep(NA, length(V))
@@ -53,7 +53,7 @@ seir.heap <- function(g,
         }
         
         time_between <- rexp(ncontact+1, rate=rate)
-        forward_generation[[j]] <- c_time <- cumsum(time_between)
+        intrinsic_generation[[j]] <- c_time <- cumsum(time_between)
         if (ncontact > 0) {
             queue_t[i:(i+ncontact-1)] <- t + c_time[1:ncontact]
         }
@@ -92,7 +92,7 @@ seir.heap <- function(g,
         }
         
         time_between <- rexp(ncontact+1, rate=rate)
-        forward_generation[[j]] <- c_time <- cumsum(time_between)
+        intrinsic_generation[[j]] <- c_time <- cumsum(time_between)
         if (ncontact > 0) {
             queue_t[i:(i+ncontact-1)] <- t + c_time[1:ncontact]
         }
@@ -110,7 +110,7 @@ seir.heap <- function(g,
                 time=t_gillespie,
                 infected=I0:c_infected
             ),
-            forward_generation=forward_generation,
+            intrinsic_generation=intrinsic_generation,
             t_infected=t_infected,
             t_recovered=t_recovered,
             infected_by=infected_by
