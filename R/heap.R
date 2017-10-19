@@ -63,7 +63,7 @@ seir.heap <- function(g,
         i <- i+ncontact
     }
     
-    stop <- FALSE
+    stop <- all(done[queue_v])
     
     while (!stop) {
         new_order <- order(queue_t)
@@ -101,10 +101,7 @@ seir.heap <- function(g,
         done[j] <- TRUE
         i <- i+ncontact
         
-        if (c_infected == length(V) || all(done[queue_v])) {
-            stop <- TRUE
-        }
-
+        stop <- (c_infected == length(V) || all(done[queue_v]))
     }
     
     return(
@@ -120,31 +117,3 @@ seir.heap <- function(g,
         )
     )
 }
-
-g <- graph.full(1000)
-
-beta <- 0.002
-gamma <- 1
-
-v_dist <- degree(g)
-
-mu_v <- mean(v_dist)
-
-kappa <- var(v_dist)/mu_v + mu_v - 1
-
-res <- seir.heap(g, beta, gamma, seed=101)
-
-plot(res$data)
-
-plot(density(unlist(res$forward_generation)), main="intrinsic generation")
-curve(exp(-x), col=3, add=TRUE)
-
-plot(density(res$t_infected-res$t_infected[res$infected_by], na.rm=TRUE), main="spatial generation")
-
-curve((beta/kappa+gamma)*exp(-(beta/kappa+gamma)*x), col=2, add=TRUE)
-
-plot(density(res$t_recovered-res$t_infected, na.rm=TRUE), col=2, main="infectious period")
-
-curve(exp(-x), col=3, add=TRUE)
-
-
