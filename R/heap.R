@@ -1,8 +1,10 @@
 ##' @param g igraph object
 ##' @param beta contact rate
-##' @param gamma recovery rate
+##' @param sigma 1/(latent period)
+##' @param gamma 1/(infectious period)
 seir.heap <- function(g,
                       beta,
+                      sigma,
                       gamma,
                       I0=10,
                       seed = NULL){
@@ -22,7 +24,7 @@ seir.heap <- function(g,
     queue_v[1:I0] <- initial_infected 
     queue_t[1:I0] <- 0
     
-    t_infected <- t_recovered <- rep(NA, length(V))
+    t_infected <- t_infectious <- t_recovered <- rep(NA, length(V))
     t_infected[initial_infected] <- 0
     
     t_gillespie <- 0
@@ -35,11 +37,12 @@ seir.heap <- function(g,
     
     target <- initial_infected
     
-    i <- I0+1
-    
     t <- 0
     
     for (j in initial_infected) {
+        latent <- rexp(1, sigma)
+        t_infectious[j] <- t + latent
+        
         n <- as.vector(neighbors(g, j))
         
         rate <- length(n) * beta + gamma
@@ -48,19 +51,19 @@ seir.heap <- function(g,
         
         ncontact <- rnbinom(1, size=1, prob=prob)
         if (ncontact > 0) {
-            queue_v[i:(i+ncontact-1)] <- sample(n, ncontact, replace=TRUE)
-            queue_infector[i:(i+ncontact-1)] <- j
+            queue_v <- c(queue_v, sample(n, ncontact, replace=TRUE))
+            queue_infector <- c(queue_infector, rep(j, ncontact))
         }
         
         time_between <- rexp(ncontact+1, rate=rate)
-        intrinsic_generation[[j]] <- c_time <- cumsum(time_between)
+        c_time <- latent + cumsum(time_between)
+        intrinsic_generation[[j]] <-  c_time[1:ncontact]
         if (ncontact > 0) {
-            queue_t[i:(i+ncontact-1)] <- t + c_time[1:ncontact]
+            queue_t <- c(queue_t, t + c_time[1:ncontact])
         }
         
         t_recovered[j] <- t+tail(c_time,1)
         done[j] <- TRUE
-        i <- i+ncontact
     }
     
     stop <- all(done[queue_v])
@@ -73,10 +76,16 @@ seir.heap <- function(g,
         
         j.index <- head(which(!done[queue_v]), 1)
         j <- queue_v[j.index]
+        
+        
         infected_by[j] <- queue_infector[j.index]
         t_infected[j] <- queue_t[j.index]
         
         t <- queue_t[j.index]; t_gillespie <- c(t_gillespie, t)
+        
+        latent <- rexp(1, sigma)
+        t_infectious[j] <- t + latent
+        
         c_infected <- c_infected +1
         
         n <- as.vector(neighbors(g, j))
@@ -87,19 +96,19 @@ seir.heap <- function(g,
         
         ncontact <- rnbinom(1, size=1, prob=prob)
         if (ncontact > 0) {
-            queue_v[i:(i+ncontact-1)] <- sample(n, ncontact, replace=TRUE)
-            queue_infector[i:(i+ncontact-1)] <- j
+            queue_v <- c(queue_v, sample(n, ncontact, replace=TRUE))
+            queue_infector <- c(queue_infector, rep(j, ncontact))
         }
         
         time_between <- rexp(ncontact+1, rate=rate)
-        intrinsic_generation[[j]] <- c_time <- cumsum(time_between)
+        c_time <- latent + cumsum(time_between)
+        intrinsic_generation[[j]] <- c_time[1:ncontact]
         if (ncontact > 0) {
-            queue_t[i:(i+ncontact-1)] <- t + c_time[1:ncontact]
+            queue_t <- c(queue_t, t + c_time[1:ncontact])
         }
         
         t_recovered[j] <- t+tail(c_time,1)
         done[j] <- TRUE
-        i <- i+ncontact
         
         stop <- (c_infected == length(V) || all(done[queue_v]))
     }
@@ -112,6 +121,7 @@ seir.heap <- function(g,
             ),
             intrinsic_generation=intrinsic_generation,
             t_infected=t_infected,
+            t_infectious=t_infectious,
             t_recovered=t_recovered,
             infected_by=infected_by
         )
