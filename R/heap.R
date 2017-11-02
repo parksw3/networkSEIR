@@ -1,13 +1,24 @@
+sample2 <- function(x, size) {
+    if(length(x)==1) {
+        rep(x, size)
+    } else{
+        sample(x, size, replace=TRUE)
+    }
+}
+
 ##' @param g igraph object
 ##' @param beta contact rate
 ##' @param sigma 1/(latent period)
 ##' @param gamma 1/(infectious period)
+##' @param imax maximum number of infected individuals
 seir.heap <- function(g,
                       beta,
                       sigma,
                       gamma,
-                      I0=10,
-                      seed = NULL){
+                      I0,
+                      initial_infected,
+                      seed = NULL,
+                      imax){
     if(class(g) != "igraph"){
         stop("g must be an igraph object")
     }
@@ -15,7 +26,16 @@ seir.heap <- function(g,
     if (!is.null(seed)) set.seed(seed)
     
     V <- as.vector(V(g))
-    initial_infected <- sample(V, I0)
+    
+    if (missing(initial_infected)) {
+        if (missing(I0)) stop("specify the initial conditions")
+        
+        initial_infected <- sample(V, I0)    
+    }
+
+    I0 <- length(initial_infected)
+    
+    if (missing(imax)) imax <- length(V)
     
     t <- 0
     
@@ -51,7 +71,7 @@ seir.heap <- function(g,
         
         ncontact <- rnbinom(1, size=1, prob=prob)
         if (ncontact > 0) {
-            queue_v <- c(queue_v, sample(n, ncontact, replace=TRUE))
+            queue_v <- c(queue_v, sample2(n, ncontact))
             queue_infector <- c(queue_infector, rep(j, ncontact))
         }
         
@@ -77,7 +97,6 @@ seir.heap <- function(g,
         j.index <- head(which(!done[queue_v]), 1)
         j <- queue_v[j.index]
         
-        
         infected_by[j] <- queue_infector[j.index]
         t_infected[j] <- queue_t[j.index]
         
@@ -96,7 +115,7 @@ seir.heap <- function(g,
         
         ncontact <- rnbinom(1, size=1, prob=prob)
         if (ncontact > 0) {
-            queue_v <- c(queue_v, sample(n, ncontact, replace=TRUE))
+            queue_v <- c(queue_v, sample2(n, ncontact))
             queue_infector <- c(queue_infector, rep(j, ncontact))
         }
         
@@ -110,7 +129,7 @@ seir.heap <- function(g,
         t_recovered[j] <- t+tail(c_time,1)
         done[j] <- TRUE
         
-        stop <- (c_infected == length(V) || all(done[queue_v]))
+        stop <- (c_infected == length(V) || all(done[queue_v]) || c_infected > imax)
     }
     
     return(
