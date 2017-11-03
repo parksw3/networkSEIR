@@ -1,3 +1,5 @@
+##' @param x a vector of nodes
+##' @param size number of nodes to pick at random
 sample2 <- function(x, size) {
     if(length(x)==1) {
         rep(x, size)
@@ -6,6 +8,7 @@ sample2 <- function(x, size) {
     }
 }
 
+## Simulate an epidemic until done or imax reached
 ##' @param g igraph object
 ##' @param beta contact rate
 ##' @param sigma 1/(latent period)
