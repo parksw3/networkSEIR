@@ -8,13 +8,13 @@ sample2 <- function(x, size) {
     }
 }
 
-## Simulate an epidemic until done or imax reached
+##' Simulate an epidemic until done or imax reached
 ##' @param g igraph object
 ##' @param beta contact rate
 ##' @param sigma 1/(latent period)
 ##' @param gamma 1/(infectious period)
 ##' @param imax maximum number of infected individuals
-seir.heap <- function(g,
+seir <- function(g,
                       beta,
                       sigma,
                       gamma,

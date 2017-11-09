@@ -5,13 +5,15 @@ source("../R/generation.R")
 branch <- 3
 g <- graph.tree(branch^10, branch)
 
+g <- graph.full(1000)
+
 ## randomly selected beta and gamma values. 
 ## Note that beta here is the contact rate between two individuals. 
-beta <- 2
+beta <- 0.002
 sigma <- Inf
 gamma <- 1
 
-system.time(res <- seir.heap(g, beta, sigma, gamma, initial_infected = 1, seed=101))
+system.time(res <- seir(g, beta, sigma, gamma, initial_infected = 1, seed=105))
 
 ## what the epidemic looks like
 plot(res$data, type="l")
@@ -21,7 +23,7 @@ intrinsic.generation(res, breaks=20)
 curve(gamma*exp(-gamma*x), add=TRUE) ## looks pretty good
 
 di <- 0.2
-ii <- seq(0, 4.5, by=di/2)
+ii <- seq(0, 6.5, by=di/2)
 
 forward.mean <- backward.mean <- censor.forward.mean <- censor.backward.mean <- rep(NA, length(ii))
 
@@ -61,5 +63,3 @@ dev.off()
 network.generation(res, breaks=20)
 curve(gamma*exp(-gamma*x), add=TRUE)
 curve((beta+gamma)*exp(-(beta+gamma)*x), add=TRUE, lty=2, col=2)
-
-
