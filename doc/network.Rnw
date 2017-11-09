@@ -54,23 +54,22 @@ We note that the denominater is basically cumulative incidence up to time $t$ di
 \end{aligned}
 \end{equation}
 Then,
-$$
+\begin{equation}
 c_t(\tau) = \frac{\Ro \int_{\tau}^t i(s-\tau) S(s) ds}{\int_0^t i(s) ds} g(\tau)
-$$
+\end{equation}
 
 During an early outbreak, incidence grows exponentially ($i(t) = i(0)\exp(rt)$) and proportion susceptible doesn't change very much. So we can write this as
-$$
+\begin{equation}
 c_t (\tau) = \Rr g(\tau) \exp(-r\tau) \frac{ \int_{\tau}^t \exp(r s) ds}{\int_0^t \exp(rs) ds},
-$$
-where $\Rr = \Ro S$. What does this mean?
+\end{equation}
+where $\Rr = \Ro S$. Does this mean anything?
 
 We're also interested in $c_\infty(\tau)$. This is something people can study after the outbreak.
-$$
+\begin{equation}
 c_\infty(\tau) = \frac{\Ro \int_{\tau}^\infty i(s-\tau) S(s) ds}{\int_0^\infty i(s) ds} g(\tau)
-$$
+\end{equation}
 
-
-\section{SIR model}
+\subsection{SIR model}
 
 First, let's start with the simplest case: SIR model.
 \begin{equation}
@@ -82,10 +81,17 @@ First, let's start with the simplest case: SIR model.
 \end{equation}
 For this model, intrinsic generation interval distributions follows an exponential distribution with rate parameter $\gamma$.
 
-What is often measured is \emph{censored} generation interval distributions:
+Let's see how mean censored GI changes
 
-<<sir>>==
+<<load, warning=FALSE, message=FALSE, echo=FALSE>>==
 library(deSolve)
+library(igraph)
+source("../R/seir.R")
+source("../R/generation.R")
+@
+
+
+<<sir, echo=FALSE, fig.height=4, fig.width=6, cache=TRUE>>==
 sir <- function(t, y, parms) {
     with(as.list(c(y, parms)), {
         dS <- -beta/N*S*I
@@ -94,16 +100,116 @@ sir <- function(t, y, parms) {
     })
 }
 
-parms <- c(beta=2, gamma=1, N=1000)
-y <- c(S = 999, I=1)
+parms <- list(beta=2, gamma=1, N=4000)
+y <- c(S = 3999, I=1)
 
-ode(y, 0:10, sir, parms)
+dt <- 0.01
+tmax <- 20
+t <- seq(0, tmax, dt)
+out <- as.data.frame(ode(y, t, sir, parms))
+incidence <- parms$beta*out$S*out$I/parms$N*dt
 
-sir.incidence <- function(t) {
-    t <- seq(0, t, by=0.1)
-    
+gen <- function(tau) parms$gamma * exp(-parms$gamma * tau)
+
+cg <- function(tau, tmax) {
+    t <- t[t<tmax]
+    total <- sum(incidence)
+
+    i <- which(t>tau)
+
+    2*sum(incidence[1:length(i)] * out$S[i]/1000)/total*gen(tau)
 }
+
+ff <- function(tmax) {
+    t <- t[t <= tmax]
+    
+    dc <- sapply(t, cg, tmax=tmax)
+    sum(dc*t)/sum(dc)
+}
+
+tau <- seq(0.1, tmax, 0.1)
+cm <- sapply(tau, ff)
+
+plot(tau, cm, type="l", ylim=c(0,1), ylab="mean censored GI", xlab="time")
+abline(h=1/parms$gamma, lty=2)
 @
+
+Let's compare this curve with what we observe on a homogeneous network ($\beta=2, \gamma=1, N=4000, I(0)=1$):
+
+<<network.sir, echo=FALSE, fig.height=4, fig.width=6, cache=TRUE>>==
+g <- graph.full(parms$N)
+
+beta <- parms$beta/parms$N
+sigma <- Inf
+gamma <- parms$gamma
+
+nsim <- 10
+
+set.seed(101)
+reslist <- vector('list', nsim)
+i <- 1
+while (i <= nsim) {
+    rr <- seir(g, beta, sigma, gamma, initial_infected = 1)
+    if(nrow(rr$data) > 100) {
+        reslist[[i]] <- rr
+        i <- i+1
+    } 
+}
+
+di <- 1
+ii <- seq(0, 20, by=di)
+
+censor.interval <- vector('list', length(ii))
+censor.mean <- rep(NA, length(ii))
+
+for (i in 1:length(ii)) {
+    censor.interval[[i]] <- lapply(reslist, function(res){
+        network.generation(res, plot=FALSE, type="backward", interval=c(0, ii[i]+di))
+    }) 
+    censor.mean[i] <- mean(unlist(censor.interval[[i]]))
+}
+
+plot(ii+di, censor.mean, xlab="time", ylab="mean censored GI", ylim=c(0, 1), xlim=c(0, 20))
+lines(tau, cm, type="l", ylim=c(0,1), ylab="mean censored GI", xlab="time")
+abline(h=1/parms$gamma, lty=2)
+@
+
+Other than noise due to stochasticity in the beginning, this looks pretty good. I think this brings an important point. People will often analyze epidemic data after it's over and what not and try to make inference but this tells us that using the contact tracing data based on the entire epidemic underestimate the mean generation intervals distribution and hence $\Ro$!
+
+\section{Adding network}
+
+Notice that we can also write
+\begin{equation}
+c_t(\tau) = \frac{\int_{\tau}^t i(s-\tau) S(s) ds}{\int_0^t i(s) ds} K(\tau)
+\end{equation}
+So my guess is that we can replace this with an approximated network kernel to obtain censored GI distributions on a network and use observed incidence? This might be a good place to go back to the tree network.
+
+\subsection{Recovering GI distributions}
+
+In the exponential phase, we observe the following:
+\begin{equation}
+c_t (\tau) = K(\tau) \exp(-r\tau) \frac{ \int_{\tau}^t \exp(r s) ds}{\int_0^t \exp(rs) ds},
+\end{equation}
+Since we can measure everything, except the kernel, we should be able to recover parts of kernel (before time $t$) by solving this numerically.
+
+\subsubsection{Homogeneous network}
+
+<<>>===
+texp <- 6
+
+lapply(reslist, function(res){
+    df <- res$data
+    expdf <- df[df$infected > 200 & df$infected < 400,]
+    r <- lm(log(infected)~time, expdf)$coefficients[2]
+})
+
+which(ii==texp)
+
+exp.interval <- unlist(censor.interval[[texp]])
+
+
+@
+
 
 
 

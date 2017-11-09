@@ -1,5 +1,5 @@
 library(igraph)
-source("../R/heap.R")
+source("../R/seir.R")
 source("../R/generation.R")
 
 branch <- 3
@@ -22,8 +22,8 @@ plot(res$data, type="l")
 intrinsic.generation(res, breaks=20)
 curve(gamma*exp(-gamma*x), add=TRUE) ## looks pretty good
 
-di <- 0.2
-ii <- seq(0, 6.5, by=di/2)
+di <- 0.5
+ii <- seq(0, 10, by=di/2)
 
 forward.mean <- backward.mean <- censor.forward.mean <- censor.backward.mean <- rep(NA, length(ii))
 
