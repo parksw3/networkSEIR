@@ -1,0 +1,111 @@
+\documentclass{article}
+\title{Notes on network/generation interval}
+\author{Sang Woo Park}
+
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage{hyperref}
+\bibliographystyle{chicago}
+\date{\today}
+
+\usepackage{xspace}
+\newcommand*{\ie}{i.e.\@\xspace}
+
+\newcommand{\Ro}{\mathcal{R}_0}
+\newcommand{\Rr}{\mathcal{R}}
+
+\begin{document}
+\maketitle
+
+\section{Censored generation interval distributions}
+
+Following \cite{champredon2015intrinsic}, we can write the number of infection occuring at time $t$ caused by infectors who were themselves infected at time $s$ as
+\begin{equation}
+i_s(t) = K(t-s) i(s) S(t)
+\end{equation}
+Writing the kernel as the product of the intrinsic genreation distributions and $\Ro$, we get
+\begin{equation}
+i_s(t) = \Ro g(t-s) i(s) S(t)
+\end{equation}
+
+The censored generation interval distributions is what is often measured and we have to account for all infections that happen before time $t$.
+Note that number of infection occuring at time $s$ caused by infectors who were themselves infected at time $s-\tau$ is given by 
+\begin{equation}
+i_{s-\tau}(s) = \Ro i(s-\tau) g(\tau) S(s)
+\end{equation}
+Normalizing this gives the backward generation interval distributions of the cohorts at time $s$ but we are interested in all infections that are $\tau$ time steps apart before time $t$:
+\begin{equation}
+\Ro \int_\tau^t i(s-\tau) g(\tau) S(s) ds.
+\end{equation}
+Then, the censored generation interval is given by
+\begin{equation}
+c_t(\tau)= \frac{\int_\tau^t i(s-\tau) g(\tau) S(s) ds}{\int_0^t \int_x^t i(s-x) g(x) S(s) ds dx}.
+\end{equation}
+We note that the denominater is basically cumulative incidence up to time $t$ divided by $\Ro$. The stragihtforward intuition behind this is that we are normalizing by all incidence before time $t$. Mathematically, we have the following:
+\begin{equation}
+\begin{aligned}
+\Ro \int_0^t \int_x^t i(s-x) g(x) S(s) ds dx &= \int_0^t \Ro S(s) \int_0^s i(s-x) g(x)  dx ds\\
+&= \int_0^t i(s) ds
+\end{aligned}
+\end{equation}
+Then,
+$$
+c_t(\tau) = \frac{\Ro \int_{\tau}^t i(s-\tau) S(s) ds}{\int_0^t i(s) ds} g(\tau)
+$$
+
+During an early outbreak, incidence grows exponentially ($i(t) = i(0)\exp(rt)$) and proportion susceptible doesn't change very much. So we can write this as
+$$
+c_t (\tau) = \Rr g(\tau) \exp(-r\tau) \frac{ \int_{\tau}^t \exp(r s) ds}{\int_0^t \exp(rs) ds},
+$$
+where $\Rr = \Ro S$. What does this mean?
+
+We're also interested in $c_\infty(\tau)$. This is something people can study after the outbreak.
+$$
+c_\infty(\tau) = \frac{\Ro \int_{\tau}^\infty i(s-\tau) S(s) ds}{\int_0^\infty i(s) ds} g(\tau)
+$$
+
+
+\section{SIR model}
+
+First, let's start with the simplest case: SIR model.
+\begin{equation}
+\begin{aligned}
+\frac{dS}{dt} &= - \frac{\beta}{N} S I\\
+\frac{dI}{dt} &= \frac{\beta}{N} SI - \gamma I\\
+\frac{dR}{dt} &= \gamma I
+\end{aligned}
+\end{equation}
+For this model, intrinsic generation interval distributions follows an exponential distribution with rate parameter $\gamma$.
+
+What is often measured is \emph{censored} generation interval distributions:
+
+<<sir>>==
+library(deSolve)
+sir <- function(t, y, parms) {
+    with(as.list(c(y, parms)), {
+        dS <- -beta/N*S*I
+        dI <- beta/N*S*I - gamma*I
+        list(c(dS, dI))
+    })
+}
+
+parms <- c(beta=2, gamma=1, N=1000)
+y <- c(S = 999, I=1)
+
+ode(y, 0:10, sir, parms)
+
+sir.incidence <- function(t) {
+    t <- seq(0, t, by=0.1)
+    
+}
+@
+
+
+
+\bibliography{network}
+\end{document}
