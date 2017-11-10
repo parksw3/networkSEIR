@@ -10,7 +10,7 @@ network.generation <- function(x, plot=TRUE,
                                interval.type=c("time", "cases"),
                                ...) {
     type <- match.arg(type)
-    interval.type <- match.arg(type)
+    interval.type <- match.arg(interval.type)
     
     if (missing(interval)) {
         interval <- c(0, max(x$data$time))

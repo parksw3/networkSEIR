@@ -8,6 +8,9 @@ sample2 <- function(x, size) {
     }
 }
 
+## 1 if false and Inf if true
+.vec <- c(1, Inf)
+
 ##' Simulate an epidemic until done or imax reached
 ##' @param g igraph object
 ##' @param beta contact rate
@@ -15,13 +18,13 @@ sample2 <- function(x, size) {
 ##' @param gamma 1/(infectious period)
 ##' @param imax maximum number of infected individuals
 seir <- function(g,
-                      beta,
-                      sigma,
-                      gamma,
-                      I0,
-                      initial_infected,
-                      seed = NULL,
-                      imax){
+                 beta,
+                 sigma,
+                 gamma,
+                 I0,
+                 initial_infected,
+                 seed = NULL,
+                 imax){
     if(class(g) != "igraph"){
         stop("g must be an igraph object")
     }
@@ -51,53 +54,17 @@ seir <- function(g,
     t_infected[initial_infected] <- 0
     
     t_gillespie <- 0
-    c_infected <- I0
+    c_infected <- 0
     
     intrinsic_generation <- vector('list', length(V))
     
     done <- rep(FALSE, length(V))
     infected_by <- rep(NA, length(V))
     
-    target <- initial_infected
-    
-    t <- 0
-    
-    for (j in initial_infected) {
-        latent <- rexp(1, sigma)
-        t_infectious[j] <- t + latent
-        
-        n <- as.vector(neighbors(g, j))
-        
-        rate <- length(n) * beta + gamma
-        
-        prob <- gamma/rate
-        
-        ncontact <- rnbinom(1, size=1, prob=prob)
-        if (ncontact > 0) {
-            queue_v <- c(queue_v, sample2(n, ncontact))
-            queue_infector <- c(queue_infector, rep(j, ncontact))
-        }
-        
-        time_between <- rexp(ncontact+1, rate=rate)
-        c_time <- latent + cumsum(time_between)
-        intrinsic_generation[[j]] <-  c_time[1:ncontact]
-        if (ncontact > 0) {
-            queue_t <- c(queue_t, t + c_time[1:ncontact])
-        }
-        
-        t_recovered[j] <- t+tail(c_time,1)
-        done[j] <- TRUE
-    }
-    
-    stop <- all(done[queue_v])
+    stop <- FALSE
     
     while (!stop) {
-        new_order <- order(queue_t)
-        queue_v <- queue_v[new_order]
-        queue_t <- queue_t[new_order]
-        queue_infector <- queue_infector[new_order]
-        
-        j.index <- head(which(!done[queue_v]), 1)
+        j.index <- which.min(queue_t * .vec[done[queue_v]+1])
         j <- queue_v[j.index]
         
         infected_by[j] <- queue_infector[j.index]
@@ -138,8 +105,104 @@ seir <- function(g,
     return(
         list(
             data=data.frame(
-                time=t_gillespie,
-                infected=I0:c_infected
+                time=t_gillespie[(I0+1):c_infected],
+                infected=(I0+1):c_infected
+            ),
+            intrinsic_generation=intrinsic_generation,
+            t_infected=t_infected,
+            t_infectious=t_infectious,
+            t_recovered=t_recovered,
+            infected_by=infected_by
+        )
+    )
+}
+
+
+## creating a full graph takes up a lot of memory
+## so here's an optimized version that doesn't rely on igraph but does the same thing
+seir.full <- function(size,
+                      beta,
+                      sigma,
+                      gamma,
+                      I0,
+                      seed = NULL,
+                      imax){
+    
+    if (!is.null(seed)) set.seed(seed)
+    
+    V <- 1:size
+    
+    if (missing(I0)) {
+        if (missing(I0)) stop("specify the initial conditions")
+        
+    }
+    initial_infected <- 1:I0
+    
+    if (missing(imax)) imax <- size
+    
+    queue_v <- queue_t <- queue_infector <- rep(NA, I0)
+    
+    queue_v[1:I0] <- initial_infected 
+    queue_t[1:I0] <- 0
+    
+    t_infected <- t_infectious <- t_recovered <- rep(NA, size)
+    t_infected[initial_infected] <- 0
+    
+    t_gillespie <- NULL
+    c_infected <- 0
+    
+    intrinsic_generation <- vector('list', size)
+    
+    done <- rep(FALSE, size)
+    infected_by <- rep(NA, size)
+    
+    stop <- FALSE
+    
+    while (!stop) {
+        j.index <- which.min(queue_t * .vec[done[queue_v]+1])
+        j <- queue_v[j.index]
+        done[j] <- TRUE
+        
+        infected_by[j] <- queue_infector[j.index]
+        t_infected[j] <- queue_t[j.index]
+        
+        t <- queue_t[j.index]; t_gillespie <- c(t_gillespie, t)
+        
+        latent <- rexp(1, sigma)
+        t_infectious[j] <- t + latent
+        
+        c_infected <- c_infected +1
+        
+        n <- V[V != j]
+        
+        rate <- length(n) * beta + gamma
+        
+        prob <- gamma/rate
+        
+        ncontact <- rnbinom(1, size=1, prob=prob)
+        if (ncontact > 0) {
+            queue_v <- c(queue_v, sample2(n, ncontact))
+            queue_infector <- c(queue_infector, rep(j, ncontact))
+        }
+        
+        time_between <- rexp(ncontact+1, rate=rate)
+        c_time <- latent + cumsum(time_between)
+        intrinsic_generation[[j]] <- c_time[1:ncontact]
+        if (ncontact > 0) {
+            queue_t <- c(queue_t, t + c_time[1:ncontact])
+        }
+        
+        t_recovered[j] <- t+tail(c_time,1)
+        done[j] <- TRUE
+        
+        stop <- (c_infected == length(V) || all(done[queue_v]) || c_infected > imax)
+    }
+    
+    return(
+        list(
+            data=data.frame(
+                time=t_gillespie[(I0+1):c_infected],
+                infected=(I0+1):c_infected
             ),
             intrinsic_generation=intrinsic_generation,
             t_infected=t_infected,

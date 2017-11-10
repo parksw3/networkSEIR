@@ -5,11 +5,9 @@ source("../R/generation.R")
 branch <- 3
 g <- graph.tree(branch^10, branch)
 
-g <- graph.full(1000)
-
 ## randomly selected beta and gamma values. 
 ## Note that beta here is the contact rate between two individuals. 
-beta <- 0.002
+beta <- 2
 sigma <- Inf
 gamma <- 1
 
@@ -42,11 +40,11 @@ pdf("interval_comparison.pdf", height=6, width=8)
 par(mfrow=c(2, 2))
 par(mar=c(4.2, 4.2, 4.2, 4.2))
 
-plot(ii, censor.forward.mean, main="Forward", xlab="time", ylab="Censor based")
+plot(ii, censor.forward.mean, main="Forward", xlab="time", ylab="Censor based", ylim=c(0,1))
 abline(h=1/gamma)
 abline(h=1/(gamma+beta), lty=2)
 
-plot(ii, censor.backward.mean, main="Backward", xlab="time", ylab=NA)
+plot(ii, censor.backward.mean, main="Backward", xlab="time", ylab=NA, ylim=c(0,1))
 abline(h=1/gamma)
 abline(h=1/(gamma+beta), lty=2)
 
