@@ -1,4 +1,5 @@
 source("../sim/full_param.R")
+library(tidyr)
 library(dplyr)
 library(ggplot2); theme_set(theme_bw())
 library(gridExtra)
@@ -34,6 +35,7 @@ generation <- (
     %>% as.tbl 
     %>% mutate(weight=exp(r*interval))
 )
+
 intrinsic_fun <- function(tau) {
     sigma*gamma/(gamma-sigma) * (exp(-sigma*tau)-exp(-gamma*tau))
 }
@@ -88,7 +90,27 @@ gg2 <- (
     + stat_function(fun=intrinsic_fun, lwd=1.2, lty=2, xlim=c(0,11))
     + ggtitle("Corrected GI distributions")
 )
-    
-gg_correction <- arrangeGrob(gg1, gg2)
 
-ggsave("corrected_GI.pdf", gg_correction, width=6, height=6)
+R0 <- (
+    generation 
+    %>% group_by(sim) 
+    %>% summarize(uncorrected=1/mean(exp(-r*interval)),
+        corrected=mean(exp(r*interval))) 
+    %>% gather(key, value, -sim)
+    %>% mutate(key=factor(key, level=c("uncorrected", "corrected")))
+)
+    
+gg_R <- (
+    ggplot(R0) 
+    + geom_boxplot(aes(key, value), fill="grey", alpha=0.5)
+    + scale_y_continuous("Reproductive number")
+    + geom_hline(yintercept=beta/gamma, lty=2)
+    + theme(
+        panel.grid=element_blank(),
+        axis.title.x=element_blank()
+    )
+)
+
+gg_correction <- arrangeGrob(gg1, gg2, gg_R, layout_matrix=cbind(c(1,2), c(3,3)), widths=c(1, 0.4))
+
+ggsave("corrected_GI.pdf", gg_correction, width=8, height=6)

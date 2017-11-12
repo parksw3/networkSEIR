@@ -212,3 +212,33 @@ seir.full <- function(size,
         )
     )
 }
+
+##' SEIR on a local tree (one node connected to n branches)
+##' @param n number of branches
+seir.local <- function(n,
+                       beta,
+                       sigma,
+                       gamma,
+                       seed = NULL){
+    latent <- rexp(1, sigma)
+    
+    rate <- n * beta + gamma
+    
+    prob <- gamma/rate
+    
+    ncontact <- rnbinom(1, size=1, prob=prob)
+    time_between <- rexp(ncontact+1, rate=rate)
+    c_time <- latent + cumsum(time_between)
+    
+    v <- sample2(1:n, ncontact)
+    
+    intrinsic_generation <- c_time[1:ncontact]
+    t_infected <- c_time[which(!duplicated(v))]
+    
+    list(
+        
+    )
+    
+    tail(c_time,1)
+}
+
