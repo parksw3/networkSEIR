@@ -53,7 +53,7 @@ seir <- function(g,
     t_infected <- t_infectious <- t_recovered <- rep(NA, length(V))
     t_infected[initial_infected] <- 0
     
-    t_gillespie <- 0
+    t_gillespie <- NULL
     c_infected <- 0
     
     intrinsic_generation <- vector('list', length(V))
@@ -105,8 +105,8 @@ seir <- function(g,
     return(
         list(
             data=data.frame(
-                time=t_gillespie[(I0+1):c_infected],
-                infected=(I0+1):c_infected
+                time=t_gillespie[(I0):c_infected],
+                infected=(I0):c_infected
             ),
             intrinsic_generation=intrinsic_generation,
             t_infected=t_infected,
@@ -201,8 +201,8 @@ seir.full <- function(size,
     return(
         list(
             data=data.frame(
-                time=t_gillespie[(I0+1):c_infected],
-                infected=(I0+1):c_infected
+                time=t_gillespie[(I0):c_infected],
+                infected=(I0):c_infected
             ),
             intrinsic_generation=intrinsic_generation,
             t_infected=t_infected,
