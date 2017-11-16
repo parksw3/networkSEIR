@@ -28,7 +28,7 @@
 %%\\\vspace{5mm}\texttt{earn@math.mcmaster.ca}
 }
 %\institute[]{}
-\date[June 2016]{June 2016}
+\date[November 2017]{November 2017}
 
 %% Uncomment the following line to define a custom logo (or to tweak the size of the logo)
 \McMasterLogo{\includegraphics[width=\WhenPortrait{1.2}{1}\linewidth]{Maclogo}}
@@ -50,13 +50,14 @@
   \noindent
 \begin{columns}
     % ---------------------------------------------------------%
-  \begin{column}{.33\textwidth}
+    \begin{columns}
+  \begin{column}{0.45\textwidth}
     \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
       \begin{minipage}[T]{.95\textwidth}
         \parbox[t][\columnheight]{\textwidth}{ 
 
 \vspace{-1 cm} % shouldn't need this??
-\begin{block}{Summary}
+\begin{block}{Introduction}
 \noindent
 \hspace{-1.6cm}
 \begin{itemize}
@@ -65,125 +66,35 @@
     \item Previous work \cite{champredon2015intrinsic} showed that measuring GI through contact tracing data introduces bias
 \end{itemize}
 \end{block}
+}
+\end{minipage}
+\end{beamercolorbox}
 
-\vspace{0.5cm}
 
-\begin{block}{Tradeoff theory}
+\end{column}
 
-\end{block}
+\begin{column}{0.5\textwidth}
+    \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
+      \begin{minipage}[T]{.95\textwidth}
+        \parbox[t][\columnheight]{\textwidth}{ 
 
-\vspace{0.5cm}
-
-\begin{block}{Epidemiological structure}
-
-\end{block}
-
-\begin{block}{Parameter uncertainty/exploration}
+\vspace{-1 cm} % shouldn't need this??
+\begin{block}{????}
+\noindent
+\hspace{-1.6cm}
+Fill this...
 \end{block}
 }
 \end{minipage}
 \end{beamercolorbox}
+
+
 \end{column}
 
+\end{columns}
 %\newcommand{\topfudge}{-5cm}
 
-\begin{column}{.65\textwidth}
-\begin{columns}
-  \begin{column}{.5\textwidth}
-    \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
-      \begin{minipage}[T]{.95\textwidth}
-        \parbox[t][\topcolumnheight]{\textwidth}{ 
-          \vspace{-4.5cm} % shouldn't need this??
-
-\begin{block}{Eco-evolutionary dynamics}
-
-\end{block}       
-     
-        } % end parbox
-        \end{minipage}
-    \end{beamercolorbox}
-  \end{column}
-
-  \begin{column}{.5\textwidth}
-    \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
-      \begin{minipage}[T]{.95\textwidth} % tweaks the width, makes a new \textwidth
-        \parbox[t][\topcolumnheight]{\textwidth}{ 
-            
-\vspace{-4.5cm} % shouldn't need this??
-            \begin{block}{Univariate summaries}
-
-            \end{block}
-            \vspace{0.5cm}
-
-        } % end parbox
-        \end{minipage}
-      \end{beamercolorbox}
-    \end{column}
-
-\end{columns}
-
-\begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
-  \begin{minipage}[T]{.95\textwidth} % tweaks the width, makes a new \textwidth
-    \parbox[t][26cm]{\textwidth}{ % must be some better way to set
-
-\begin{block}{Sensitivity}
-
-\end{block}
-}
-        \end{minipage}
-    \end{beamercolorbox}
-
-\begin{columns}
-    \begin{column}{.5\textwidth}
-      \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
-        \begin{minipage}[T]{.95\textwidth} % tweaks the width, makes a new \textwidth
-          \parbox[t][\bottomcolumnheight]{\textwidth}{ 
-
-\begin{block}{Conclusions and open questions}
-
-\end{block}
-}
-        \end{minipage}
-      \end{beamercolorbox}
-    \end{column}
-    \begin{column}{.5\textwidth}
-      \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
-        \begin{minipage}[T]{.95\textwidth} % tweaks the width, makes a new \textwidth
-          \parbox[t][\bottomcolumnheight]{\textwidth}{ 
-
-\begin{block}{References}
-
-{\tiny
-%% Add numbered references
-\setbeamertemplate{bibliography item}[text]
-%% Stop line breaks
-\setbeamertemplate{bibliography entry title}{}
-\setbeamertemplate{bibliography entry location}{}
-\setbeamertemplate{bibliography entry note}{}
-%% Stop font color changes
-% \setbeamercolor*{bibliography item}{fg=black}
-% \setbeamercolor*{bibliography entry title}{fg=black}
-% \setbeamercolor*{bibliography entry author}{fg=black}
-% \setbeamercolor*{bibliography entry location}{fg=black}
-% \setbeamercolor*{bibliography entry note}{fg=black} 
-%% Generate bibliography
-\bibliography{../doc/network}
-}
-\end{block}
-
-\begin{block}{Acknowledgements}
-
-We thank C. ???
-
-\end{block}
-
-}
-        \end{minipage}
-      \end{beamercolorbox}
-    \end{column}
-    \end{columns}
- \end{column}  % end right-hand 2/3 column
- \end{columns}  % end 50/50 columns
+\end{columns}  % end 50/50 columns
 \end{frame}
 \end{document}
 
