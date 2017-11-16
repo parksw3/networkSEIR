@@ -112,4 +112,4 @@ gg_R <- (
 
 gg_correction <- arrangeGrob(gg1, gg2, gg_R, layout_matrix=cbind(c(1,2), c(3,3)), widths=c(1, 0.4))
 
-ggsave("corrected_GI.pdf", gg_correction, width=8, height=6)
+ggsave("full_corrected_GI.pdf", gg_correction, width=8, height=6)
