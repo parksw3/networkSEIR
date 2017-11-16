@@ -7,7 +7,7 @@ g <- graph.tree(branch^17, branch)
 
 ## randomly selected beta and gamma values. 
 ## Note that beta here is the contact rate between two individuals. 
-beta <- 4
+beta <- 2
 sigma <- Inf
 gamma <- 1
 
