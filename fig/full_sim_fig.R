@@ -16,7 +16,7 @@ censor.gi <- lapply(
 )
 
 empirical.R0 <- (
-    lapply(reslist, empirical.R0)
+    lapply(reslist, empirical.R0, include.initial=TRUE)
     %>% lapply(function(x) data.frame(empirical=x))
     %>% bind_rows(.id="sim")
 )
