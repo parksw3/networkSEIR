@@ -5,6 +5,7 @@ library(ggplot2); theme_set(theme_bw())
 library(gridExtra)
 
 source("../R/generation.R")
+source("../R/reproductive.R")
 load("../data/full_sim.rda")
 
 censor.gi <- lapply(
@@ -12,6 +13,12 @@ censor.gi <- lapply(
     , network.generation
     , plot=FALSE
     , interval=c(0, 20)
+)
+
+empirical.R0 <- (
+    lapply(reslist, empirical.R0)
+    %>% lapply(function(x) data.frame(empirical=x))
+    %>% bind_rows(.id="sim")
 )
 
 r <- lapply(
@@ -33,6 +40,16 @@ generation <- (
     %>% merge(r %>% bind_rows(.id="sim")) 
     %>% as.tbl 
     %>% mutate(weight=exp(r*interval))
+)
+
+R0 <- (
+    generation 
+    %>% group_by(sim) 
+    %>% summarize(uncorrected=1/mean(exp(-r*interval)),
+                  corrected=mean(exp(r*interval))) 
+    %>% merge(empirical.R0)
+    %>% gather(key, value, -sim)
+    %>% mutate(key=factor(key, level=c("uncorrected", "corrected", "empirical")))
 )
 
 intrinsic_fun <- function(tau) {
@@ -90,15 +107,6 @@ gg2 <- (
     + ggtitle("Corrected GI distributions")
 )
 
-R0 <- (
-    generation 
-    %>% group_by(sim) 
-    %>% summarize(uncorrected=1/mean(exp(-r*interval)),
-        corrected=mean(exp(r*interval))) 
-    %>% gather(key, value, -sim)
-    %>% mutate(key=factor(key, level=c("uncorrected", "corrected")))
-)
-    
 gg_R <- (
     ggplot(R0) 
     + geom_boxplot(aes(key, value), fill="grey", alpha=0.5)
@@ -110,6 +118,6 @@ gg_R <- (
     )
 )
 
-gg_correction <- arrangeGrob(gg1, gg2, gg_R, layout_matrix=cbind(c(1,2), c(3,3)), widths=c(1, 0.4))
+gg_correction <- arrangeGrob(gg1, gg2, gg_R, layout_matrix=cbind(c(1,2), c(3,3)), widths=c(1, 0.5))
 
 ggsave("full_corrected_GI.pdf", gg_correction, width=8, height=6)

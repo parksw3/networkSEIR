@@ -48,4 +48,3 @@ generation <- n.R0 %>%
 
 ggplot(generation, aes(r, R0, group=kappa)) +
     geom_line()
-    
