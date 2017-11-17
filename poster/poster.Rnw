@@ -148,7 +148,7 @@
         \parbox[t][10cm]{\textwidth}{ 
 
 \vspace{-1 cm} % shouldn't need this??
-\begin{block}{Linking $r$ and $\R$}
+\begin{block}{Spatial/network effect}
 \noindent
 \hspace{-1.6cm}
 Fill
