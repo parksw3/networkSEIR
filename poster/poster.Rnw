@@ -9,7 +9,6 @@
 %% You can change the poster orientation (portrait vs. landscape) and the paper size (a0, a1, &c.) here:
 
 \usepackage[orientation=portrait,size=a0,scale=1.25,debug]{beamerposter}
-%## size=a0,
 
 %% MY MACROS %%
 \newcommand{\R}{{\mathcal R}}
@@ -38,7 +37,7 @@
 \setlength{\columnheight}{100cm}
 
 \newlength{\topcolumnheight}
-\setlength{\topcolumnheight}{37cm}
+\setlength{\topcolumnheight}{20cm}
 
 \newlength{\bottomcolumnheight}
 \setlength{\bottomcolumnheight}{30cm}
@@ -48,13 +47,13 @@
 \begin{frame}
   \vspace{0.5cm}
   \noindent
+
 \begin{columns}
     % ---------------------------------------------------------%
-    \begin{columns}
-  \begin{column}{0.45\textwidth}
+  \begin{column}{0.64\textwidth}
     \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
       \begin{minipage}[T]{.95\textwidth}
-        \parbox[t][\columnheight]{\textwidth}{ 
+        \parbox[t][\topcolumnheight]{\textwidth}{ 
 
 \vspace{-1 cm} % shouldn't need this??
 \begin{block}{Introduction}
@@ -73,16 +72,46 @@
 
 \end{column}
 
-\begin{column}{0.5\textwidth}
+\begin{column}{0.35\textwidth}
     \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
       \begin{minipage}[T]{.95\textwidth}
-        \parbox[t][\columnheight]{\textwidth}{ 
+        \parbox[t][\topcolumnheight]{\textwidth}{ 
 
 \vspace{-1 cm} % shouldn't need this??
-\begin{block}{????}
+\begin{block}{Linking $r$ and $\R$}
 \noindent
 \hspace{-1.6cm}
-Fill this...
+\begin{figure}
+\includegraphics[width=0.9\textwidth]{../fig/steps.pdf}
+\caption{Lorem Ipsum}
+\end{figure}
+\end{block}
+}
+\end{minipage}
+\end{beamercolorbox}
+\end{column}
+%\newcommand{\topfudge}{-5cm}
+\end{columns}  % end 50/50 columns
+
+\vspace{0.5cm}
+
+\begin{columns}
+  \begin{column}{0.6\textwidth}
+    \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
+      \begin{minipage}[T]{.95\textwidth}
+        \parbox[t][40cm]{\textwidth}{ 
+
+\vspace{-1 cm} % shouldn't need this??
+\begin{block}{Temporal bias in GI distributions}
+\noindent
+\hspace{-1.6cm}
+\begin{figure}
+\includegraphics[width=0.9\textwidth]{../fig/temporal_effect.pdf}
+\end{figure}
+\begin{itemize}
+    \item Often, GI distributions is measured through contact tracing data by \textbf{censoring} the epidemic
+    \item Long infections are masked by short infections
+\end{itemize}
 \end{block}
 }
 \end{minipage}
@@ -91,13 +120,46 @@ Fill this...
 
 \end{column}
 
-\end{columns}
-%\newcommand{\topfudge}{-5cm}
+\begin{column}{0.4\textwidth}
+    \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
+      \begin{minipage}[T]{.95\textwidth}
+        \parbox[t][40cm]{\textwidth}{ 
 
-\end{columns}  % end 50/50 columns
+\vspace{-1 cm} % shouldn't need this??
+\begin{block}{Correcting GI distributions}
+\noindent
+\hspace{-1.6cm}
+\begin{figure}
+\includegraphics[width=0.9\textwidth]{../fig/full_corrected_GI.pdf}
+\end{figure}
+\begin{itemize}
+    \item During the exponential growth phase, the observed GI distributions is proportional to $g(\tau) \exp(-r\tau)$.
+    \item 
+\end{itemize}
+\end{block}
+}
+\end{minipage}
+\end{beamercolorbox}
+\end{column}
+\end{columns}
+
+\begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
+      \begin{minipage}[T]{.95\textwidth}
+        \parbox[t][10cm]{\textwidth}{ 
+
+\vspace{-1 cm} % shouldn't need this??
+\begin{block}{Linking $r$ and $\R$}
+\noindent
+\hspace{-1.6cm}
+Fill
+\end{block}
+}
+\end{minipage}
+\end{beamercolorbox}
+
+
 \end{frame}
 \end{document}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Local Variables: 
