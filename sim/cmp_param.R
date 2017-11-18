@@ -1,3 +1,3 @@
-beta <- 0.1
+beta <- 0.5
 sigma <- 0.5
 gamma <- 1

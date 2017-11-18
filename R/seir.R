@@ -8,9 +8,6 @@ sample2 <- function(x, size) {
     }
 }
 
-## 1 if false and Inf if true
-.vec <- c(1, Inf)
-
 ##' Simulate an epidemic until done or imax reached
 ##' @param g igraph object
 ##' @param beta contact rate
@@ -23,8 +20,9 @@ seir <- function(g,
                  gamma,
                  I0,
                  initial_infected,
-                 seed = NULL,
-                 imax){
+                 seed=NULL,
+                 imax,
+                 keep.intrinsic=FALSE){
     if(class(g) != "igraph"){
         stop("g must be an igraph object")
     }
@@ -56,7 +54,11 @@ seir <- function(g,
     t_gillespie <- NULL
     c_infected <- 0
     
-    intrinsic_generation <- vector('list', length(V))
+    if (keep.intrinsic) {
+        intrinsic_generation <- vector('list', length(V))
+    } else {
+        intrinsic_generation <- NULL
+    }
     
     done <- rep(FALSE, length(V))
     infected_by <- rep(NA, length(V))
@@ -64,7 +66,7 @@ seir <- function(g,
     stop <- FALSE
     
     while (!stop) {
-        j.index <- which.min(queue_t * .vec[done[queue_v]+1])
+        j.index <- which.min(queue_t)
         j <- queue_v[j.index]
         
         infected_by[j] <- queue_infector[j.index]
@@ -78,28 +80,36 @@ seir <- function(g,
         c_infected <- c_infected +1
         
         n <- as.vector(neighbors(g, j))
+        if (!keep.intrinsic) n <- n[!done[n]]
         
         rate <- length(n) * beta + gamma
         
         prob <- gamma/rate
         
         ncontact <- rnbinom(1, size=1, prob=prob)
-        if (ncontact > 0) {
-            queue_v <- c(queue_v, sample2(n, ncontact))
-            queue_infector <- c(queue_infector, rep(j, ncontact))
-        }
         
         time_between <- rexp(ncontact+1, rate=rate)
         c_time <- latent + cumsum(time_between)
-        intrinsic_generation[[j]] <- c_time[1:ncontact]
+        if (keep.intrinsic) intrinsic_generation[[j]] <- c_time[1:ncontact]
+        
         if (ncontact > 0) {
-            queue_t <- c(queue_t, t + c_time[1:ncontact])
+            contact <- sample2(n, ncontact)
+            filter <- which(!duplicated(contact))
+            
+            queue_v <- c(queue_v, contact[filter])
+            queue_infector <- c(queue_infector, rep(j, length(contact)))
+            queue_t <- c(queue_t, t + c_time[filter])
         }
         
         t_recovered[j] <- t+tail(c_time,1)
         done[j] <- TRUE
         
-        stop <- (c_infected == length(V) || all(done[queue_v]) || c_infected > imax)
+        filter2 <- !done[queue_v]
+        queue_v <- queue_v[filter2]
+        queue_infector <- queue_infector[filter2]
+        queue_t <- queue_t[filter2]
+        
+        stop <- (c_infected == length(V) || all(done[queue_v]) || c_infected == imax)
     }
     
     return(
@@ -241,4 +251,3 @@ seir.local <- function(n,
     
     tail(c_time,1)
 }
-

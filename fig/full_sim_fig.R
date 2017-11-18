@@ -1,22 +1,24 @@
-source("../sim/full_param.R")
 library(tidyr)
 library(dplyr)
 library(ggplot2); theme_set(theme_bw())
 library(gridExtra)
 
+source("../sim/full_param.R")
 source("../R/generation.R")
 source("../R/reproductive.R")
+
 load("../data/full_sim.rda")
 
 censor.gi <- lapply(
     reslist
     , network.generation
     , plot=FALSE
-    , interval=c(0, 20)
+    , interval=c(1, 500)
+    , interval.type="cases"
 )
 
-empirical.R0 <- (
-    lapply(reslist, empirical.R0, include.initial=TRUE)
+empirical <- (
+    lapply(reslist, empirical.R0)
     %>% lapply(function(x) data.frame(empirical=x))
     %>% bind_rows(.id="sim")
 )
@@ -25,7 +27,7 @@ r <- lapply(
     reslist
     , function(x) {
         data <- x$data
-        fdata <- data %>% filter(infected <= 500, infected >= 250)
+        fdata <- data %>% filter(infected <= 500, infected >= 50)
         ll <- lm(log(infected)~time, data=fdata) 
         data.frame(r=ll$coefficients[2])
     }
@@ -39,6 +41,7 @@ generation <- (
     %>% bind_rows(.id="sim") 
     %>% merge(r %>% bind_rows(.id="sim")) 
     %>% as.tbl 
+    %>% group_by(sim)
     %>% mutate(weight=exp(r*interval))
 )
 
@@ -47,7 +50,7 @@ R0 <- (
     %>% group_by(sim) 
     %>% summarize(uncorrected=1/mean(exp(-r*interval)),
                   corrected=mean(exp(r*interval))) 
-    %>% merge(empirical.R0)
+    %>% merge(empirical)
     %>% gather(key, value, -sim)
     %>% mutate(key=factor(key, level=c("uncorrected", "corrected", "empirical")))
 )
@@ -68,10 +71,6 @@ empty.df <- data.frame(
     
 gg_base <- (
     ggplot(generation)
-    + geom_histogram(
-        aes(interval, y=..density..)
-        , col='grey', fill='black'
-        , alpha=0.15, boundary=0, bins=40) 
     + scale_x_continuous(name="time") 
     + theme(
         panel.grid = element_blank()
@@ -86,6 +85,10 @@ gg_base <- (
 
 gg1 <- (
     gg_base
+    + geom_histogram(
+        aes(interval, y=..density..)
+        , col='black', fill='grey'
+        , alpha=0.7, boundary=0, bins=40) 
     + geom_line(data=empty.df, aes(x, y, lty=group), lwd=1.2)
     + stat_function(fun=observed_fun, lwd=1.2, xlim=c(0,11))
     + stat_function(fun=intrinsic_fun, lwd=1.2, lty=2, alpha=0.2, xlim=c(0,11))
@@ -98,6 +101,10 @@ gg1 <- (
 
 gg2 <- (
     gg_base
+    + geom_histogram(
+        aes(interval, y=..density..)
+        , col='grey', fill='grey'
+        , alpha=0.15, boundary=0, bins=40) 
     + stat_function(fun=observed_fun, lwd=1.2, alpha=0.1, xlim=c(0,11))
     + geom_histogram(
         aes(interval, y=..density.., weight=weight)
@@ -110,7 +117,7 @@ gg2 <- (
 gg_R <- (
     ggplot(R0) 
     + geom_boxplot(aes(key, value), fill="grey", alpha=0.5)
-    + scale_y_continuous("Reproductive number")
+    + scale_y_continuous("Reproductive number", breaks=c(2, 4, 6, 8))
     + geom_hline(yintercept=beta/gamma, lty=2)
     + theme(
         panel.grid=element_blank(),

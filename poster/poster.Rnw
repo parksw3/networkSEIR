@@ -37,7 +37,7 @@
 \setlength{\columnheight}{100cm}
 
 \newlength{\topcolumnheight}
-\setlength{\topcolumnheight}{20cm}
+\setlength{\topcolumnheight}{24cm}
 
 \newlength{\bottomcolumnheight}
 \setlength{\bottomcolumnheight}{30cm}
@@ -50,7 +50,7 @@
 
 \begin{columns}
     % ---------------------------------------------------------%
-  \begin{column}{0.64\textwidth}
+  \begin{column}{0.6\textwidth}
     \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
       \begin{minipage}[T]{.95\textwidth}
         \parbox[t][\topcolumnheight]{\textwidth}{ 
@@ -61,8 +61,12 @@
 \hspace{-1.6cm}
 \begin{itemize}
     \item Generation interval (GI) measures time between when a person is infected and when that person infects another person
-    \item GI distributions link speed (growth rate) and strength (reproductive number) of an epidemic
+    \item GI distributions, $g(\tau)$, link speed, $r$, and strength, $\mathcal{R}$, of an epidemic
+    $$
+    1/\mathcal{R} = \int g(\tau) \exp(-r\tau) d\tau
+    $$
     \item Previous work \cite{champredon2015intrinsic} showed that measuring GI through contact tracing data introduces bias
+    \item Network structure can affect GI distributions ([TRAPMAN] considered changes in $\mathcal{R}$)
 \end{itemize}
 \end{block}
 }
@@ -72,7 +76,7 @@
 
 \end{column}
 
-\begin{column}{0.35\textwidth}
+\begin{column}{0.4\textwidth}
     \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
       \begin{minipage}[T]{.95\textwidth}
         \parbox[t][\topcolumnheight]{\textwidth}{ 
@@ -81,10 +85,10 @@
 \begin{block}{Linking $r$ and $\R$}
 \noindent
 \hspace{-1.6cm}
-\begin{figure}
+\begin{center}
 \includegraphics[width=0.9\textwidth]{../fig/steps.pdf}
-\caption{Lorem Ipsum}
-\end{figure}
+\end{center}
+Longer generation interval requires higher $\mathcal{R}$ given fixed exponential growth rate $r$.
 \end{block}
 }
 \end{minipage}
@@ -96,22 +100,19 @@
 \vspace{0.5cm}
 
 \begin{columns}
-  \begin{column}{0.6\textwidth}
+\begin{column}{0.6\textwidth}
     \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
       \begin{minipage}[T]{.95\textwidth}
         \parbox[t][40cm]{\textwidth}{ 
 
 \vspace{-1 cm} % shouldn't need this??
-\begin{block}{Temporal bias in GI distributions}
+\begin{block}{Realized generation interval through time}
 \noindent
 \hspace{-1.6cm}
 \begin{figure}
 \includegraphics[width=0.9\textwidth]{../fig/temporal_effect.pdf}
+\\Censored mean GI underestimates true mean.
 \end{figure}
-\begin{itemize}
-    \item Often, GI distributions is measured through contact tracing data by \textbf{censoring} the epidemic
-    \item Long infections are masked by short infections
-\end{itemize}
 \end{block}
 }
 \end{minipage}
@@ -131,6 +132,7 @@
 \hspace{-1.6cm}
 \begin{figure}
 \includegraphics[width=0.9\textwidth]{../fig/full_corrected_GI.pdf}
+\\Result of 500 stochastic simulations using SEIR model.
 \end{figure}
 \begin{itemize}
     \item During the exponential growth phase, the observed GI distributions is proportional to $g(\tau) \exp(-r\tau)$.
