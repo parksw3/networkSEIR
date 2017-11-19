@@ -5,7 +5,7 @@ library(gridExtra)
 
 source("../sim/full_param.R")
 source("../R/generation.R")
-source("../R/reproductive.R")
+source("../R/empirical.R")
 
 load("../data/full_sim.rda")
 

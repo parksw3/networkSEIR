@@ -1,3 +1,4 @@
+library(bbmle)
 library(igraph)
 library(tidyr)
 library(dplyr)
@@ -6,7 +7,8 @@ library(gridExtra)
 
 source("../sim/cmp_param.R")
 source("../R/generation.R")
-source("../R/reproductive.R")
+source("../R/empirical.R")
+source("../R/mle.R")
 
 load("../data/cmp_sim.rda")
 
@@ -23,12 +25,12 @@ censor.gi <- lapply(
     reslist
     , network.generation
     , plot=FALSE
-    , interval=c(10, 200)
+    , interval=c(200, 400)
     , interval.type="cases"
 )
 
 empirical <- (
-    lapply(reslist, empirical.R0, n=50)
+    lapply(reslist, empirical.R0, n=200)
     %>% lapply(function(x) data.frame(empirical=x))
     %>% bind_rows(.id="sim")
 )
@@ -37,23 +39,21 @@ r <- lapply(
     reslist
     , function(x) {
         data <- x$data
-        fdata <- data %>% filter(infected <= 200, infected >= 50)
+        fdata <- data %>% filter(infected <= 400, infected >= 200)
         ll <- lm(log(infected)~time, data=fdata) 
         data.frame(r=ll$coefficients[2])
     }
 )
 
-findr <- function(r) (gamma+r)*(sigma+r)/((kappa-1)*sigma-r)-beta
-
-true.r <- uniroot(findr, c(0, 4))$root
+mean.r <- mean(unlist(r))
 
 R0fun <- function(r) (1+r/gamma)*(1+r/sigma)
 
 R0fun.network <- function(r) (gamma+r)/(gamma*sigma/(sigma+r)+r/kappa)
 
-naive.R0 <- R0fun(true.r)
+intrinsic.R0 <- R0fun(mean.r)
 
-true.R0 <- R0fun.network(true.r)
+true.R0 <- R0fun.network(mean.r)
 
 quant.r <- quantile(unlist(r), c(0.05, 0.95))
 
@@ -74,11 +74,11 @@ R0 <- (
     %>% summarize(
         r=mean(r)
         , uncorrected=1/mean(exp(-r*interval))
-        , corrected=mean(exp(r*interval))) 
+        , corrected=mle.R(interval, mean(r))) 
     %>% merge(empirical)
-    %>% mutate(naive=R0fun(r))
+    %>% mutate(intrinsic=R0fun(r))
     %>% gather(key, value, -sim, -r)
-    %>% mutate(key=factor(key, levels=c("uncorrected", "corrected", "empirical", "naive")))
+    %>% mutate(key=factor(key, levels=c("uncorrected", "corrected", "empirical", "intrinsic")))
     %>% as.tbl
 )
 
@@ -87,7 +87,7 @@ intrinsic_fun <- function(tau) {
 }
 
 observed_fun <- function(tau) {
-    true.R0*sigma*(gamma+beta)/(gamma+beta-sigma) * (exp(-sigma*tau)-exp(-(gamma+beta)*tau)) * exp(-true.r*tau)
+    true.R0*sigma*(gamma+beta)/(gamma+beta-sigma) * (exp(-sigma*tau)-exp(-(gamma+beta)*tau)) * exp(-mean.r*tau)
 }
 
 empty.df <- data.frame(
@@ -98,10 +98,6 @@ empty.df <- data.frame(
     
 gg_base <- (
     ggplot(generation)
-    + geom_histogram(
-        aes(interval, y=..density..)
-        , col='grey', fill='black'
-        , alpha=0.15, boundary=0, bins=40) 
     + scale_x_continuous(name="time") 
     + theme(
         panel.grid = element_blank()
@@ -116,6 +112,10 @@ gg_base <- (
 
 gg1 <- (
     gg_base
+    + geom_histogram(
+        aes(interval, y=..density..)
+        , col='black', fill='grey'
+        , alpha=0.7, boundary=0, bins=30) 
     + geom_line(data=empty.df, aes(x, y, lty=group), lwd=1.2)
     + stat_function(fun=observed_fun, lwd=1.2, xlim=c(0,10))
     + stat_function(fun=intrinsic_fun, lwd=1.2, lty=2, alpha=0.2, xlim=c(0,10))
@@ -128,11 +128,15 @@ gg1 <- (
 
 gg2 <- (
     gg_base
+    + geom_histogram(
+        aes(interval, y=..density..)
+        , col='grey', fill='black'
+        , alpha=0.15, boundary=0, bins=30) 
     + stat_function(fun=observed_fun, lwd=1.2, alpha=0.1, xlim=c(0,10))
     + geom_histogram(
         aes(interval, y=..density.., weight=weight)
         , fill='grey', col='black'
-        , alpha=0.7, boundary=0, bins=40)
+        , alpha=0.7, boundary=0, bins=30)
     + stat_function(fun=intrinsic_fun, lwd=1.2, lty=2, xlim=c(0,10))
     + ggtitle("Corrected GI distributions")
 )
@@ -141,7 +145,7 @@ gg_R <- (
     ggplot(R0, aes(key, value)) 
     + geom_boxplot(alpha=0.5, width=0.4)
     + scale_y_log10("Reproductive number", breaks=c(2, 5, 10, 50))
-    + geom_hline(yintercept=naive.R0, lty=3)
+    + geom_hline(yintercept=intrinsic.R0, lty=3)
     + geom_hline(yintercept=true.R0, lty=2)
     + theme(
         panel.grid=element_blank(),

@@ -7,7 +7,7 @@ cmpGraph <- graph.data.frame(cmpGraph)
 cmpGraph <- as.undirected(cmpGraph)
 cmpGraph <- delete_vertex_attr(cmpGraph, "name")
 
-nsim <- 50
+nsim <- 100
 
 set.seed(101)
 reslist <- vector('list', nsim)
@@ -19,6 +19,9 @@ while (i <= nsim) {
         reslist[[i]] <- rr
         i <- i+1
     }
+    
+    save("reslist", file="cmp_sim.rda")
 }
 
 save("reslist", file="cmp_sim.rda")
+
