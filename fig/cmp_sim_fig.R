@@ -145,8 +145,6 @@ gg_R <- (
     ggplot(R0, aes(key, value)) 
     + geom_boxplot(alpha=0.5, width=0.4)
     + scale_y_log10("Reproductive number", breaks=c(2, 5, 10, 50))
-    + geom_hline(yintercept=intrinsic.R0, lty=3)
-    + geom_hline(yintercept=true.R0, lty=2)
     + theme(
         panel.grid=element_blank(),
         axis.title.x=element_blank()

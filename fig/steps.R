@@ -22,13 +22,15 @@ arrowStep <- function(t, i, astart, adist, asteps, ss){
 finTime <- 8
 i0 <- 10
 C <- 4
+t <- (0:(finTime*ss))/ss
+i <- i0*exp(t/C)
 
 steps <- 2
 mult <- 6
 ss <- mult*steps
 
 df <- data.frame(
-    t=(0:(finTime*ss))/ss,
+    t=t,
     incidence=i
 )
 
@@ -60,4 +62,4 @@ gg_step <- ggplot(df) +
         strip.text=element_blank()
     )
 
-ggsave("steps.pdf", gg_step, width=8, height=4)
+ggsave("steps.pdf", gg_step, width=8, height=3)

@@ -24,4 +24,3 @@ while (i <= nsim) {
 }
 
 save("reslist", file="cmp_sim.rda")
-
