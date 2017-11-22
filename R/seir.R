@@ -135,7 +135,8 @@ seir.full <- function(size,
                       gamma,
                       I0,
                       seed = NULL,
-                      imax){
+                      imax,
+                      keep.intrinsic=FALSE){
     
     if (!is.null(seed)) set.seed(seed)
     
@@ -160,7 +161,11 @@ seir.full <- function(size,
     t_gillespie <- NULL
     c_infected <- 0
     
-    intrinsic_generation <- vector('list', size)
+    if (keep.intrinsic) {
+        intrinsic_generation <- vector('list', length(V))
+    } else {
+        intrinsic_generation <- NULL
+    }
     
     done <- rep(FALSE, size)
     infected_by <- rep(NA, size)
@@ -168,9 +173,8 @@ seir.full <- function(size,
     stop <- FALSE
     
     while (!stop) {
-        j.index <- which.min(queue_t * .vec[done[queue_v]+1])
+        j.index <- which.min(queue_t)
         j <- queue_v[j.index]
-        done[j] <- TRUE
         
         infected_by[j] <- queue_infector[j.index]
         t_infected[j] <- queue_t[j.index]
@@ -183,6 +187,7 @@ seir.full <- function(size,
         c_infected <- c_infected +1
         
         n <- V[V != j]
+        if (!keep.intrinsic) n <- n[!done[n]]
         
         rate <- length(n) * beta + gamma
         
@@ -196,7 +201,9 @@ seir.full <- function(size,
         
         time_between <- rexp(ncontact+1, rate=rate)
         c_time <- latent + cumsum(time_between)
-        intrinsic_generation[[j]] <- c_time[1:ncontact]
+        
+        if (keep.intrinsic) intrinsic_generation[[j]] <- c_time[1:ncontact]
+        
         if (ncontact > 0) {
             queue_t <- c(queue_t, t + c_time[1:ncontact])
         }
@@ -204,7 +211,12 @@ seir.full <- function(size,
         t_recovered[j] <- t+tail(c_time,1)
         done[j] <- TRUE
         
-        stop <- (c_infected == length(V) || all(done[queue_v]) || c_infected > imax)
+        filter2 <- !done[queue_v]
+        queue_v <- queue_v[filter2]
+        queue_infector <- queue_infector[filter2]
+        queue_t <- queue_t[filter2]
+        
+        stop <- (c_infected == length(V) || all(done[queue_v]) || c_infected == imax)
     }
     
     return(
@@ -220,4 +232,26 @@ seir.full <- function(size,
             infected_by=infected_by
         )
     )
+}
+
+##' SEIR on a local tree (one node connected to n branches)
+##' @param n number of branches
+seir.local <- function(n,
+                       beta,
+                       sigma,
+                       gamma,
+                       seed = NULL){
+    latent <- rexp(1, sigma)
+    
+    rate <- n * beta + gamma
+    
+    prob <- gamma/rate
+    
+    ncontact <- rnbinom(1, size=1, prob=prob)
+    time_between <- rexp(ncontact+1, rate=rate)
+    c_time <- latent + cumsum(time_between)
+    
+    v <- sample2(1:n, ncontact)
+    
+    c(c_time[which(!duplicated(v))])
 }

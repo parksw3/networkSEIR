@@ -13,21 +13,15 @@ censor.gi <- lapply(
     reslist
     , network.generation
     , plot=FALSE
-    , interval=c(1, 500)
+    , interval=c(1, 600)
     , interval.type="cases"
-)
-
-empirical <- (
-    lapply(reslist, empirical.R0)
-    %>% lapply(function(x) data.frame(empirical=x))
-    %>% bind_rows(.id="sim")
 )
 
 r <- lapply(
     reslist
     , function(x) {
         data <- x$data
-        fdata <- data %>% filter(infected <= 500, infected >= 50)
+        fdata <- data %>% filter(infected <= 500, infected >= 250)
         ll <- lm(log(infected)~time, data=fdata) 
         data.frame(r=ll$coefficients[2])
     }
@@ -43,16 +37,7 @@ generation <- (
     %>% as.tbl 
     %>% group_by(sim)
     %>% mutate(weight=exp(r*interval))
-)
-
-R0 <- (
-    generation 
-    %>% group_by(sim) 
-    %>% summarize(uncorrected=1/mean(exp(-r*interval)),
-                  corrected=mean(exp(r*interval))) 
-    %>% merge(empirical)
-    %>% gather(key, value, -sim)
-    %>% mutate(key=factor(key, level=c("uncorrected", "corrected", "empirical")))
+    %>% mutate(weight=weight/sum(weight))
 )
 
 intrinsic_fun <- function(tau) {
@@ -68,10 +53,11 @@ empty.df <- data.frame(
     , y=c(0.1, 0.1)
     , group=c("censored", "intrinsic")
 )
-    
+
 gg_base <- (
     ggplot(generation)
-    + scale_x_continuous(name="time") 
+    + scale_x_continuous(name="Generation interval", limits=c(0, 15)) 
+    + scale_y_continuous(limits=c(0, 0.7))
     + theme(
         panel.grid = element_blank()
         , panel.border=element_blank()
@@ -90,9 +76,9 @@ gg1 <- (
         , col='black', fill='grey'
         , alpha=0.7, boundary=0, bins=40) 
     + geom_line(data=empty.df, aes(x, y, lty=group), lwd=1.2)
-    + stat_function(fun=observed_fun, lwd=1.2, xlim=c(0,11))
-    + stat_function(fun=intrinsic_fun, lwd=1.2, lty=2, alpha=0.2, xlim=c(0,11))
-    + ggtitle("Observed GI distributions during exponential growth phase")
+    + stat_function(fun=observed_fun, lwd=1.2, xlim=c(0,15))
+    + stat_function(fun=intrinsic_fun, lwd=1.2, lty=2, alpha=0.2, xlim=c(0,15))
+    + ggtitle("Observed GI distributions")
     + theme(
         legend.position = c(0.85, 0.85)
         , legend.title = element_blank()
@@ -105,26 +91,15 @@ gg2 <- (
         aes(interval, y=..density..)
         , col='grey', fill='grey'
         , alpha=0.15, boundary=0, bins=40) 
-    + stat_function(fun=observed_fun, lwd=1.2, alpha=0.1, xlim=c(0,11))
+    + stat_function(fun=observed_fun, lwd=1.2, alpha=0.1, xlim=c(0,15))
     + geom_histogram(
         aes(interval, y=..density.., weight=weight)
         , fill='grey', col='black'
         , alpha=0.7, boundary=0, bins=40)
-    + stat_function(fun=intrinsic_fun, lwd=1.2, lty=2, xlim=c(0,11))
+    + stat_function(fun=intrinsic_fun, lwd=1.2, lty=2, xlim=c(0,15))
     + ggtitle("Corrected GI distributions")
 )
 
-gg_R <- (
-    ggplot(R0) 
-    + geom_boxplot(aes(key, value), fill="grey", alpha=0.5)
-    + scale_y_continuous("Reproductive number", breaks=c(2, 4, 6, 8))
-    + geom_hline(yintercept=beta/gamma, lty=2)
-    + theme(
-        panel.grid=element_blank(),
-        axis.title.x=element_blank()
-    )
-)
+gg_correction <- arrangeGrob(gg1, gg2, nrow=1)
 
-gg_correction <- arrangeGrob(gg1, gg2, gg_R, layout_matrix=cbind(c(1,2), c(3,3)), widths=c(1, 0.5))
-
-ggsave("full_corrected_GI.pdf", gg_correction, width=10, height=6)
+ggsave("full_corrected_GI.pdf", gg_correction, width=6, height=3)

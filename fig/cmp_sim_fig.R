@@ -55,8 +55,6 @@ intrinsic.R0 <- R0fun(mean.r)
 
 true.R0 <- R0fun.network(mean.r)
 
-quant.r <- quantile(unlist(r), c(0.05, 0.95))
-
 generation <- (
     censor.gi 
     %>% lapply(function(x) data.frame(interval=x)) 
@@ -65,7 +63,6 @@ generation <- (
     %>% as.tbl 
     %>% group_by(sim)
     %>% mutate(weight=exp(r*interval)/sum(exp(r*interval)))
-    %>% filter(r > quant.r[1], r < quant.r[2])
 )
 
 R0 <- (
@@ -74,11 +71,12 @@ R0 <- (
     %>% summarize(
         r=mean(r)
         , uncorrected=1/mean(exp(-r*interval))
-        , corrected=mle.R(interval, mean(r))) 
+        , corrected=mean(exp(r*interval)))
     %>% merge(empirical)
-    %>% mutate(intrinsic=R0fun(r))
+    %>% mutate(intrinsic=R0fun(r),
+               network=R0fun.network(r))
     %>% gather(key, value, -sim, -r)
-    %>% mutate(key=factor(key, levels=c("uncorrected", "corrected", "empirical", "intrinsic")))
+    %>% mutate(key=factor(key, levels=c("uncorrected", "corrected", "empirical", "network", "intrinsic")))
     %>% as.tbl
 )
 
@@ -143,14 +141,14 @@ gg2 <- (
 
 gg_R <- (
     ggplot(R0, aes(key, value)) 
-    + geom_boxplot(alpha=0.5, width=0.4)
-    + scale_y_log10("Reproductive number", breaks=c(2, 5, 10, 50))
+    + geom_boxplot(alpha=0.5, width=0.7)
+    + scale_y_log10("Reproductive number", breaks=c(3, 5, 10, 20))
     + theme(
         panel.grid=element_blank(),
         axis.title.x=element_blank()
     )
 )
 
-gg_correction <- arrangeGrob(gg1, gg2, gg_R, layout_matrix=cbind(c(1,2), c(3,3)), widths=c(0.8, 0.4))
+gg_correction <- arrangeGrob(gg1, gg2, gg_R, layout_matrix=cbind(c(1,2), c(3,3)), widths=c(0.6, 0.4))
 
 ggsave("corrected_GI.pdf", gg_correction, width=10, height=6)

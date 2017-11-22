@@ -8,7 +8,7 @@
 
 %% You can change the poster orientation (portrait vs. landscape) and the paper size (a0, a1, &c.) here:
 
-\usepackage[orientation=portrait,size=a0,scale=1.25,debug]{beamerposter}
+    \usepackage[orientation=portrait,size=a0,scale=1.25,debug]{beamerposter}
 
 %% MY MACROS %%
 \newcommand{\R}{{\mathcal R}}
@@ -113,8 +113,8 @@ Longer generation interval requires higher $\mathcal{R}$ given fixed exponential
 \includegraphics[width=0.9\textwidth]{../fig/full_corrected_GI.pdf}
 \end{figure}
 \begin{itemize}
-    \item During the exponential growth phase, the observed GI distributions is proportional to $g(\tau) \exp(-r\tau)$.
-    \item By weighting observed distribution by $exp(r \tau)$, intrinsic GI distribution can be recovered
+    \item During an exponential growth perid, an observed GI distribution is proportional to $g(\tau) \exp(-r\tau)$.
+    \item By weighting an observed distribution by $exp(r \tau)$, the intrinsic GI distribution can be recovered
 \end{itemize}
 \end{block}
 }
@@ -134,7 +134,7 @@ Longer generation interval requires higher $\mathcal{R}$ given fixed exponential
 \noindent
 \hspace{-1.6cm}
 \begin{figure}
-\includegraphics[width=0.9\textwidth]{../fig/corrected_GI.pdf}
+\includegraphics[width=0.9\textwidth]{../fig/local.pdf}
 \end{figure}
 \begin{itemize}
     \item Something about network/spatial effect
@@ -156,7 +156,7 @@ Longer generation interval requires higher $\mathcal{R}$ given fixed exponential
 \noindent
 \hspace{-1.6cm}
 \begin{center}
-\includegraphics[width=0.95\textwidth]{../fig/random_sim.pdf}
+\includegraphics[width=0.5\textwidth]{../fig/corrected_GI.pdf}
 \end{center}
 \end{block}
 }

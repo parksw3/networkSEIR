@@ -7,7 +7,7 @@ cmpGraph <- graph.data.frame(cmpGraph)
 cmpGraph <- as.undirected(cmpGraph)
 cmpGraph <- delete_vertex_attr(cmpGraph, "name")
 
-nsim <- 100
+nsim <- 30
 
 set.seed(101)
 reslist <- vector('list', nsim)
