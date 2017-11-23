@@ -73,10 +73,9 @@ R0 <- (
         , uncorrected=1/mean(exp(-r*interval))
         , corrected=mean(exp(r*interval)))
     %>% merge(empirical)
-    %>% mutate(intrinsic=R0fun(r),
-               network=R0fun.network(r))
+    %>% mutate(intrinsic=R0fun(r))
     %>% gather(key, value, -sim, -r)
-    %>% mutate(key=factor(key, levels=c("uncorrected", "corrected", "empirical", "network", "intrinsic")))
+    %>% mutate(key=factor(key, levels=c("uncorrected", "corrected", "empirical", "intrinsic")))
     %>% as.tbl
 )
 
@@ -91,8 +90,9 @@ observed_fun <- function(tau) {
 empty.df <- data.frame(
     x=c(0.1, 0.1)
     , y=c(0.1, 0.1)
-    , group=c("censored (network)", "intrinsic (network)")
-)
+    , group=c("spatially corrected", "observed")
+) %>%
+    mutate(group=factor(group, level=.$group))
     
 gg_base <- (
     ggplot(generation)
@@ -115,9 +115,9 @@ gg1 <- (
         , col='black', fill='grey'
         , alpha=0.7, boundary=0, bins=30) 
     + geom_line(data=empty.df, aes(x, y, lty=group), lwd=1.2)
-    + stat_function(fun=observed_fun, lwd=1.2, xlim=c(0,10))
-    + stat_function(fun=intrinsic_fun, lwd=1.2, lty=2, alpha=0.2, xlim=c(0,10))
-    + ggtitle("Observed GI distributions during exponential growth phase")
+    + stat_function(fun=observed_fun, lwd=1.2, lty=2, xlim=c(0,10))
+    + stat_function(fun=intrinsic_fun, lwd=1.2, lty=1, alpha=0.2, xlim=c(0,10))
+    + ggtitle("Observed GI distributions")
     + theme(
         legend.position = c(0.85, 0.85)
         , legend.title = element_blank()
@@ -130,12 +130,12 @@ gg2 <- (
         aes(interval, y=..density..)
         , col='grey', fill='black'
         , alpha=0.15, boundary=0, bins=30) 
-    + stat_function(fun=observed_fun, lwd=1.2, alpha=0.1, xlim=c(0,10))
+    + stat_function(fun=observed_fun, lwd=1.2, lty=2, alpha=0.1, xlim=c(0,10))
     + geom_histogram(
         aes(interval, y=..density.., weight=weight)
         , fill='grey', col='black'
         , alpha=0.7, boundary=0, bins=30)
-    + stat_function(fun=intrinsic_fun, lwd=1.2, lty=2, xlim=c(0,10))
+    + stat_function(fun=intrinsic_fun, lwd=1.2, lty=1, xlim=c(0,10))
     + ggtitle("Corrected GI distributions")
 )
 
@@ -149,6 +149,6 @@ gg_R <- (
     )
 )
 
-gg_correction <- arrangeGrob(gg1, gg2, gg_R, layout_matrix=cbind(c(1,2), c(3,3)), widths=c(0.6, 0.4))
+gg_correction <- arrangeGrob(gg1, gg2, gg_R, nrow=1)
 
-ggsave("corrected_GI.pdf", gg_correction, width=10, height=6)
+ggsave("corrected_GI.pdf", gg_correction, width=12, height=3)

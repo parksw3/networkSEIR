@@ -8,7 +8,9 @@
 
 %% You can change the poster orientation (portrait vs. landscape) and the paper size (a0, a1, &c.) here:
 
-    \usepackage[orientation=portrait,size=a0,scale=1.25,debug]{beamerposter}
+\usepackage[orientation=portrait,size=a0,scale=1.25,debug]{beamerposter}
+
+
 
 %% MY MACROS %%
 \newcommand{\R}{{\mathcal R}}
@@ -18,27 +20,32 @@
 \newcommand{\etal}{\emph{et al.}}
 \newcommand{\fref}[1]{Figure~\ref{fig:#1}}
 
+\newcommand{\tabitem}{~~\llap{\textbullet}~~}
+
+\definecolor{lightgray}{gray}{0}
+
 \title{\textbf{Generation intervals in space}}
-\subtitle{understanding the effects of spatial and network structure on links between generation interval and growth rate}
+
+\subtitle{Understanding the effects of spatial and network structure on links between generation interval and growth rate}
 
 \author{\textbf{Jonathan Dushoff\textsuperscript{1}, Sang Woo Park\textsuperscript{1}, and David Champredon\textsuperscript{2}}}
 %% URL for project (footer)
 \projurl{\texttt{https://github.com/parksw3/networkSEIR/}}
-\institute[McMaster University]{\textsuperscript{1}McMaster University, Hamilton, Ontario, Canada; \textsuperscript{2}York University, Toronto, Ontario
+\institute[McMaster University]{\textsuperscript{1}McMaster University, Hamilton, Ontario, Canada; \textsuperscript{2}York University, Toronto, Ontario, Canada
 %%\\\vspace{5mm}\texttt{earn@math.mcmaster.ca}
 }
 %\institute[]{}
 \date[November 2017]{November 2017}
 
 %% Uncomment the following line to define a custom logo (or to tweak the size of the logo)
-\McMasterLogo{\includegraphics[width=\WhenPortrait{1.2}{1}\linewidth]{Maclogo}}
+\McMasterLogo{\includegraphics[width=\WhenPortrait{1.1}{1}\linewidth]{Maclogo}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newlength{\columnheight}
 \setlength{\columnheight}{100cm}
 
 \newlength{\topcolumnheight}
-\setlength{\topcolumnheight}{22cm}
+\setlength{\topcolumnheight}{21cm}
 
 \newlength{\bottomcolumnheight}
 \setlength{\bottomcolumnheight}{40cm}
@@ -61,12 +68,12 @@
 \hspace{-1.6cm}
 \begin{itemize}
     \item Generation interval (GI) measures time between when a person is infected and when that person infects another person
-    \item GI distributions, $g(\tau)$, link speed, $r$, and strength, $\mathcal{R}$, of an epidemic \cite{wallinga2007generation}
+    \item GI distribution, $g(\tau)$, plays an important role in linking exponential growth rate, $r$, and reproductive number, $\mathcal{R}$, of an epidemic \cite{wallinga2007generation}:
     $$
     1/\mathcal{R} = \int g(\tau) \exp(-r\tau) d\tau
     $$
     \item Previous work showed that measuring GI through contact tracing data can introduce bias \cite{champredon2015intrinsic}
-    \item Trapman \etal\ \cite{trapman2016inferring} demonstrated that network structure can affect $\R$ but it also has effect on GI distributions  
+    \item Trapman \etal\ \cite{trapman2016inferring} demonstrated that network structure can affect $\R$; ultimately, it changes GI distribution and $r-\R$ relationship
 \end{itemize}
 \end{block}
 }
@@ -82,13 +89,27 @@
         \parbox[t][\topcolumnheight]{\textwidth}{ 
 
 \vspace{-1 cm} % shouldn't need this??
-\begin{block}{Linking $r$ and $\R$}
+\begin{block}{Different types of generation intervals}
 \noindent
 \hspace{-1.6cm}
 \begin{center}
-\includegraphics[width=0.9\textwidth]{../fig/steps.pdf}
+\colorbox{white}{
+\begin{tabular}{c|l|l}
+& Homogeneous & Spatially structured\\ 
+\hline
+Equilibrium &
+\tabitem intrinsic generation interval & \tabitem shorter than intrinsic \\
+ & \tabitem can be measured using titer & \tabitem can be approximated locally \\
+ & & \\
+ & & \\
+\hline
+Early & \tabitem observed during exponential phase & \tabitem observed during outbreaks \\
+& \tabitem proportional to $g(\tau) \exp(-r\tau)$ & \tabitem measured through contact tracing \\
+& &\\
+& &\\
+\end{tabular}
+}
 \end{center}
-Longer generation interval requires higher $\mathcal{R}$ given fixed exponential growth rate $r$.
 \end{block}
 }
 \end{minipage}
@@ -103,19 +124,17 @@ Longer generation interval requires higher $\mathcal{R}$ given fixed exponential
 \begin{column}{0.5\textwidth}
     \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
       \begin{minipage}[T]{.95\textwidth}
-        \parbox[t][36cm]{\textwidth}{ 
+        \parbox[t][37cm]{\textwidth}{ 
 
 \vspace{-1 cm} % shouldn't need this??
 \begin{block}{Temporal correction on a homogeneous network}
 \noindent
 \hspace{-1.6cm}
 \begin{figure}
-\includegraphics[width=0.9\textwidth]{../fig/full_corrected_GI.pdf}
+\includegraphics[width=0.95\textwidth]{../fig/full_corrected_GI.pdf}
 \end{figure}
-\begin{itemize}
-    \item During an exponential growth perid, an observed GI distribution is proportional to $g(\tau) \exp(-r\tau)$.
-    \item By weighting an observed distribution by $exp(r \tau)$, the intrinsic GI distribution can be recovered
-\end{itemize}
+\textbf{The intrinsic GI distribution can be recovered from an observed GI distribution during an outbreak by appropriately weighting the observed distribution.}
+Solid line: intrinsic GI distribution. Dotted line: GI distribution expected to observed during exponential growth phase. Histogram: (left) observed GI distribution simulated with a stochastic SEIR model on a homogeneous network (right) weighted histogram of observed GI distribution. Model parameters: $\mathcal{R} \approx 6$, population size at 60000, mean latent and infectious periods equal to 1 and 2 time units, respectively.
 \end{block}
 }
 \end{minipage}
@@ -127,19 +146,16 @@ Longer generation interval requires higher $\mathcal{R}$ given fixed exponential
 \begin{column}{0.5\textwidth}
     \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
       \begin{minipage}[T]{.95\textwidth}
-        \parbox[t][36cm]{\textwidth}{ 
+        \parbox[t][37cm]{\textwidth}{
 
 \vspace{-1 cm} % shouldn't need this??
-\begin{block}{Temporal correction on an empirical network}
+\begin{block}{Local approximation to spatial effect}
 \noindent
 \hspace{-1.6cm}
 \begin{figure}
-\includegraphics[width=0.9\textwidth]{../fig/local.pdf}
+\includegraphics[width=0.95\textwidth]{../fig/local.pdf}
 \end{figure}
-\begin{itemize}
-    \item Something about network/spatial effect
-    \item $\R$ estimate based on corrected GI distributions matches empirical $\R$. Meanwhile, using intrinsic GI distributions and observed GI distributions can over/underestimate $\R$.
-\end{itemize}
+\textbf{Local approximation predicts shorter mean GI and predicts saturating $r-\R$ relationship.} (Left) Solid line: intrinsic GI distribution. Dotted line: intrinsic GI distribution accounting for spatial effect when $\R \approx 6$. Histogram: simulated GI distribution using local networks (Right) Solid line: expected $r-\R$ relationship using intrinsic GI distribution. Dotter line: expected $r-\R$ relationship accounting for spatial effect and degree distribution.
 \end{block}
 }
 \end{minipage}
@@ -149,15 +165,16 @@ Longer generation interval requires higher $\mathcal{R}$ given fixed exponential
 
 \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
       \begin{minipage}[T]{.95\textwidth}
-        \parbox[t][27cm]{\textwidth}{ 
+        \parbox[t][28cm]{\textwidth}{ 
 
 \vspace{-1 cm} % shouldn't need this??
-\begin{block}{Spatial effect on generation intervals distribution}
+\begin{block}{Simulation on an empirical network}
 \noindent
 \hspace{-1.6cm}
-\begin{center}
-\includegraphics[width=0.5\textwidth]{../fig/corrected_GI.pdf}
-\end{center}
+\begin{figure}
+\includegraphics[width=0.9\textwidth]{../fig/corrected_GI.pdf}
+\end{figure}
+\textbf{Reproductive number predicted by using the corrected GI distributions matches empirical estimate of the reproductive number.} Write something here????
 \end{block}
 }
 \end{minipage}
@@ -170,10 +187,15 @@ Longer generation interval requires higher $\mathcal{R}$ given fixed exponential
         \parbox[t][36cm]{\textwidth}{ 
 
 \vspace{-1 cm} % shouldn't need this??
-\begin{block}{Summary}
+\begin{block}{Summary and future direction}
 \noindent
 \hspace{-1.6cm}
-Insert JD table
+\begin{itemize}
+    \item spatiotemporal effects makes GI shorter
+    \item correcting an observed GI distribution is crucial to estimating $\R$
+    \item temporal correction is sensitive to long infections and $\R$ can be overestimated by a large factor
+    \item ??
+\end{itemize}
 \end{block}
 }
 \end{minipage}
@@ -210,9 +232,3 @@ Insert JD table
 
 \end{frame}
 \end{document}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Local Variables: 
-%%% mode: latex
-%%% TeX-PDF-mode: t
-%%% End:

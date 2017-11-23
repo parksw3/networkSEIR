@@ -108,7 +108,7 @@
                 %%     %~~ \vspace{-0.5em}\huge\color{orange}{\dotfill}\vspace{0.5em}~~
                     %% \end{beamercolorbox}
                 \begin{center}\begin{tikzpicture}
-                \node[text width=0.97\textwidth,inner sep=3mm,fill=macmaroon,draw=macgold,text=macgrey1,rounded corners,minimum height=\blocktitleheight] {\usebeamerfont*{block title}\insertblocktitle};
+                \node[text width=0.97\textwidth,inner sep=3mm,fill=macmaroon,draw=macgold,text=macgrey1,rounded corners,minimum height=\blocktitleheight] {\usebeamerfont*{block title}\large{\insertblocktitle}};
                 \end{tikzpicture}\end{center}
                 \vspace{3mm}
                 \begin{beamercolorbox}[leftskip=9mm]{block body}
@@ -130,20 +130,21 @@
                     \begin{columns}[T]
                     \begin{column}{.02\paperwidth}
                     \end{column}
-                    \begin{column}{.1\paperwidth}
+                    \begin{column}{.15\paperwidth}
                     \begin{center}
                     \@beamerthememcmaster@logo
                     \end{center}
                     \end{column}
-                    \begin{column}{.8\paperwidth}
+                    \begin{column}{.7\paperwidth}
                     \vskip4ex
                     \centering
-                    \usebeamercolor{title in headline}{\color{fg}\textbf{\LARGE{\inserttitle}}\\[1ex]}
+                    \usebeamercolor{title in headline}{\color{fg}\textbf{\Huge{\inserttitle}}\\[1ex]}
+                    \usebeamercolor{subtitle in headline}{\color{fg}\textbf{\Large{\insertsubtitle}}\\[1ex]}
                     \usebeamercolor{author in headline}{\color{fg}\large{\insertauthor}\\[1ex]}
                     \usebeamercolor{institute in headline}{\color{fg}\large{\insertinstitute}\\[1ex]}     
                     %%\includegraphics{images/IIDRlogo.pdf}
                     \end{column}
-                    \begin{column}{.1\paperwidth}
+                    \begin{column}{.15\paperwidth}
                     \end{column}
                     \begin{column}{.02\paperwidth}
                     \end{column}

@@ -1,4 +1,4 @@
-beta <- 2.4
+beta <- 3
 sigma <- 1
-gamma <- 0.4
+gamma <- 0.5
 N <- 60000

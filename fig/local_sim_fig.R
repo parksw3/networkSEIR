@@ -48,8 +48,9 @@ gg_local <- (
         , alpha=0.7, boundary=0, bins=30) 
     + geom_line(data=empty.df, aes(x, y, lty=group), lwd=1.2)
     + stat_function(fun=intrinsic_fun, lwd=1.2, xlim=c(0,15))
+    + ggtitle("Network GI distributions")
     + stat_function(fun=network_fun, lwd=1.2, lty=2, xlim=c(0,15))
-    + scale_x_continuous(name="Generation interval") 
+    + scale_x_continuous(name="Generation interval", limits=c(0, 15)) 
     + scale_y_continuous(limits=c(0, 0.7))
     + theme(
         panel.grid = element_blank()
@@ -59,7 +60,7 @@ gg_local <- (
         , axis.text.y = element_blank()
         , axis.ticks.y = element_blank()
         , plot.title = element_text(hjust=0.5)
-        , legend.position = c(0.85, 0.85)
+        , legend.position = c(0.75, 0.85)
         , legend.title = element_blank()
     )
 )
@@ -83,6 +84,7 @@ gg_R <- ggplot(link) +
                                  y1=10),
                  aes(x, y, xend=x1, yend=y1),
                  arrow = arrow(length = unit(0.03, "npc"), type="closed"), lwd=0.9) +
+    ggtitle("R-r relationship") +
     theme(
         panel.grid = element_blank()
         , panel.border=element_blank()

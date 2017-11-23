@@ -21,7 +21,7 @@ r <- lapply(
     reslist
     , function(x) {
         data <- x$data
-        fdata <- data %>% filter(infected <= 500, infected >= 250)
+        fdata <- data %>% filter(infected <= 600, infected >= 200)
         ll <- lm(log(infected)~time, data=fdata) 
         data.frame(r=ll$coefficients[2])
     }
@@ -51,7 +51,7 @@ observed_fun <- function(tau) {
 empty.df <- data.frame(
     x=c(0.1, 0.1)
     , y=c(0.1, 0.1)
-    , group=c("censored", "intrinsic")
+    , group=c("intrinsic", "observed")
 )
 
 gg_base <- (
@@ -74,10 +74,10 @@ gg1 <- (
     + geom_histogram(
         aes(interval, y=..density..)
         , col='black', fill='grey'
-        , alpha=0.7, boundary=0, bins=40) 
+        , alpha=0.7, boundary=0, bins=30) 
     + geom_line(data=empty.df, aes(x, y, lty=group), lwd=1.2)
-    + stat_function(fun=observed_fun, lwd=1.2, xlim=c(0,15))
-    + stat_function(fun=intrinsic_fun, lwd=1.2, lty=2, alpha=0.2, xlim=c(0,15))
+    + stat_function(fun=observed_fun, lwd=1.2, lty=2, xlim=c(0,15))
+    + stat_function(fun=intrinsic_fun, lwd=1.2, lty=1, alpha=0.2, xlim=c(0,15))
     + ggtitle("Observed GI distributions")
     + theme(
         legend.position = c(0.85, 0.85)
@@ -90,13 +90,13 @@ gg2 <- (
     + geom_histogram(
         aes(interval, y=..density..)
         , col='grey', fill='grey'
-        , alpha=0.15, boundary=0, bins=40) 
-    + stat_function(fun=observed_fun, lwd=1.2, alpha=0.1, xlim=c(0,15))
+        , alpha=0.15, boundary=0, bins=30) 
+    + stat_function(fun=observed_fun, lwd=1.2, lty=2, alpha=0.1, xlim=c(0,15))
     + geom_histogram(
         aes(interval, y=..density.., weight=weight)
         , fill='grey', col='black'
-        , alpha=0.7, boundary=0, bins=40)
-    + stat_function(fun=intrinsic_fun, lwd=1.2, lty=2, xlim=c(0,15))
+        , alpha=0.7, boundary=0, bins=30)
+    + stat_function(fun=intrinsic_fun, lwd=1.2, lty=1, xlim=c(0,15))
     + ggtitle("Corrected GI distributions")
 )
 
