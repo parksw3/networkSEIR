@@ -25,7 +25,7 @@ censor.gi <- lapply(
     reslist
     , network.generation
     , plot=FALSE
-    , interval=c(200, 400)
+    , interval=c(10, 400)
     , interval.type="cases"
 )
 

@@ -92,7 +92,7 @@
 \noindent
 \hspace{-1.6cm}
 \begin{center}
-\includegraphics[width=0.5\textwidth]{../fig/network-GI.pdf}
+\includegraphics[width=0.8\textwidth]{../fig/diagram.pdf}
 \end{center}
 \end{block}
 }
