@@ -30,7 +30,7 @@ censor.gi <- lapply(
 )
 
 empirical <- (
-    lapply(reslist, empirical.R0, n=200)
+    lapply(reslist, empirical.R0, n=100)
     %>% lapply(function(x) data.frame(empirical=x))
     %>% bind_rows(.id="sim")
 )
@@ -142,7 +142,7 @@ gg2 <- (
 gg_R <- (
     ggplot(R0, aes(key, value)) 
     + geom_boxplot(alpha=0.5, width=0.7)
-    + scale_y_log10("Reproductive number", breaks=c(3, 5, 10, 20))
+    + scale_y_log10("Reproductive number", breaks=c(2, 5, 10, 20))
     + theme(
         panel.grid=element_blank(),
         axis.title.x=element_blank()

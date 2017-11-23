@@ -28,11 +28,10 @@
 
 \subtitle{Understanding the effects of spatial and network structure on links between generation interval and growth rate}
 
-\author{\textbf{Jonathan Dushoff\textsuperscript{1}, Sang Woo Park\textsuperscript{1}, and David Champredon\textsuperscript{2}}}
+\author{\textbf{Jonathan Dushoff, Sang Woo Park, and David Champredon}}
 %% URL for project (footer)
 \projurl{\texttt{https://github.com/parksw3/networkSEIR/}}
-\institute[McMaster University]{\textsuperscript{1}McMaster University, Hamilton, Ontario, Canada; \textsuperscript{2}York University, Toronto, Ontario, Canada
-%%\\\vspace{5mm}\texttt{earn@math.mcmaster.ca}
+\institute[McMaster University]{McMaster University, Hamilton, Ontario, Canada
 }
 %\institute[]{}
 \date[November 2017]{November 2017}
@@ -63,7 +62,7 @@
         \parbox[t][\topcolumnheight]{\textwidth}{ 
 
 \vspace{-1 cm} % shouldn't need this??
-\begin{block}{Introduction}
+\begin{block}{Background}
 \noindent
 \hspace{-1.6cm}
 \begin{itemize}
@@ -93,22 +92,7 @@
 \noindent
 \hspace{-1.6cm}
 \begin{center}
-\colorbox{white}{
-\begin{tabular}{c|l|l}
-& Homogeneous & Spatially structured\\ 
-\hline
-Equilibrium &
-\tabitem intrinsic generation interval & \tabitem shorter than intrinsic \\
- & \tabitem can be measured using titer & \tabitem can be approximated locally \\
- & & \\
- & & \\
-\hline
-Early & \tabitem observed during exponential phase & \tabitem observed during outbreaks \\
-& \tabitem proportional to $g(\tau) \exp(-r\tau)$ & \tabitem measured through contact tracing \\
-& &\\
-& &\\
-\end{tabular}
-}
+\includegraphics[width=0.5\textwidth]{../fig/network-GI.pdf}
 \end{center}
 \end{block}
 }
@@ -134,7 +118,7 @@ Early & \tabitem observed during exponential phase & \tabitem observed during ou
 \includegraphics[width=0.95\textwidth]{../fig/full_corrected_GI.pdf}
 \end{figure}
 \textbf{The intrinsic GI distribution can be recovered from an observed GI distribution during an outbreak by appropriately weighting the observed distribution.}
-Solid line: intrinsic GI distribution. Dotted line: GI distribution expected to observed during exponential growth phase. Histogram: (left) observed GI distribution simulated with a stochastic SEIR model on a homogeneous network (right) weighted histogram of observed GI distribution. Model parameters: $\mathcal{R} \approx 6$, population size at 60000, mean latent and infectious periods equal to 1 and 2 time units, respectively.
+Solid line: intrinsic GI distribution. Dashed line: GI distribution expected to observed during exponential growth phase. Histogram: (left) observed GI distribution simulated with a stochastic SEIR model on a homogeneous network (right) weighted histogram of observed GI distribution. Model parameters: $\mathcal{R} = 6$, population size at 60000, mean latent and infectious periods equal to 1 and 2 time units, respectively.
 \end{block}
 }
 \end{minipage}
@@ -149,13 +133,13 @@ Solid line: intrinsic GI distribution. Dotted line: GI distribution expected to 
         \parbox[t][37cm]{\textwidth}{
 
 \vspace{-1 cm} % shouldn't need this??
-\begin{block}{Local approximation to spatial effect}
+\begin{block}{Reinterpreting Trapman \etal\ \cite{trapman2016inferring} using GI distribution}
 \noindent
 \hspace{-1.6cm}
 \begin{figure}
 \includegraphics[width=0.95\textwidth]{../fig/local.pdf}
 \end{figure}
-\textbf{Local approximation predicts shorter mean GI and predicts saturating $r-\R$ relationship.} (Left) Solid line: intrinsic GI distribution. Dotted line: intrinsic GI distribution accounting for spatial effect when $\R \approx 6$. Histogram: simulated GI distribution using local networks (Right) Solid line: expected $r-\R$ relationship using intrinsic GI distribution. Dotter line: expected $r-\R$ relationship accounting for spatial effect and degree distribution.
+\textbf{Accounting for spatial (network) structures shorten generation interval and predicts saturating $r-\R$ relationship.} (Left) Solid line: intrinsic GI distribution. Dashed line: intrinsic GI distribution accounting for spatial effect when $\R \approx 6$. Histogram: simulated GI distribution using local networks. (Right) Solid line: expected $r-\R$ relationship using intrinsic GI distribution. Dashed line: expected $r-\R$ relationship accounting for heterogeneous contacts.
 \end{block}
 }
 \end{minipage}

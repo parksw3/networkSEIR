@@ -24,7 +24,7 @@ censor.gi <- lapply(
     , interval=c(200, 400)
     , interval.type="cases"
 )
-
+    
 r <- lapply(
     reslist
     , function(x) {
