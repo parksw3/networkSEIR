@@ -139,7 +139,7 @@ Solid line: intrinsic GI distribution. Dashed line: GI distribution expected to 
 \begin{figure}
 \includegraphics[width=0.95\textwidth]{../fig/local.pdf}
 \end{figure}
-\textbf{Accounting for limited contacts in space shortens generation interval and predicts saturating $r-\R$ relationship.} (Left) Solid line: intrinsic GI distribution. Dashed line: effective intrinsic GI distribution when $\R \approx 6$ and mean excess degree $\approx 21$. Histogram: simulated GI distribution using local networks (a tree network with a single infected parent node). (Right) Solid line: expected $r-\R$ relationship using intrinsic GI distribution. Dashed line: expected $r-\R$ using effective GI distribution.
+\textbf{Accounting for limited contacts in space shortens generation interval and predicts saturating $r-\R$ relationship.} (Left) Solid line: intrinsic GI distribution. Dashed line: effective GI distribution when $\R \approx 6$ and mean excess degree $\approx 21$. Histogram: simulated GI distribution using local networks (a tree network with a single infected parent node). (Right) Solid line: expected $r-\R$ relationship using intrinsic GI distribution. Dashed line: expected $r-\R$ using effective GI distribution.
 \end{block}
 }
 \end{minipage}
