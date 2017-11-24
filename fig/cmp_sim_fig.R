@@ -79,7 +79,7 @@ R0 <- (
     %>% as.tbl
 )
 
-intrinsic_fun <- function(tau) {
+effective_fun <- function(tau) {
     sigma*(gamma+beta)/(gamma+beta-sigma) * (exp(-sigma*tau)-exp(-(gamma+beta)*tau))
 }
 
@@ -90,7 +90,7 @@ observed_fun <- function(tau) {
 empty.df <- data.frame(
     x=c(0.1, 0.1)
     , y=c(0.1, 0.1)
-    , group=c("spatially corrected", "observed")
+    , group=c("effective", "observed")
 ) %>%
     mutate(group=factor(group, level=.$group))
     
@@ -112,11 +112,12 @@ gg1 <- (
     gg_base
     + geom_histogram(
         aes(interval, y=..density..)
-        , col='black', fill='grey'
-        , alpha=0.7, boundary=0, bins=30) 
-    + geom_line(data=empty.df, aes(x, y, lty=group), lwd=1.2)
-    + stat_function(fun=observed_fun, lwd=1.2, lty=2, xlim=c(0,10))
-    + stat_function(fun=intrinsic_fun, lwd=1.2, lty=1, alpha=0.2, xlim=c(0,10))
+        , col='black', fill="#e7298a"
+        , alpha=0.5, boundary=0, bins=30) 
+    + geom_line(data=empty.df, aes(x, y, lty=group, col=group), lwd=1.2)
+    + stat_function(fun=observed_fun, lwd=1.2, lty=2, xlim=c(0,10), col="#e7298a")
+    + stat_function(fun=effective_fun, lwd=1.2, lty=1, xlim=c(0,10), col="#7570b3")
+    + scale_color_manual(values=c("#7570b3", "#e7298a"))
     + ggtitle("Observed GI distributions")
     + theme(
         legend.position = c(0.85, 0.85)
@@ -127,23 +128,21 @@ gg1 <- (
 gg2 <- (
     gg_base
     + geom_histogram(
-        aes(interval, y=..density..)
-        , col='grey', fill='black'
-        , alpha=0.15, boundary=0, bins=30) 
-    + stat_function(fun=observed_fun, lwd=1.2, lty=2, alpha=0.1, xlim=c(0,10))
-    + geom_histogram(
         aes(interval, y=..density.., weight=weight)
-        , fill='grey', col='black'
-        , alpha=0.7, boundary=0, bins=30)
-    + stat_function(fun=intrinsic_fun, lwd=1.2, lty=1, xlim=c(0,10))
+        , fill="#7570b3", col='black'
+        , alpha=0.5, boundary=0, bins=30)
+    + stat_function(fun=observed_fun, lwd=1.2, lty=2, xlim=c(0,10), col="#e7298a")
+    + stat_function(fun=effective_fun, lwd=1.2, lty=1, xlim=c(0,10), col="#7570b3")
     + ggtitle("Corrected GI distributions")
 )
 
 gg_R <- (
-    ggplot(R0, aes(key, value)) 
+    ggplot(R0, aes(key, value, fill=key)) 
     + geom_boxplot(alpha=0.5, width=0.7)
     + scale_y_log10("Reproductive number", breaks=c(2, 5, 10, 20))
+    + scale_fill_manual(values=c("#e7298a", "#7570b3", 1, "#d95f02") )
     + theme(
+        legend.position = "none",
         panel.grid=element_blank(),
         axis.title.x=element_blank()
     )
