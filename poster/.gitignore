@@ -6,6 +6,8 @@ target.mk
 *.Rout.pdf
 *.html
 
+poster.pdf
+
 *.log
 *.aux
 .*.aux
