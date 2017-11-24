@@ -26,6 +26,9 @@ pull: cleanposter
 cleanposter:
 	git checkout master -- poster.pdf
 
+../diagram/%:
+	cd $(dir $@) && $(MAKE) $(notdir $@)
+
 ######################################################################
 
 ## Files
