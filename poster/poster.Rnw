@@ -92,7 +92,9 @@
 \noindent
 \hspace{-1.6cm}
 \begin{center}
+\colorbox{white}{
 \includegraphics[width=0.8\textwidth]{../fig/diagram.pdf}
+}
 \end{center}
 \end{block}
 }
