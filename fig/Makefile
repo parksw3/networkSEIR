@@ -20,7 +20,7 @@ diagram.pdf: diagram.tex
 pull: cleanfigs
 
 cleanfigs:
-	git checkout master -- poster.pdf
+	git checkout master -- diagram.pdf
 
 ######################################################################
 
