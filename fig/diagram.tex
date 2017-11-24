@@ -32,7 +32,8 @@
         \item equivalent to intrinsic GI under homogeneous mixing
     \end{itemize}
     };
-    \draw[->, very thick, dashed] (int) -- node [midway, above] {Difficult in practice} (eff); 
+    \draw[->, very thick, dashed] (int) -- node [midway, above] {Local correction} (eff); 
+    \draw[->, very thick, dashed] (int) -- node [midway, below] {Difficult in practice} (eff); 
     \node(obs)[bigcompartment, below=2cm of eff, text width=6cm, bottom color=c3]{
     \textbf{Observed GI in early epidemic}
     \begin{itemize}
@@ -40,7 +41,8 @@
         \item proportional to $g(\tau) \exp(-r\tau)$
     \end{itemize}
     };
-    \draw[->, very thick] (obs.north) -- node [text width=5cm, midway, right] {Exponential correction\\ \footnotesize{weight observed periods by $\exp(r\tau)$}} (eff);
+    \draw[->, very thick] (obs.north) -- node [text width=5cm, midway, left, align=right] {Temporal correction} (eff);
+    \draw[->, very thick] (obs.north) -- node [text width=5cm, midway, right] {weight observations by $\exp(r\tau)$} (eff);
     \node(R)[right=of eff]{$\mathcal{R}$};
     \draw[->, very thick] (eff) -- (R);
     % \node(patient)[above left=0cm and 0.2cm of int, rotate=90]{Patient based};
