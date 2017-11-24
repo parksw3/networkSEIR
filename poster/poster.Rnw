@@ -88,7 +88,7 @@
         \parbox[t][\topcolumnheight]{\textwidth}{ 
 
 \vspace{-1 cm} % shouldn't need this??
-\begin{block}{Different types of generation intervals}
+\begin{block}{Summary}
 \noindent
 \hspace{-1.6cm}
 \begin{center}
@@ -133,13 +133,13 @@ Solid line: intrinsic GI distribution. Dashed line: GI distribution expected to 
         \parbox[t][37cm]{\textwidth}{
 
 \vspace{-1 cm} % shouldn't need this??
-\begin{block}{Reinterpreting Trapman \etal\ \cite{trapman2016inferring} using GI distribution}
+\begin{block}{Local effect of spatial structure on GI distributions}
 \noindent
 \hspace{-1.6cm}
 \begin{figure}
 \includegraphics[width=0.95\textwidth]{../fig/local.pdf}
 \end{figure}
-\textbf{Accounting for spatial (network) structures shorten generation interval and predicts saturating $r-\R$ relationship.} (Left) Solid line: intrinsic GI distribution. Dashed line: intrinsic GI distribution accounting for spatial effect when $\R \approx 6$. Histogram: simulated GI distribution using local networks. (Right) Solid line: expected $r-\R$ relationship using intrinsic GI distribution. Dashed line: expected $r-\R$ relationship accounting for heterogeneous contacts.
+\textbf{Accounting for limited contacts in space shortens generation interval and predicts saturating $r-\R$ relationship.} (Left) Solid line: intrinsic GI distribution. Dashed line: effective intrinsic GI distribution when $\R \approx 6$ and mean excess degree $\approx 21$. Histogram: simulated GI distribution using local networks (a tree network with a single infected parent node). (Right) Solid line: expected $r-\R$ relationship using intrinsic GI distribution. Dashed line: expected $r-\R$ using effective GI distribution.
 \end{block}
 }
 \end{minipage}
@@ -184,7 +184,6 @@ Solid line: intrinsic GI distribution. Dashed line: GI distribution expected to 
 }
 \end{minipage}
 \end{beamercolorbox}
-
 
 \end{column}
 
