@@ -88,7 +88,7 @@
         \parbox[t][\topcolumnheight]{\textwidth}{ 
 
 \vspace{-1 cm} % shouldn't need this??
-\begin{block}{Summary}
+\begin{block}{Overview}
 \noindent
 \hspace{-1.6cm}
 \begin{center}
