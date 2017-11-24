@@ -10,8 +10,6 @@
 
 \usepackage[orientation=portrait,size=a0,scale=1.25,debug]{beamerposter}
 
-
-
 %% MY MACROS %%
 \newcommand{\R}{{\mathcal R}}
 \newcommand{\Ro}{\mathcal{R}_0}
@@ -19,6 +17,8 @@
 \newcommand{\Imin}{I_{\rm min}}
 \newcommand{\etal}{\emph{et al.}}
 \newcommand{\fref}[1]{Figure~\ref{fig:#1}}
+
+\newcommand{\jd}[1]{[[JD: #1]]}
 
 \newcommand{\tabitem}{~~\llap{\textbullet}~~}
 
@@ -37,7 +37,7 @@
 \date[November 2017]{November 2017}
 
 %% Uncomment the following line to define a custom logo (or to tweak the size of the logo)
-\McMasterLogo{\includegraphics[width=\WhenPortrait{1.1}{1}\linewidth]{Maclogo}}
+\McMasterLogo{\includegraphics[width=\WhenPortrait{1.1}{1}\linewidth]{Maclogo.pdf}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newlength{\columnheight}
@@ -88,7 +88,7 @@
         \parbox[t][\topcolumnheight]{\textwidth}{ 
 
 \vspace{-1 cm} % shouldn't need this??
-\begin{block}{Summary}
+\begin{block}{Overview}
 \noindent
 \hspace{-1.6cm}
 \begin{center}
@@ -119,13 +119,15 @@
 \begin{figure}
 \includegraphics[width=0.95\textwidth]{../fig/full_corrected_GI.pdf}
 \end{figure}
-\textbf{The intrinsic GI distribution can be recovered from an observed GI distribution during an outbreak by appropriately weighting the observed distribution.}
-Solid line: intrinsic GI distribution. Dashed line: GI distribution expected to observed during exponential growth phase. Histogram: (left) observed GI distribution simulated with a stochastic SEIR model on a homogeneous network (right) weighted histogram of observed GI distribution. Model parameters: $\mathcal{R} = 6$, population size at 60000, mean latent and infectious periods equal to 1 and 2 time units, respectively.
+\textbf{The intrinsic GI distribution can be estimated from observations during an outbreak.}
+During an outbreak, shorter intervals are more likely to be observed (since longer ones may not have completed yet).
+(Left) Intervals observed during the exponential phase.
+(Right) The same intervals, but reweighted to remove the sampling bias. These match the known GI that was used for the simulations (black curve).
+Stochastic SEIR model simulated on a homogeneous network: $\mathcal{R} = 6$, mean latent; infectious periods of 1; 2 time units.
 \end{block}
 }
 \end{minipage}
 \end{beamercolorbox}
-
 
 \end{column}
 
@@ -135,13 +137,17 @@ Solid line: intrinsic GI distribution. Dashed line: GI distribution expected to 
         \parbox[t][37cm]{\textwidth}{
 
 \vspace{-1 cm} % shouldn't need this??
-\begin{block}{Local effect of spatial structure on GI distributions}
+\begin{block}{Spatial correction on an idealized network}
 \noindent
 \hspace{-1.6cm}
 \begin{figure}
 \includegraphics[width=0.95\textwidth]{../fig/local.pdf}
 \end{figure}
-\textbf{Accounting for limited contacts in space shortens generation interval and predicts saturating $r-\R$ relationship.} (Left) Solid line: intrinsic GI distribution. Dashed line: effective GI distribution when $\R \approx 6$ and mean excess degree $\approx 21$. Histogram: simulated GI distribution using local networks (a tree network with a single infected parent node). (Right) Solid line: expected $r-\R$ relationship using intrinsic GI distribution. Dashed line: expected $r-\R$ using effective GI distribution.
+\textbf{Effects of locality on GI can be calculated in simple cases.} 
+Local spatial effects make realized GIs shorter, because repeated contacts only infect the first time. 
+(Left) Solid line: Observed GIs from simulations on a strictly local network. These do not match the known intrinsic GI (solid line), but do match the calculated spatial correction (dashed line). 
+(Right) If a disease is spreading on a network, calculations based on the (longer) intrinsic GI will lead to over-estimates of $\R$ (solid line). A simple correction (dashed line) accounts for local effects, but not necessarily other network effects.
+\cite{trapman2016inferring}
 \end{block}
 }
 \end{minipage}
@@ -160,7 +166,8 @@ Solid line: intrinsic GI distribution. Dashed line: GI distribution expected to 
 \begin{figure}
 \includegraphics[width=0.9\textwidth]{../fig/corrected_GI.pdf}
 \end{figure}
-\textbf{Reproductive number predicted by using the corrected GI distributions matches empirical estimate of the reproductive number.} Write something here????
+\textbf{Reproductive number predicted by using the corrected GI distributions matches empirical estimate of the reproductive number.} 
+Individual-based observations are expected to overestimate the GI and therefore $\R$. Contact tracing observations are expected to underestimate the GI and $\R$.
 \end{block}
 }
 \end{minipage}
@@ -177,10 +184,10 @@ Solid line: intrinsic GI distribution. Dashed line: GI distribution expected to 
 \noindent
 \hspace{-1.6cm}
 \begin{itemize}
-    \item spatiotemporal effects makes GI shorter
-    \item correcting an observed GI distribution is crucial to estimating $\R$
-    \item temporal correction is sensitive to long infections and $\R$ can be overestimated by a large factor
-    \item ??
+    \item GIs can be measured in different ways
+	 \item We can understand how spatial and temporal effects change GIs
+    \item The correct distribution for understanding the link between $r$ and $\R$ differs from both directly measurable distributions (patient-centered and contact-tracing)
+    \item The temporal correction is theoretically sound, but not always statistically robust; more work is needed. 
 \end{itemize}
 \end{block}
 }
