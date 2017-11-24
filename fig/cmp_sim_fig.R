@@ -12,6 +12,10 @@ source("../R/mle.R")
 
 load("../data/cmp_sim.rda")
 
+addline_format <- function(x,...){
+    gsub('\\s','\n',x)
+}
+
 cmpGraph <- read.table("../data/CA-CondMat.txt")
 cmpGraph <- graph.data.frame(cmpGraph)
 cmpGraph <- as.undirected(cmpGraph)
@@ -73,9 +77,12 @@ R0 <- (
         , uncorrected=1/mean(exp(-r*interval))
         , corrected=mean(exp(r*interval)))
     %>% merge(empirical)
-    %>% mutate(intrinsic=R0fun(r))
+    %>% mutate(intrinsic=R0fun(r),
+               network=R0fun.network(r))
     %>% gather(key, value, -sim, -r)
-    %>% mutate(key=factor(key, levels=c("uncorrected", "corrected", "empirical", "intrinsic")))
+    %>% mutate(key=factor(key 
+                          , labels=c("contact tracing", "temporal correction", "observed", "local correction", "intrinsic")
+                          , levels=c("uncorrected", "corrected", "empirical", "network", "intrinsic")))
     %>% as.tbl
 )
 
@@ -140,7 +147,8 @@ gg_R <- (
     ggplot(R0, aes(key, value, fill=key)) 
     + geom_boxplot(alpha=0.5, width=0.7)
     + scale_y_log10("Reproductive number", breaks=c(2, 5, 10, 20))
-    + scale_fill_manual(values=c("#e7298a", "#7570b3", 1, "#d95f02") )
+    + scale_fill_manual(values=c("#e7298a", "#7570b3", 1, "#66a61e", "#d95f02") )
+    + scale_x_discrete(labels=addline_format(levels(R0$key)))
     + theme(
         legend.position = "none",
         panel.grid=element_blank(),
