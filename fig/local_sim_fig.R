@@ -37,21 +37,22 @@ R0_fun <- function(r) {
 empty.df <- data.frame(
     x=c(0.1, 0.1)
     , y=c(0.1, 0.1)
-    , group=c("intrinsic", "spatially corrected")
+    , group=factor(c("intrinsic", "effective"), level=c("intrinsic", "effective"))
 )
 
 gg_local <- (
     ggplot(generation)
     + geom_histogram(
         aes(interval, y=..density..)
-        , col='black', fill='grey'
-        , alpha=0.7, boundary=0, bins=30) 
-    + geom_line(data=empty.df, aes(x, y, lty=group), lwd=1.2)
-    + stat_function(fun=intrinsic_fun, lwd=1.2, xlim=c(0,15))
+        , col='black', fill='#7570b3'
+        , alpha=0.5, boundary=0, bins=30) 
+    + geom_line(data=empty.df, aes(x, y, col=group), lwd=1.2)
     + ggtitle("Network GI distributions")
-    + stat_function(fun=network_fun, lwd=1.2, lty=2, xlim=c(0,15))
+    + stat_function(fun=network_fun, lwd=1.2, lty=1, xlim=c(0,15), col="#7570b3")
+    + stat_function(fun=intrinsic_fun, lwd=1.2, xlim=c(0,15), col="#d95f02")
     + scale_x_continuous(name="Generation interval", limits=c(0, 15)) 
     + scale_y_continuous(limits=c(0, 0.7))
+    + scale_color_manual(values=c("#d95f02", "#7570b3"))
     + theme(
         panel.grid = element_blank()
         , panel.border=element_blank()
@@ -75,7 +76,7 @@ link <- data.frame(
     gather(key, value, -r)
 
 gg_R <- ggplot(link) +
-    geom_line(aes(r, value, linetype=key), lwd=1.2) +
+    geom_line(aes(r, value, col=key), lwd=1.2) +
     scale_x_continuous(name="Exponential growth rate", expand=c(0,0)) +
     scale_y_continuous(name="Reproductive number", expand=c(0,0), limits=c(0,20)) +
     geom_segment(data=data.frame(x=2, 
@@ -85,6 +86,7 @@ gg_R <- ggplot(link) +
                  aes(x, y, xend=x1, yend=y1),
                  arrow = arrow(length = unit(0.03, "npc"), type="closed"), lwd=0.9) +
     ggtitle("R-r relationship") +
+    scale_color_manual(values=c("#d95f02", "#7570b3")) +
     theme(
         panel.grid = element_blank()
         , panel.border=element_blank()

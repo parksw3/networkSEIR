@@ -8,12 +8,17 @@
 \input{tikzlib.tex}
 \input{diagram_geom.tex}
 
+\definecolor{c1}{RGB}{217, 95, 2}
+\definecolor{c2}{RGB}{117, 112, 179}
+\definecolor{c3}{RGB}{231, 41, 138}
+\definecolor{c4}{RGB}{102, 166, 30}
+
 \usetikzlibrary{arrows.meta}
 
 \begin{document}
 
 \begin{tikzpicture}
-    \node(int)[bigcompartment, text width=5cm]{
+    \node(int)[bigcompartment, text width=5cm, bottom color=c1]{
     \textbf{Intrinsic GI}
     \footnotesize{
     \begin{itemize}
@@ -21,7 +26,7 @@
     \end{itemize}
     }
     };
-    \node(eff)[bigcompartment, right=3.4cm of int, text width=6cm]{
+    \node(eff)[bigcompartment, right=3.4cm of int, text width=6cm, bottom color=c2]{
     \textbf{Effective GI}
     \begin{itemize}
         \item accounts for spatial (network) structure
@@ -29,7 +34,7 @@
     \end{itemize}
     };
     \draw[->, very thick, dashed] (int) -- node [midway, above] {Difficult in practice} (eff); 
-    \node(obs)[bigcompartment, below=2cm of eff, text width=6cm]{
+    \node(obs)[bigcompartment, below=2cm of eff, text width=6cm, bottom color=c3]{
     \textbf{Observed GI in early epidemic}
     \begin{itemize}
         \item proportional to $g(\tau) \exp(-r\tau)$

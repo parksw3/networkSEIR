@@ -73,11 +73,12 @@ gg1 <- (
     gg_base
     + geom_histogram(
         aes(interval, y=..density..)
-        , col='black', fill='grey'
-        , alpha=0.7, boundary=0, bins=30) 
-    + geom_line(data=empty.df, aes(x, y, lty=group), lwd=1.2)
-    + stat_function(fun=observed_fun, lwd=1.2, lty=2, xlim=c(0,15))
-    + stat_function(fun=intrinsic_fun, lwd=1.2, lty=1, alpha=0.2, xlim=c(0,15))
+        , col='black', fill='#e7298a'
+        , alpha=0.5, boundary=0, bins=30) 
+    + geom_line(data=empty.df, aes(x, y, col=group, lty=group), lwd=1.2)
+    + stat_function(fun=observed_fun, lwd=1.2, lty=2, xlim=c(0,15), col="#e7298a")
+    + stat_function(fun=intrinsic_fun, lwd=1.2, lty=1, xlim=c(0,15), col="#d95f02")
+    + scale_color_manual(values=c( "#d95f02", "#e7298a"))
     + ggtitle("Observed GI distributions")
     + theme(
         legend.position = c(0.85, 0.85)
@@ -88,15 +89,11 @@ gg1 <- (
 gg2 <- (
     gg_base
     + geom_histogram(
-        aes(interval, y=..density..)
-        , col='grey', fill='grey'
-        , alpha=0.15, boundary=0, bins=30) 
-    + stat_function(fun=observed_fun, lwd=1.2, lty=2, alpha=0.1, xlim=c(0,15))
-    + geom_histogram(
         aes(interval, y=..density.., weight=weight)
-        , fill='grey', col='black'
-        , alpha=0.7, boundary=0, bins=30)
-    + stat_function(fun=intrinsic_fun, lwd=1.2, lty=1, xlim=c(0,15))
+        , col='black'
+        , alpha=0.5, boundary=0, bins=30, fill="#d95f02")
+    + stat_function(fun=observed_fun, lwd=1.2, lty=2, xlim=c(0,15), col="#e7298a")
+    + stat_function(fun=intrinsic_fun, lwd=1.2, lty=1, xlim=c(0,15), col="#d95f02")
     + ggtitle("Corrected GI distributions")
 )
 
