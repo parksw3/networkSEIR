@@ -164,7 +164,8 @@ Local spatial effects make realized GIs shorter, because repeated contacts only 
 \begin{figure}
 \includegraphics[width=0.9\textwidth]{../fig/corrected_GI.pdf}
 \end{figure}
-\textbf{Reproductive number predicted by using the corrected GI distributions matches empirical estimate of the reproductive number.} Write something here????
+\textbf{Reproductive number predicted by using the corrected GI distributions matches empirical estimate of the reproductive number.} 
+Individual-based observations are expected to overestimate the GI and therefore $\R$. Contact tracing observations are expected to underestimate the GI and $\R$.
 \end{block}
 }
 \end{minipage}
@@ -181,10 +182,10 @@ Local spatial effects make realized GIs shorter, because repeated contacts only 
 \noindent
 \hspace{-1.6cm}
 \begin{itemize}
-    \item spatiotemporal effects makes GI shorter
-    \item correcting an observed GI distribution is crucial to estimating $\R$
-    \item temporal correction is sensitive to long infections and $\R$ can be overestimated by a large factor
-    \item ??
+    \item GIs can be measured in different ways
+	 \item We can understand how spatial and temporal effects change GIs
+    \item The correct distribution for understanding the link between $r$ and $\R$ differs from both directly measurable distributions (patient-centered and contact-tracing)
+    \item The temporal correction is theoretically sound, but not always statistically robust; more work is needed. 
 \end{itemize}
 \end{block}
 }

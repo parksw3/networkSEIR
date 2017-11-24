@@ -28,4 +28,11 @@ testdir/
 .testdir/
 subclone_dir/
 
-*.makestuff
+.deps/
+makestuff
+*.nav
+*.snm
+poster.tex
+*.deps
+*.toc
+

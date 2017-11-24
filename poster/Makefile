@@ -13,6 +13,8 @@ Sources = Makefile .gitignore README.md LICENSE.md
 
 ## Content
 
+Sources += notes.md
+
 Sources += poster.Rnw
 
 poster.pdf: poster.Rnw
