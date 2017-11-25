@@ -147,7 +147,7 @@ gg_R <- (
     ggplot(R0, aes(key, value, fill=key)) 
     + geom_boxplot(alpha=0.5, width=0.7)
     + scale_y_log10("Reproductive number", breaks=c(2, 5, 10, 20))
-    + scale_fill_manual(values=c("#e7298a", "#7570b3", 1, "#66a61e", "#d95f02") )
+    + scale_fill_manual(values=c("#e7298a", "#7570b3", 1, "#d95f02", "#66a61e") )
     + scale_x_discrete(labels=addline_format(levels(R0$key)))
     + theme(
         legend.position = "none",

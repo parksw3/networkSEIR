@@ -44,15 +44,15 @@ gg_local <- (
     ggplot(generation)
     + geom_histogram(
         aes(interval, y=..density..)
-        , col='black', fill="#66a61e"
+        , col='black', fill="#d95f02"
         , alpha=0.5, boundary=0, bins=30) 
     + geom_line(data=empty.df, aes(x, y, col=group), lwd=1.2)
     + ggtitle("Network GI distributions")
-    + stat_function(fun=network_fun, lwd=1.2, lty=1, xlim=c(0,15), col="#66a61e")
-    + stat_function(fun=intrinsic_fun, lwd=1.2, xlim=c(0,15), col="#d95f02")
+    + stat_function(fun=network_fun, lwd=1.2, lty=1, xlim=c(0,15), col="#d95f02")
+    + stat_function(fun=intrinsic_fun, lwd=1.2, xlim=c(0,15), col="#66a61e")
     + scale_x_continuous(name="Generation interval", limits=c(0, 15)) 
     + scale_y_continuous(limits=c(0, 0.7))
-    + scale_color_manual(values=c("#d95f02", "#66a61e"))
+    + scale_color_manual(values=c("#66a61e", "#d95f02"))
     + theme(
         panel.grid = element_blank()
         , panel.border=element_blank()
@@ -86,7 +86,7 @@ gg_R <- ggplot(link) +
                  aes(x, y, xend=x1, yend=y1),
                  arrow = arrow(length = unit(0.03, "npc"), type="closed"), lwd=0.9) +
     ggtitle("R-r relationship") +
-    scale_color_manual(values=c("#d95f02", "#66a61e")) +
+    scale_color_manual(values=c("#66a61e", "#d95f02")) +
     theme(
         panel.grid = element_blank()
         , panel.border=element_blank()

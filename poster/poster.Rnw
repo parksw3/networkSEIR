@@ -79,7 +79,6 @@
 \end{minipage}
 \end{beamercolorbox}
 
-
 \end{column}
 
 \begin{column}{0.5\textwidth}
@@ -93,7 +92,7 @@
 \hspace{-1.6cm}
 \begin{center}
 \colorbox{white}{
-\includegraphics[width=0.8\textwidth]{../fig/diagram.pdf}
+\includegraphics[width=0.85\textwidth]{../fig/diagram.pdf}
 }
 \end{center}
 \end{block}

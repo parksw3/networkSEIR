@@ -18,7 +18,7 @@
 \begin{document}
 
 \begin{tikzpicture}
-\node(local)[bigcompartment, text width=5cm, bottom color=c4]{
+\node(local)[bigcompartment, text width=5cm, bottom color=c1]{
     \textbf{Locally corrected GI}
     \footnotesize{
         \begin{itemize}
@@ -27,7 +27,7 @@
         \end{itemize}
     }
 };
-\node(int)[bigcompartment, below=2.4cm of local, text width=5cm, bottom color=c1]{
+\node(int)[bigcompartment, below=2.4cm of local, text width=5cm, bottom color=c4]{
     \textbf{Intrinsic GI}
     \footnotesize{
         \begin{itemize}
@@ -35,7 +35,7 @@
         \end{itemize}
     }
 };
-\draw[->, very thick] (int) -- (local);
+\draw[->, very thick, dashed] (int) -- node [midway, left, text width=2cm] {Difficult in practice} (local);
 \node(eff)[bigcompartment, right=3.4cm of local, text width=6cm, bottom color=c2]{
     \textbf{Effective GI}
     \begin{itemize}
@@ -43,7 +43,6 @@
     \item equivalent to intrinsic GI under homogeneous mixing
     \end{itemize}
 };
-\draw[->, very thick, dashed] ($(int.north)+(2.7,0)$) -- node [midway, above, sloped] {Difficult in practice} ($(eff.south)+(-3.1,0)$); 
 \node(obs)[bigcompartment, below=2cm of eff, text width=6cm, bottom color=c3]{
     \textbf{Observed GI in early epidemic}
     \begin{itemize}
@@ -52,9 +51,14 @@
         \end{itemize}
 };
 \draw[->, very thick] (obs.north) -- node [text width=5cm, midway, right] {Exponential correction\\ \footnotesize{weight observed periods by $\exp(r\tau)$}} (eff);
-\node(R)[right=of eff]{$\mathcal{R}$};
+\node(R)[compartment, below left=0.5cm and -0.3cm of eff]{\textbf{Reproductive number}};
 \draw[->, very thick] (eff) -- (R);
+\draw[->] (int) -- (R);
+\draw[->] (obs) -- (R);
+\draw[->] (local) -- (R);
 \draw[->, very thick] (obs) -- node [text width=2cm, above]{Homogeneous\\ assumption}(int);
+\draw[->, very thick] (obs) -- node [text width=2cm, below]{Exponential correction}(int);
+\draw[->, very thick, dashed] (local) -- node [text width=3.1cm, above]{+ spatial structure}(eff);
 % \node(patient)[above left=0cm and 0.2cm of int, rotate=90]{Patient based};
 \end{tikzpicture}
 
