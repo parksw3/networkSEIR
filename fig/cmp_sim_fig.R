@@ -49,6 +49,10 @@ r <- lapply(
     }
 )
 
+findr <- function(r) (gamma+r)*(sigma+r)/((kappa-1)*sigma-r)-beta
+
+true.r <- uniroot(findr, c(0, 2))$root
+
 mean.r <- mean(unlist(r))
 
 R0fun <- function(r) (1+r/gamma)*(1+r/sigma)
@@ -57,7 +61,7 @@ R0fun.network <- function(r) (gamma+r)/(gamma*sigma/(sigma+r)+r/kappa)
 
 intrinsic.R0 <- R0fun(mean.r)
 
-true.R0 <- R0fun.network(mean.r)
+true.R0 <- R0fun.network(true.r)
 
 generation <- (
     censor.gi 
@@ -81,23 +85,23 @@ R0 <- (
                network=R0fun.network(r))
     %>% gather(key, value, -sim, -r)
     %>% mutate(key=factor(key 
-                          , labels=c("contact tracing", "temporal correction", "observed", "local correction", "intrinsic")
+                          , labels=c("contact tracing", "temporal correction", "empirical", "local correction", "intrinsic")
                           , levels=c("uncorrected", "corrected", "empirical", "network", "intrinsic")))
     %>% as.tbl
 )
 
-effective_fun <- function(tau) {
+local_fun <- function(tau) {
     sigma*(gamma+beta)/(gamma+beta-sigma) * (exp(-sigma*tau)-exp(-(gamma+beta)*tau))
 }
 
 observed_fun <- function(tau) {
-    true.R0*sigma*(gamma+beta)/(gamma+beta-sigma) * (exp(-sigma*tau)-exp(-(gamma+beta)*tau)) * exp(-mean.r*tau)
+    true.R0*sigma*(gamma+beta)/(gamma+beta-sigma) * (exp(-sigma*tau)-exp(-(gamma+beta)*tau)) * exp(-true.r*tau)
 }
 
 empty.df <- data.frame(
     x=c(0.1, 0.1)
     , y=c(0.1, 0.1)
-    , group=c("effective", "observed")
+    , group=c("local", "observed")
 ) %>%
     mutate(group=factor(group, level=.$group))
     
@@ -121,10 +125,10 @@ gg1 <- (
         aes(interval, y=..density..)
         , col='black', fill="#e7298a"
         , alpha=0.5, boundary=0, bins=30) 
-    + geom_line(data=empty.df, aes(x, y, lty=group, col=group), lwd=1.2)
-    + stat_function(fun=observed_fun, lwd=1.2, lty=2, xlim=c(0,10), col="#e7298a")
-    + stat_function(fun=effective_fun, lwd=1.2, lty=1, xlim=c(0,10), col="#7570b3")
-    + scale_color_manual(values=c("#7570b3", "#e7298a"))
+    + geom_line(data=empty.df, aes(x, y, col=group), lwd=1.2)
+    + stat_function(fun=observed_fun, lwd=1.2, lty=1, xlim=c(0,10), col="#e7298a")
+    + stat_function(fun=local_fun, lwd=1.2, lty=1, xlim=c(0,10), col="#d95f02")
+    + scale_color_manual(values=c("#d95f02", "#e7298a"))
     + ggtitle("Observed GI distributions")
     + theme(
         legend.position = c(0.85, 0.85)
@@ -138,8 +142,8 @@ gg2 <- (
         aes(interval, y=..density.., weight=weight)
         , fill="#7570b3", col='black'
         , alpha=0.5, boundary=0, bins=30)
-    + stat_function(fun=observed_fun, lwd=1.2, lty=2, xlim=c(0,10), col="#e7298a")
-    + stat_function(fun=effective_fun, lwd=1.2, lty=1, xlim=c(0,10), col="#7570b3")
+    + stat_function(fun=observed_fun, lwd=1.2, lty=1, xlim=c(0,10), col="#e7298a")
+    + stat_function(fun=local_fun, lwd=1.2, lty=1, xlim=c(0,10), col="#d95f02")
     + ggtitle("Corrected GI distributions")
 )
 
@@ -158,4 +162,4 @@ gg_R <- (
 
 gg_correction <- arrangeGrob(gg1, gg2, gg_R, nrow=1)
 
-ggsave("corrected_GI.pdf", gg_correction, width=12, height=3)
+ggsave("corrected_GI.pdf", gg_correction, width=12, height=2.5)

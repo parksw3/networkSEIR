@@ -1,4 +1,4 @@
-%\documentclass[final,hyperref={hidelinks,pdfpagelabels=false}]{beamer}
+ %\documentclass[final,hyperref={hidelinks,pdfpagelabels=false}]{beamer}
 \documentclass[20pt]{beamer}
 %% reset default
 \mode<presentation>{\usetheme{mcmaster}}
@@ -61,7 +61,7 @@
       \begin{minipage}[T]{.95\textwidth}
         \parbox[t][\topcolumnheight]{\textwidth}{ 
 
-\vspace{-1 cm} % shouldn't need this??
+\vspace{-1.5 cm} % shouldn't need this??
 \begin{block}{Background}
 \noindent
 \hspace{-1.6cm}
@@ -86,15 +86,18 @@
       \begin{minipage}[T]{.95\textwidth}
         \parbox[t][\topcolumnheight]{\textwidth}{ 
 
-\vspace{-1 cm} % shouldn't need this??
+\vspace{-1.5 cm} % shouldn't need this??
 \begin{block}{Overview}
 \noindent
 \hspace{-1.6cm}
 \begin{center}
+\vspace{-1 cm}
 \colorbox{white}{
-\includegraphics[width=0.85\textwidth]{../fig/diagram.pdf}
+\includegraphics[width=0.78\textwidth]{../fig/diagram.pdf}
 }
+\vspace{-0.5 cm}
 \end{center}
+Local correction introduced by \cite{trapman2016inferring} accounts for degree distribution but not for any other structures. Observed GIs during an outbreak should implicitly take these structures into account and thus yield effective GIs when corrected for temporal bias.
 \end{block}
 }
 \end{minipage}
@@ -121,8 +124,8 @@
 \textbf{The intrinsic GI distribution can be estimated from observations during an outbreak.}
 During an outbreak, shorter intervals are more likely to be observed (since longer ones may not have completed yet).
 (Left) Intervals observed during the exponential phase.
-(Right) The same intervals, but reweighted to remove the sampling bias. These match the known intrinsic GI that was used for the simulations (solid curve).
-Stochastic SEIR model simulated on a homogeneous network: $\mathcal{R} = 6$, mean latent; infectious periods of 1; 2 time units.
+(Right) The same intervals, but reweighted to remove the sampling bias. Stochastic SEIR simulation on a homogeneous network (histograms) match analytically derived distributions (solid curves).
+Model parameters: $\mathcal{R} = 6$, mean latent,  infectious periods of 1, 2 days.
 \end{block}
 }
 \end{minipage}
@@ -144,7 +147,7 @@ Stochastic SEIR model simulated on a homogeneous network: $\mathcal{R} = 6$, mea
 \end{figure}
 \textbf{Effects of locality on GI can be calculated in simple cases.} 
 Local spatial effects make GIs shorter, because repeated contacts only infect the first time. 
-(Left) Observed GIs from simulations on strictly local networks (close contact rate of 0.2 $\text{time}^{-1}$ per edge). These do not match the known intrinsic GI, but do match the calculated spatial correction. 
+(Left) Observed GIs from simulations on strictly local networks (per neighbor contact rate of 0.2 $\text{time}^{-1}$). These do not match the known intrinsic GI, but do match the calculated spatial correction. 
 (Right) If a disease is spreading on a network, calculations based on the (longer) intrinsic GI will lead to over-estimates of $\R$. A simple correction accounts for local effects, but not necessarily other network effects
 \cite{trapman2016inferring}.
 \end{block}
@@ -163,10 +166,17 @@ Local spatial effects make GIs shorter, because repeated contacts only infect th
 \noindent
 \hspace{-1.6cm}
 \begin{figure}
-\includegraphics[width=0.9\textwidth]{../fig/corrected_GI.pdf}
+\vspace{-0.5 cm}
+\includegraphics[width=0.95\textwidth]{../fig/corrected_GI.pdf}
+\vspace{-0.5 cm}
 \end{figure}
-\textbf{Reproductive number predicted by using the corrected GI distributions matches empirical estimate of the reproductive number.} 
-Individual-based observations are expected to overestimate the GI and therefore $\R$. Contact tracing observations are expected to underestimate the GI and $\R$. Temporally correcting contact tracing observations yield effective GI and esimate $\R$ similar to observed $\R$ (mean number of individuals infected by first 100 infectees). Stochastic SEIR model simulated on an empirical network \cite{leskovec2016snap}.
+\textbf{Reproductive number predicted by using the corrected GI distributions (effective GI) matches empirical estimate of the reproductive number.} 
+(Left) Contact tracing data provides longer GI ($\approx$ 1.1 days; histogram) than predicted GI ($\approx$ 1 day; solid curve - ``observed'') from local correction.
+(Right) Effective GI ($\approx$ 2.1 days; histogram), obtained by temporally correcting contact-tracing data, is shorter than locally corrected GI ($\approx$ 2.4 days; solid curve - ``local'') or intrinsic GI (3 days; not shown).
+Individual-based observations (intrinsic) are expected to overestimate the GI and therefore $\R$. Contact tracing observations (uncorrected) are expected to underestimate the GI and $\R$. 
+Temporally correcting contact tracing observations yield effective GI and estimate $\R$ similar to empirical $\R$ (mean number of individuals infected by first 100 infectees). 
+Temporally correcting contact tracing data is sensitive to long GIs and can overestimte $\R$.
+Stochastic SEIR model simulated on an empirical network \cite{leskovec2016snap}.
 \end{block}
 }
 \end{minipage}
