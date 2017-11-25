@@ -75,8 +75,8 @@ gg1 <- (
         aes(interval, y=..density..)
         , col='black', fill='#e7298a'
         , alpha=0.5, boundary=0, bins=30) 
-    + geom_line(data=empty.df, aes(x, y, col=group, lty=group), lwd=1.2)
-    + stat_function(fun=observed_fun, lwd=1.2, lty=2, xlim=c(0,15), col="#e7298a")
+    + geom_line(data=empty.df, aes(x, y, col=group), lwd=1.2)
+    + stat_function(fun=observed_fun, lwd=1.2, lty=1, xlim=c(0,15), col="#e7298a")
     + stat_function(fun=intrinsic_fun, lwd=1.2, lty=1, xlim=c(0,15), col="#d95f02")
     + scale_color_manual(values=c( "#d95f02", "#e7298a"))
     + ggtitle("Observed GI distributions")
@@ -92,7 +92,7 @@ gg2 <- (
         aes(interval, y=..density.., weight=weight)
         , col='black'
         , alpha=0.5, boundary=0, bins=30, fill="#d95f02")
-    + stat_function(fun=observed_fun, lwd=1.2, lty=2, xlim=c(0,15), col="#e7298a")
+    + stat_function(fun=observed_fun, lwd=1.2, lty=1, xlim=c(0,15), col="#e7298a")
     + stat_function(fun=intrinsic_fun, lwd=1.2, lty=1, xlim=c(0,15), col="#d95f02")
     + ggtitle("Corrected GI distributions")
 )
