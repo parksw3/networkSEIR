@@ -21,8 +21,7 @@ poster.pdf: poster.Rnw
 
 poster.pdf: poster.bbl
 
-pull: cleanposter
-
+# pull: cleanposter
 cleanposter:
 	git checkout master -- poster.pdf
 
