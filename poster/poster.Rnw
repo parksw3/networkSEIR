@@ -94,7 +94,7 @@
 \begin{center}
 \vspace{-1 cm}
 \colorbox{white}{
-\includegraphics[width=0.78\textwidth]{../fig/diagram.pdf}
+\includegraphics[width=0.85\textwidth]{../fig/diagram.pdf}
 }
 \vspace{-0.5 cm}
 \end{center}
