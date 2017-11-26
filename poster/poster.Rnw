@@ -67,12 +67,13 @@
 \hspace{-1.6cm}
 \begin{itemize}
     \item Generation interval (GI) measures time between when a person is infected and when that person infects another person
-    \item GI distribution, $g(\tau)$, plays an important role in linking exponential growth rate, $r$, and reproductive number, $\mathcal{R}$, of an epidemic \cite{wallinga2007generation}:
-    $$
+    \item GI distribution, $g(\tau)$, links exponential growth rate, $r$, and reproductive number, $\mathcal{R}$, of an epidemic \cite{wallinga2007generation}:
+    $
     1/\mathcal{R} = \int g(\tau) \exp(-r\tau) d\tau
-    $$
-    \item Previous work showed that measuring GI through contact tracing data can introduce bias \cite{champredon2015intrinsic}
-    \item Trapman \etal\ \cite{trapman2016inferring} demonstrated that network structure can affect $\R$; ultimately, it changes GI distribution and $r-\R$ relationship
+    $
+	 \item If $r$ is known, longer generation times imply higher estimates of $\R$.
+    \item Measuring GI through contact tracing data can introduce bias \cite{champredon2015intrinsic}
+    \item Trapman \etal\ \cite{trapman2016inferring} investigated the effects of network structure on the relationship between $r$ and $\R$.
 \end{itemize}
 \end{block}
 }
@@ -97,7 +98,8 @@
 }
 \vspace{-0.5 cm}
 \end{center}
-Local correction introduced by \cite{trapman2016inferring} accounts for degree distribution but not for any other structures. Observed GIs during an outbreak should implicitly take these structures into account and thus yield effective GIs when corrected for temporal bias.
+% Local correction introduced by \cite{trapman2016inferring} accounts for degree distribution but not for any other structures. Observed GIs during an outbreak should implicitly take these structures into account and thus yield effective GIs when corrected for temporal bias.
+Patient-based GI observations do not account for spatial effects, while contact tracing introduces temporal bias (especially early in outbreaks). 
 \end{block}
 }
 \end{minipage}
@@ -139,7 +141,7 @@ Model parameters: $\mathcal{R} = 6$, mean latent,  infectious periods of 1, 2 ti
         \parbox[t][36cm]{\textwidth}{
 
 \vspace{-1 cm} % shouldn't need this??
-\begin{block}{Spatial correction on an idealized network}
+\begin{block}{Local correction on an idealized network}
 \noindent
 \hspace{-1.6cm}
 \begin{figure}
@@ -147,8 +149,10 @@ Model parameters: $\mathcal{R} = 6$, mean latent,  infectious periods of 1, 2 ti
 \end{figure}
 \textbf{Effects of locality on GI can be calculated in simple cases.} 
 Local spatial effects make GIs shorter, because repeated contacts only infect the first time. 
-(Left) Observed GIs from simulations on strictly local networks (per neighbor contact rate of 0.2 $\text{time}^{-1}$). These do not match the known intrinsic GI, but do match the calculated spatial correction. 
-(Right) If a disease is spreading on a network, calculations based on the (longer) intrinsic GI will lead to over-estimates of $\R$. A simple correction accounts for local effects, but not necessarily other network effects
+(Left) Observed GIs from simulations on idealized, strictly local networks.
+% (per neighbor contact rate of 0.2 $\text{time}^{-1}$).
+These do not match the known intrinsic GI, but do match the calculated local correction. 
+(Right) If a disease is spreading on a network, calculations based on the (longer) intrinsic GI will lead to over-estimates of $\R$. The local correction accounts for local effects, but not other network effects
 \cite{trapman2016inferring}.
 \end{block}
 }
