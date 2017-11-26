@@ -73,6 +73,12 @@ generation <- (
     %>% mutate(weight=exp(r*interval)/sum(exp(r*interval)))
 )
 
+R0.group <- data.frame(
+    key=c("contact\ntracing", "temporal\ncorrection", "empirical", "local\ncorrection", "intrinsic"),
+    group=factor(c("population based", "population based", "empirical", "individual based", "individual based"),
+                 levels=c("population based", "empirical", "individual based"))
+)
+
 R0 <- (
     generation 
     %>% group_by(sim) 
@@ -85,9 +91,10 @@ R0 <- (
                network=R0fun.network(r))
     %>% gather(key, value, -sim, -r)
     %>% mutate(key=factor(key 
-                          , labels=c("contact tracing", "temporal correction", "empirical", "local correction", "intrinsic")
+                          , labels=c("contact\ntracing", "temporal\ncorrection", "empirical", "local\ncorrection", "intrinsic")
                           , levels=c("uncorrected", "corrected", "empirical", "network", "intrinsic")))
     %>% as.tbl
+    %>% merge(R0.group)
 )
 
 local_fun <- function(tau) {
@@ -107,7 +114,7 @@ empty.df <- data.frame(
     
 gg_base <- (
     ggplot(generation)
-    + scale_x_continuous(name="time") 
+    + scale_x_continuous(name="Generation interval") 
     + theme(
         panel.grid = element_blank()
         , panel.border=element_blank()
@@ -152,8 +159,10 @@ gg_R <- (
     + geom_boxplot(alpha=0.5, width=0.7)
     + scale_y_log10("Reproductive number", breaks=c(2, 5, 10, 20))
     + scale_fill_manual(values=c("#e7298a", "#7570b3", 1, "#d95f02", "#66a61e") )
-    + scale_x_discrete(labels=addline_format(levels(R0$key)))
+    + facet_grid(~group, scale="free", space="free_x")
     + theme(
+        panel.spacing = unit(0, "lines"),
+        strip.background = element_blank(),
         legend.position = "none",
         panel.grid=element_blank(),
         axis.title.x=element_blank()
