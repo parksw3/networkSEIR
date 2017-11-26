@@ -22,8 +22,10 @@ target.mk
 
 local.mk
 
-testdir/
-.testdir/
-subclone_dir/
-
 *.makestuff
+
+.deps/
+diagram.pdf
+*.deps
+*.oldfile
+makestuff
