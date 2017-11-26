@@ -179,7 +179,7 @@ These do not match the known intrinsic GI, but do match the calculated local cor
 (Right) Effective GI ($\approx$ 2.1 units; histogram), obtained by temporally correcting contact-tracing data, is shorter than locally corrected GI ($\approx$ 2.4 units; solid curve - ``local'') or intrinsic GI (3 units; not shown).
 Individual-based observations (intrinsic) are expected to overestimate the GI and therefore $\R$. Contact tracing observations (uncorrected) are expected to underestimate the GI and $\R$. 
 Temporally correcting contact tracing observations yield effective GI and estimate $\R$ similar to empirical $\R$ (mean number of individuals infected by first 100 infectees). 
-Temporally correcting contact tracing data is sensitive to long GIs and can overestimte $\R$.
+Temporally correcting contact tracing data is sensitive to long GIs and can overestimate $\R$.
 Stochastic SEIR model simulated on an empirical network \cite{leskovec2016snap}.
 \end{block}
 }
@@ -197,10 +197,10 @@ Stochastic SEIR model simulated on an empirical network \cite{leskovec2016snap}.
 \noindent
 \hspace{-1.6cm}
 \begin{itemize}
-    \item GIs can be measured in different ways
-	 \item We can understand how spatial and temporal effects change GIs
-    \item The correct distribution for understanding the link between $r$ and $\R$ differs from both directly measurable distributions (patient-centered and contact-tracing)
-    \item The temporal correction is theoretically sound, but not always statistically robust; more work is needed. 
+    \item Different approaches measure different GIs
+	 \item Naive use of intrinsic GI may over-estimate $\R$, while naive use of contact-tracing GI may underestimate $\R$. We can understand how spatial and temporal effects change GIs
+	 \item Spatial corrections are difficult, and sensitive to individual variation
+    \item The temporal correction is theoretically sound, but not always statistically robust
 \end{itemize}
 \end{block}
 }
