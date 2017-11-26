@@ -8,51 +8,63 @@
 \input{tikzlib.tex}
 \input{diagram_geom.tex}
 
-\definecolor{c1}{RGB}{217, 95, 2}
-\definecolor{c2}{RGB}{117, 112, 179}
-\definecolor{c3}{RGB}{231, 41, 138}
-\definecolor{c4}{RGB}{102, 166, 30}
+% \definecolor{c1}{RGB}{217, 95, 2}
+% \definecolor{c2}{RGB}{117, 112, 179}
+% \definecolor{c3}{RGB}{231, 41, 138}
+% \definecolor{c4}{RGB}{102, 166, 30}
+
+\definecolor{localc}{RGB}{236, 175, 100}
+\definecolor{effc}{RGB}{186, 184, 217}
+\definecolor{obsc}{RGB}{243, 148, 197}
+\definecolor{intc}{RGB}{179, 211, 286}
 
 \usetikzlibrary{arrows.meta}
 
 \begin{document}
 
 \begin{tikzpicture}
-\node(local)[bigcompartment, text width=5cm, bottom color=c1, fill opacity=0.7, text opacity=1]{
+\node(local)[bigcompartment, text width=5cm, bottom color=localc, fill opacity=0.7, text opacity=1]{
     \textbf{Locally corrected GI}
     \footnotesize{
         \begin{itemize}
-        \item based on degree distribution and close contact rate [3]
-        \item does not explicitly take contact structures into account
+        	\item based on degree distribution and contact rate [3]
+			\item depends on between-individual variation
         \end{itemize}
     }
 };
-\node(int)[bigcompartment, below=2cm of local, text width=5cm, bottom color=c4, fill opacity=0.7, text opacity=1]{
+
+\node(int)[bigcompartment, above=2cm of local, text width=5cm, bottom color=intc, fill opacity=0.7, text opacity=1]{
     \textbf{Intrinsic GI}
     \footnotesize{
         \begin{itemize}
-        \item patient based (e.g. titer)
+        \item patient-based 
+		  \item infectiousness profile of an infected individual
         \end{itemize}
     }
 };
-\draw[->, very thick, dashed] (int) -- node [midway, left, text width=2cm] {Difficult in practice} (local);
-\node(eff)[bigcompartment, right=3.4cm of local, text width=6cm, bottom color=c2, fill opacity=0.7, text opacity=1]{
+\draw[->, very thick, dashed] (int) -- node [midway, left, text width=2cm] {Local correction} (local);
+
+\node(eff)[bigcompartment, right=3.4cm of local, text width=6cm, bottom color=effc, fill opacity=0.7, text opacity=1]{
     \textbf{Effective GI}
     \begin{itemize}
-    \item accounts for spatial (network) structure
-    \item equivalent to intrinsic GI under homogeneous mixing
+    \item reflects network structure, but corrects for time censoring
+    \item gives the correct link between $r$ and $\R$
     \end{itemize}
 };
-\node(obs)[bigcompartment, below=1.6cm of eff, text width=6cm, bottom color=c3, fill opacity=0.7, text opacity=1]{
+\node(obs)[bigcompartment, above=1.6cm of eff, text width=6cm, bottom color=obsc, fill opacity=0.7, text opacity=1]{
     \textbf{Observed GI in early epidemic}
     \begin{itemize}
-    \item contact-tracing based
-    \item proportional to $g(\tau) \exp(-r\tau)$
-        \end{itemize}
+		 \item contact-tracing based
+		 \item censored at observation time
+    \end{itemize}
 };
-\draw[->, very thick] (obs.north) -- node [text width=5cm, midway, right] {Exponential correction\\ \footnotesize{weight observed periods by $\exp(r\tau)$}} (eff);
-\draw[->, very thick] (obs) -- node [text width=2cm, above]{Homogeneous\\ assumption}(int);
-\draw[->, very thick] (obs) -- node [text width=2cm, below]{Exponential correction}(int);
+
+\draw[->, very thick] (obs) -- node [text width=5cm, midway, left, align=right] {Temporal correction} (eff);
+\draw[none] (obs) -- node [text width=5cm, midway, right] {\footnotesize{weight observed periods by $\exp(r\tau)$}} (eff);
+
+\draw[<->, thick, dotted] (obs) -- node [text width=2cm, above]{\textbf{Homogeneous\\ assumption}}(int);
+\draw[none] (obs) -- node [text width=2cm, below]{Temporal correction}(int);
+
 \draw[->, very thick, dashed] (local) -- node [text width=3.1cm, above]{+ spatial structure}(eff);
 % \node(patient)[above left=0cm and 0.2cm of int, rotate=90]{Patient based};
 \end{tikzpicture}
