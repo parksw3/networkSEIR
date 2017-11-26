@@ -23,6 +23,13 @@ cleanfigs:
 
 ######################################################################
 
+## Recrunching
+## Start building a pipeline for JD; still focused on poster, though
+
+corrected.Rout: corrected.R
+
+######################################################################
+
 ## Files
 
 Makefile: makestuff
@@ -37,4 +44,4 @@ makestuff:
 -include $(ms)/newlatex.mk
 -include $(ms)/pandoc.mk
 
-# -include $(ms)/wrapR.mk
+-include $(ms)/wrapR.mk
