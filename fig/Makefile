@@ -17,8 +17,7 @@ Sources += diagram.tex
 
 diagram.pdf: diagram.tex
 
-pull: cleanfigs
-
+# pull: cleanfigs
 cleanfigs:
 	git checkout master -- diagram.pdf
 
