@@ -5,6 +5,6 @@ dev.off()
 
 ggsave(pdfname
 	, gg_R
-	, width=4, height=2.5
+	, width=5, height=2.5
 )
 
