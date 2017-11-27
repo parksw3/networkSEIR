@@ -116,6 +116,6 @@ R0 <- (
 empty.df <- data.frame(
     x=c(0.1, 0.1)
     , y=c(0.1, 0.1)
-    , group=c("local", "observed")
+    , group=c("local", "intrinsic")
 ) %>%
     mutate(group=factor(group, level=.$group))
