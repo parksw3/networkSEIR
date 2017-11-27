@@ -26,7 +26,11 @@ cleanfigs:
 ## Recrunching
 ## Start building a pipeline for JD; still focused on poster, though
 
+Sources += corrected.R corrected_hist.R corrected_box.R
+
 corrected.Rout: corrected.R
+corrected_hist.Rout: corrected.Rout corrected_hist.R
+corrected_box.Rout: corrected.Rout corrected_box.R
 
 ######################################################################
 
