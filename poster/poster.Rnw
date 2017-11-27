@@ -100,6 +100,7 @@
 \end{center}
 % Local correction introduced by \cite{trapman2016inferring} accounts for degree distribution but not for any other structures. Observed GIs during an outbreak should implicitly take these structures into account and thus yield effective GIs when corrected for temporal bias.
 Patient-based GI observations do not account for spatial effects, while contact tracing introduces temporal bias (especially early in outbreaks). 
+GIs observed by contact tracing reflect effects of spatial structure, and can be temporally corrected.
 \end{block}
 }
 \end{minipage}
@@ -179,7 +180,7 @@ These do not match the known intrinsic GI, but do match the calculated local cor
 \textbf{Local correction partially accounts for spatial effects on an empirical network} \cite{leskovec2016snap}.
 (Left) Early contact-tracing intervals observed in simulation.
 (Right) Intervals corrected for censoring.
-The curves show estimates based on the intrinsic GI, with (orange) and without (green) the local correction \cite{trapman2016inferring}.
+The curves show the intrinsic GI, with and without the local correction \cite{trapman2016inferring}.
 The local correction requires an estimate of degree distribution, and either an explicit model structure (e.g., SEIR) or information about individual-level variation in infectiousness.
 \end{block}
 }
