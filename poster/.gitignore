@@ -2,6 +2,7 @@ commit.time
 commit.default
 target.mk
 .*.sw*
+*/.*.sw*
 
 *.Rout.pdf
 *.html
