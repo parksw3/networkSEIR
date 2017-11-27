@@ -42,7 +42,8 @@
         \end{itemize}
     }
 };
-\draw[->, very thick, dashed] (int) -- node [midway, left, text width=2cm] {Local correction} (local);
+\draw[->, very thick, dashed] (int) -- node [midway, left, text width=2cm, align=right] {local \\ spatial \\ correction} (local);
+\draw[->, very thick, dashed] (int) -- node [midway, right, text width=2cm] {\footnotesize{(discount \\ by survival \\ probability)}} (local);
 
 \node(eff)[bigcompartment, right=3.4cm of local, text width=6cm, bottom color=effc, fill opacity=0.7, text opacity=1]{
     \textbf{Effective GI}
@@ -64,12 +65,12 @@
 };
 
 \draw[->, very thick] (obs) -- node [text width=5cm, midway, left, align=right] {Temporal correction} (eff);
-\draw[->, very thick] (obs) -- node [text width=5cm, midway, right] {\footnotesize{weight observed periods by $\exp(r\tau)$}} (eff);
+\draw[->, very thick] (obs) -- node [text width=5cm, midway, right] {\footnotesize{(weight observed periods by $\exp(r\tau)$)}} (eff);
 
-\draw[<->, thick, dotted] (obs) -- node [text width=2cm, above]{\textbf{Homogeneous\\ assumption}}(int);
-\draw[<->, thick, dotted] (obs) -- node [text width=2cm, below]{Temporal correction}(int);
+\draw[<->, thick, dotted] (obs) -- node [text width=2cm, above]{\textbf{homogeneous\\ assumption}}(int);
+\draw[<->, thick, dotted] (obs) -- node [text width=2cm, below]{temporal correction}(int);
 
-\draw[->, very thick, dashed] (local) -- node [text width=3.1cm, above]{+ spatial structure}(eff);
+\draw[->, very thick, dashed] (local) -- node [text width=3.1cm, above]{network structure}(eff);
 % \node(patient)[above left=0cm and 0.2cm of int, rotate=90]{Patient based};
 \end{tikzpicture}
 

@@ -26,13 +26,14 @@ cleanfigs:
 ## Recrunching
 ## Start building a pipeline for JD; still focused on poster, though
 
-Sources += corrected.R corrected_hist.R corrected_box.R
+Sources += $(wildcard correct*.R) 
 
 jdpix: corrected_hist.Rout.pdf corrected_box.Rout.pdf diagram.pdf
 
 corrected.Rout: corrected.R
-corrected_hist.Rout: corrected.Rout corrected_hist.R
-corrected_box.Rout: corrected.Rout corrected_box.R
+correct_plots.Rout: corrected.Rout correct_plots.R
+corrected_hist.Rout: correct_plots.Rout corrected_hist.R
+corrected_box.Rout: correct_plots.Rout corrected_box.R
 
 ######################################################################
 

@@ -2,8 +2,6 @@ library(bbmle)
 library(igraph)
 library(tidyr)
 library(dplyr)
-library(ggplot2); theme_set(theme_bw())
-library(gridExtra)
 
 source("../sim/cmp_param.R")
 source("../R/generation.R")
@@ -101,8 +99,16 @@ local_fun <- function(tau) {
     sigma*(gamma+beta)/(gamma+beta-sigma) * (exp(-sigma*tau)-exp(-(gamma+beta)*tau))
 }
 
-observed_fun <- function(tau) {
+localCens_fun <- function(tau) {
     true.R0*sigma*(gamma+beta)/(gamma+beta-sigma) * (exp(-sigma*tau)-exp(-(gamma+beta)*tau)) * exp(-true.r*tau)
+}
+
+intrinsic_fun <- function(tau) {
+    sigma*gamma/(gamma-sigma) * (exp(-sigma*tau)-exp(-gamma*tau))
+}
+
+cens_fun <- function(tau) {
+    beta*sigma/(gamma-sigma) * (exp(-sigma*tau)-exp(-gamma*tau)) * exp(-true.r*tau)
 }
 
 empty.df <- data.frame(
@@ -111,62 +117,3 @@ empty.df <- data.frame(
     , group=c("local", "observed")
 ) %>%
     mutate(group=factor(group, level=.$group))
-    
-gg_base <- (
-    ggplot(generation)
-    + scale_x_continuous(name="Generation interval") 
-    + theme(
-        panel.grid = element_blank()
-        , panel.border=element_blank()
-        , axis.line.x=element_line()
-        , axis.title.y = element_blank()
-        , axis.text.y = element_blank()
-        , axis.ticks.y = element_blank()
-        , plot.title = element_text(hjust=0.5)
-    )
-)
-
-gg1 <- (
-    gg_base
-    + geom_histogram(
-        aes(interval, y=..density..)
-        , col='black', fill="#e7298a"
-        , alpha=0.5, boundary=0, bins=30) 
-    + geom_line(data=empty.df, aes(x, y, col=group), lwd=1.2)
-    + stat_function(fun=observed_fun, lwd=1.2, lty=1, xlim=c(0,10), col="#e7298a")
-    + stat_function(fun=local_fun, lwd=1.2, lty=1, xlim=c(0,10), col="#d95f02")
-    + scale_color_manual(values=c("#d95f02", "#e7298a"))
-    + ggtitle("Observed GI distributions")
-    + theme(
-        legend.position = c(0.85, 0.85)
-        , legend.title = element_blank()
-    )
-)
-
-gg2 <- (
-    gg_base
-    + geom_histogram(
-        aes(interval, y=..density.., weight=weight)
-        , fill="#7570b3", col='black'
-        , alpha=0.5, boundary=0, bins=30)
-    + stat_function(fun=observed_fun, lwd=1.2, lty=1, xlim=c(0,10), col="#e7298a")
-    + stat_function(fun=local_fun, lwd=1.2, lty=1, xlim=c(0,10), col="#d95f02")
-    + ggtitle("Corrected GI distributions")
-)
-
-gg_R <- (
-    ggplot(R0, aes(key, value, fill=key)) 
-    + geom_boxplot(alpha=0.5, width=0.7)
-    + scale_y_log10("Reproductive number", breaks=c(2, 5, 10, 20))
-    + scale_fill_manual(values=c("#e7298a", "#7570b3", 1, "#d95f02", "#66a61e") )
-    + facet_grid(~group, scale="free", space="free_x")
-    + theme(
-        panel.spacing = unit(0, "lines"),
-        strip.background = element_blank(),
-        legend.position = "none",
-        panel.grid=element_blank(),
-        axis.title.x=element_blank()
-    )
-)
-
-# gg_correction <- arrangeGrob(gg1, gg2, gg_R, nrow=1)
