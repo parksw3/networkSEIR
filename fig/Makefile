@@ -28,6 +28,8 @@ cleanfigs:
 
 Sources += corrected.R corrected_hist.R corrected_box.R
 
+jdpix: corrected_hist.Rout.pdf corrected_box.Rout.pdf diagram.pdf
+
 corrected.Rout: corrected.R
 corrected_hist.Rout: corrected.Rout corrected_hist.R
 corrected_box.Rout: corrected.Rout corrected_box.R
