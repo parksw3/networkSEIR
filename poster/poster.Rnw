@@ -177,7 +177,10 @@ These do not match the known intrinsic GI, but do match the calculated local cor
 \includegraphics[width=0.95\textwidth]{../fig/corrected_hist.Rout.pdf}
 \end{figure}
 \textbf{Local correction partially accounts for spatial effects on an empirical network} \cite{leskovec2016snap}.
-This correction requires an estimate of degree distribution, and either an explicit model structure (like SEIR) or information about individual-level variation in infectiousness.
+(Left) Early contact-tracing intervals observed in simulation.
+(Right) Intervals corrected for censoring.
+The curves show estimates based on the intrinsic GI, with (ORANGE?) and without (GREEN?) the local correction \cite{trapman2016inferring}.
+The local correction requires an estimate of degree distribution, and either an explicit model structure (e.g., SEIR) or information about individual-level variation in infectiousness.
 \end{block}
 }
 \end{minipage}
@@ -216,7 +219,7 @@ Local correction of intrinsic GIs \cite{trapman2016inferring} is difficult and a
       \begin{minipage}[T]{.95\textwidth}
         \parbox[t][36cm]{\textwidth}{ 
 
-\vspace{-1 cm} % shouldn't need this??
+% \vspace{-1 cm} % shouldn't need this??
 \begin{block}{Conclusion and future direction}
 \noindent
 \hspace{-1.6cm}
