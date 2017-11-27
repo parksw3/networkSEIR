@@ -190,19 +190,16 @@ This correction requires an estimate of degree distribution, and either an expli
         \parbox[t][36cm]{\textwidth}{
 
 \vspace{-1 cm} % shouldn't need this??
-\begin{block}{Local correction on an idealized network}
+\begin{block}{Estimating \R\ on an empirical network}
 \noindent
 \hspace{-1.6cm}
 \begin{figure}
 \includegraphics[width=0.95\textwidth]{../fig/corrected_box.Rout.pdf}
 \end{figure}
-\textbf{Effects of locality on GI can be calculated in simple cases.} 
-Local spatial effects make GIs shorter, because repeated contacts only infect the first time. 
-(Left) Observed GIs from simulations on idealized, strictly local networks.
-% (per neighbor contact rate of 0.2 $\text{time}^{-1}$).
-These do not match the known intrinsic GI, but do match the calculated local correction. 
-(Right) If a disease is spreading on a network, calculations based on the (longer) intrinsic GI will lead to over-estimates of $\R$. The local correction accounts for local effects, but not other network effects
-\cite{trapman2016inferring}.
+\textbf{Appropriate corrections improve estimates.} 
+Estimates of \R\ using directly observed GIs either result in under-estimates (contact tracing) or over-estimates (intrinsic).
+Temporal correction of censored contact-tracing GIs can produce unstable estimates.
+Local correction of intrinsic GIs \cite{trapman2016inferring} is difficult and approximate. 
 \end{block}
 }
 \end{minipage}
