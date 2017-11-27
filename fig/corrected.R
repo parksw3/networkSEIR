@@ -47,19 +47,38 @@ r <- lapply(
     }
 )
 
+######################################################################
+
 findr <- function(r) (gamma+r)*(sigma+r)/((kappa-1)*sigma-r)-beta
 
 true.r <- uniroot(findr, c(0, 2))$root
-
 mean.r <- mean(unlist(r))
 
 R0fun <- function(r) (1+r/gamma)*(1+r/sigma)
+intrinsic.R0 <- R0fun(true.r)
+intrinsic.R0_est <- R0fun(mean.r)
 
 R0fun.network <- function(r) (gamma+r)/(gamma*sigma/(sigma+r)+r/kappa)
+network.R0 <- R0fun.network(true.r)
+network.R0.est <- R0fun.network(mean.r)
 
-intrinsic.R0 <- R0fun(mean.r)
+local_fun <- function(tau) {
+    sigma*(gamma+beta)/(gamma+beta-sigma) * (exp(-sigma*tau)-exp(-(gamma+beta)*tau))
+}
 
-true.R0 <- R0fun.network(true.r)
+localCens_fun <- function(tau) {
+    network.R0.est*sigma*(gamma+beta)/(gamma+beta-sigma) * (exp(-sigma*tau)-exp(-(gamma+beta)*tau)) * exp(-mean.r*tau)
+}
+
+intrinsic_fun <- function(tau) {
+    sigma*gamma/(gamma-sigma) * (exp(-sigma*tau)-exp(-gamma*tau))
+}
+
+cens_fun <- function(tau) {
+    intrinsic.R0_est*sigma*gamma/(gamma-sigma) * (exp(-sigma*tau)-exp(-gamma*tau)) * exp(-mean.r*tau)
+}
+
+######################################################################
 
 generation <- (
     censor.gi 
@@ -94,23 +113,6 @@ R0 <- (
     %>% as.tbl
     %>% merge(R0.group)
 )
-
-local_fun <- function(tau) {
-    sigma*(gamma+beta)/(gamma+beta-sigma) * (exp(-sigma*tau)-exp(-(gamma+beta)*tau))
-}
-
-localCens_fun <- function(tau) {
-    true.R0*sigma*(gamma+beta)/(gamma+beta-sigma) * (exp(-sigma*tau)-exp(-(gamma+beta)*tau)) * exp(-true.r*tau)
-}
-
-intrinsic_fun <- function(tau) {
-    sigma*gamma/(gamma-sigma) * (exp(-sigma*tau)-exp(-gamma*tau))
-}
-
-cens_fun <- function(tau) {
-    beta*sigma/(gamma-sigma) * (exp(-sigma*tau)-exp(-gamma*tau)) * exp(-true.r*tau)
-}
-
 empty.df <- data.frame(
     x=c(0.1, 0.1)
     , y=c(0.1, 0.1)
