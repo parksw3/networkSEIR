@@ -1,9 +1,9 @@
- %\documentclass[final,hyperref={hidelinks,pdfpagelabels=false}]{beamer}
+%\documentclass[final,hyperref={hidelinks,pdfpagelabels=false}]{beamer}
 \documentclass[20pt]{beamer}
 %% reset default
 \mode<presentation>{\usetheme{mcmaster}}
     
-\usepackage{wrapfig}
+\usepackage{wrapfig,grffile}
 \usepackage{amsmath,amsthm, amssymb}
 
 %% You can change the poster orientation (portrait vs. landscape) and the paper size (a0, a1, &c.) here:
@@ -160,31 +160,56 @@ These do not match the known intrinsic GI, but do match the calculated local cor
 \end{beamercolorbox}
 \end{column}
 \end{columns}
+\vspace{0.5cm}
 
-\begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
+\begin{columns}
+\begin{column}{0.58\textwidth}
+    \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
       \begin{minipage}[T]{.95\textwidth}
-        \parbox[t][31cm]{\textwidth}{ 
+        \parbox[t][36cm]{\textwidth}{ 
 
 \vspace{-1 cm} % shouldn't need this??
-\begin{block}{Simulation on an empirical network}
+\begin{block}{Estimating GIs on an empirical network}
 \noindent
 \hspace{-1.6cm}
 \begin{figure}
-\vspace{-0.5 cm}
-\includegraphics[width=0.95\textwidth]{../fig/corrected_GI.pdf}
-\vspace{-0.5 cm}
+\includegraphics[width=0.95\textwidth]{../fig/corrected_hist.Rout.pdf}
 \end{figure}
-\textbf{Reproductive number predicted by using the corrected GI distributions (effective GI) matches empirical estimate of the reproductive number.} 
-(Left) Contact tracing data provides longer GI ($\approx$ 1.1 units; histogram) than predicted GI ($\approx$ 1 unit; solid curve - ``observed'') from local correction.
-(Right) Effective GI ($\approx$ 2.1 units; histogram), obtained by temporally correcting contact-tracing data, is shorter than locally corrected GI ($\approx$ 2.4 units; solid curve - ``local'') or intrinsic GI (3 units; not shown).
-Individual-based observations (intrinsic) are expected to overestimate the GI and therefore $\R$. Contact tracing observations (uncorrected) are expected to underestimate the GI and $\R$. 
-Temporally correcting contact tracing observations yield effective GI and estimate $\R$ similar to empirical $\R$ (mean number of individuals infected by first 100 infectees). 
-Temporally correcting contact tracing data is sensitive to long GIs and can overestimate $\R$.
-Stochastic SEIR model simulated on an empirical network \cite{leskovec2016snap}.
+\textbf{Local correction partially accounts for spatial effects on an empirical network} \cite{leskovec2016snap}.
+This correction requires an estimate of degree distribution, and either an explicit model structure (like SEIR) or information about individual-level variation in infectiousness.
 \end{block}
 }
 \end{minipage}
 \end{beamercolorbox}
+
+\end{column}
+
+\begin{column}{0.42\textwidth}
+    \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
+      \begin{minipage}[T]{.95\textwidth}
+        \parbox[t][36cm]{\textwidth}{
+
+\vspace{-1 cm} % shouldn't need this??
+\begin{block}{Local correction on an idealized network}
+\noindent
+\hspace{-1.6cm}
+\begin{figure}
+\includegraphics[width=0.95\textwidth]{../fig/corrected_box.Rout.pdf}
+\end{figure}
+\textbf{Effects of locality on GI can be calculated in simple cases.} 
+Local spatial effects make GIs shorter, because repeated contacts only infect the first time. 
+(Left) Observed GIs from simulations on idealized, strictly local networks.
+% (per neighbor contact rate of 0.2 $\text{time}^{-1}$).
+These do not match the known intrinsic GI, but do match the calculated local correction. 
+(Right) If a disease is spreading on a network, calculations based on the (longer) intrinsic GI will lead to over-estimates of $\R$. The local correction accounts for local effects, but not other network effects
+\cite{trapman2016inferring}.
+\end{block}
+}
+\end{minipage}
+\end{beamercolorbox}
+\end{column}
+\end{columns}
+
 
 \begin{columns}
 \begin{column}{0.5\textwidth}

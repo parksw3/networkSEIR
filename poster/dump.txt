@@ -1,0 +1,6 @@
+{Reproductive number predicted by using the corrected GI distributions (effective GI) matches empirical estimate of the reproductive number.} 
+(Left) Contact tracing data provides longer GI ($\approx$ 1.1 units; histogram) than predicted GI ($\approx$ 1 unit; solid curve - ``observed'') from local correction.
+(Right) Effective GI ($\approx$ 2.1 units; histogram), obtained by temporally correcting contact-tracing data, is shorter than locally corrected GI ($\approx$ 2.4 units; solid curve - ``local'') or intrinsic GI (3 units; not shown).
+Individual-based observations (intrinsic) are expected to overestimate the GI and therefore $\R$. Contact tracing observations (uncorrected) are expected to underestimate the GI and $\R$. 
+Temporally correcting contact tracing observations yield effective GI and estimate $\R$ similar to empirical $\R$ (mean number of individuals infected by first 100 infectees). 
+Temporally correcting contact tracing data is sensitive to long GIs and can overestimate $\R$.

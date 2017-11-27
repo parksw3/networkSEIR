@@ -13,13 +13,15 @@ Sources = Makefile .gitignore README.md LICENSE.md
 
 ## Content
 
-Sources += notes.md
+Sources += notes.md dump.txt
 
 Sources += poster.Rnw
 
 poster.pdf: poster.Rnw
 
 poster.pdf: poster.bbl
+
+../fig/diagram.pdf: ;
 
 # pull: cleanposter
 cleanposter:
