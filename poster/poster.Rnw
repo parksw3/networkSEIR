@@ -166,7 +166,8 @@ These do not match the known intrinsic GI, but do match the calculated local cor
 \begin{column}{0.58\textwidth}
     \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
       \begin{minipage}[T]{.95\textwidth}
-        \parbox[t][36cm]{\textwidth}{ 
+        \parbox[t]{\textwidth}{ 
+        % \parbox[t][36cm]{\textwidth}{ 
 
 \vspace{-1 cm} % shouldn't need this??
 \begin{block}{Estimating GIs on an empirical network}
@@ -187,7 +188,8 @@ This correction requires an estimate of degree distribution, and either an expli
 \begin{column}{0.42\textwidth}
     \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
       \begin{minipage}[T]{.95\textwidth}
-        \parbox[t][36cm]{\textwidth}{
+        % \parbox[t][36cm]{\textwidth}{
+        \parbox[t]{\textwidth}{
 
 \vspace{-1 cm} % shouldn't need this??
 \begin{block}{Estimating \R\ on an empirical network}
@@ -199,7 +201,7 @@ This correction requires an estimate of degree distribution, and either an expli
 \textbf{Appropriate corrections improve estimates.} 
 Estimates of \R\ using directly observed GIs either result in under-estimates (contact tracing) or over-estimates (intrinsic).
 Temporal correction of censored contact-tracing GIs can produce unstable estimates.
-Local correction of intrinsic GIs \cite{trapman2016inferring} is difficult and approximate. 
+Local correction of intrinsic GIs \cite{trapman2016inferring} is difficult and approximate (previous box). 
 \end{block}
 }
 \end{minipage}
@@ -234,9 +236,9 @@ Local correction of intrinsic GIs \cite{trapman2016inferring} is difficult and a
 \begin{column}{0.5\textwidth}
     \begin{beamercolorbox}[center,wd=\textwidth]{postercolumn}
       \begin{minipage}[T]{.95\textwidth}
-        \parbox[t][36cm]{\textwidth}{ 
+        \parbox[t][24cm]{\textwidth}{ 
 
-\vspace{-1 cm} % shouldn't need this??
+\vspace{-5cm} % shouldn't need this??
 \begin{block}{Bibliography}
 \noindent
 \hspace{-1.6cm}
