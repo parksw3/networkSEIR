@@ -36,3 +36,30 @@ network.generation <- function(x, plot=TRUE,
     invisible(ng)
 }
 
+generation.data <- function(x,
+                            incidence.report=0.6,
+                            generation.report=0.5,
+                            cutoff=3 ## week
+                            ) {
+    index <- which(!is.na(x$t_infected))
+    index <- index[order(x$t_infected[index])]
+    
+    incidence.index <- index[runif(length(index)) < incidence.report]
+    
+    generation.index <- incidence.index[runif(length(incidence.index)) < generation.report]
+    
+    df <- data.frame(
+        index=incidence.index,
+        t_infected=x$t_infected[incidence.index],
+        case=1:length(incidence.index),
+        gen=NA
+    )
+    
+    df$gen[match(generation.index, incidence.index)] <- x$t_infected[generation.index] - x$t_infected[x$infected_by[generation.index]]
+    
+    df$week <- floor(df$t_infected/7)
+    
+    df[df$week > cutoff,]
+}
+
+
