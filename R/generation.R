@@ -37,12 +37,12 @@ network.generation <- function(x, plot=TRUE,
 }
 
 generation.data <- function(x,
-                            incidence.report=0.6,
-                            generation.report=0.5,
-                            cutoff=3 ## week
+                            incidence.report=1,
+                            generation.report=1,
+                            cutoff=200
                             ) {
     index <- which(!is.na(x$t_infected))
-    index <- index[order(x$t_infected[index])]
+    index <- index[tail(order(x$t_infected[index]), -cutoff)]
     
     incidence.index <- index[runif(length(index)) < incidence.report]
     
@@ -51,7 +51,7 @@ generation.data <- function(x,
     df <- data.frame(
         index=incidence.index,
         t_infected=x$t_infected[incidence.index],
-        case=1:length(incidence.index),
+        case=1:length(incidence.index)+cutoff,
         gen=NA
     )
     
@@ -59,5 +59,5 @@ generation.data <- function(x,
     
     df$week <- floor(df$t_infected/7)
     
-    df[df$week > cutoff,]
+    df[df$week > min(df$week) & df$week < max(df$week),]
 }

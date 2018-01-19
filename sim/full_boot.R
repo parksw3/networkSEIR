@@ -17,7 +17,7 @@ for (i in 1:100) {
     sim <- reslist[[i]]
     rlist[[i]] <- replicate(1, {
         data <- generation.data(sim)
-        bres <- generation.bootstrap(data)
+        bres <- generation.bootstrap(data, method="half")
         
         bres$coverage <- c(
             bres[1,3] < true.gen && true.gen < bres[1,4],

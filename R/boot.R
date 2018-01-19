@@ -20,7 +20,7 @@ bootfun <- function(data, method=c("resample", "half")) {
     c(gen=weighted.mean(gen, exp(r*gen)), R=mean(exp(r*gen)), r=r)
 }
 
-generation.bootstrap <- function(data, level=0.95, nsim=1000) {
+generation.bootstrap <- function(data, level=0.95, nsim=1000, method=c("resample", "half")) {
     l <- (1-level)/2
 
     gen <- data$gen
@@ -31,7 +31,7 @@ generation.bootstrap <- function(data, level=0.95, nsim=1000) {
     fit <- lm(log(case)~sort(unique(data$week)))
     r <- coef(fit)[2]/7
     
-    res <- apply(replicate(nsim,bootfun(data)), 1, quantile, c(l, 1-l), na.rm=TRUE)
+    res <- apply(replicate(nsim,bootfun(data, method)), 1, quantile, c(l, 1-l), na.rm=TRUE)
     rownames(res) <- NULL
     
     data.frame(
