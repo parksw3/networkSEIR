@@ -1,5 +1,12 @@
-bootfun <- function(data) {
-    index <- (1:nrow(data))[runif(nrow(data)) < 0.5]
+bootfun <- function(data, method=c("resample", "half")) {
+    method <- match.arg(method)
+    
+    if (method=="resample") {
+        index <- sample(1:nrow(data), nrow(data), replace=TRUE)
+    } else {
+        index <- (1:nrow(data))[runif(nrow(data)) < 0.5]
+    }
+    
     filter.data <- data[index,]
     
     gen <- filter.data$gen
@@ -7,7 +14,7 @@ bootfun <- function(data) {
     
     case <- as.vector(table(filter.data$week))
     
-    fit <- lm(log(case)~unique(filter.data$week))
+    fit <- lm(log(case)~sort(unique(filter.data$week)))
     r <- coef(fit)[2]/7
     
     c(gen=weighted.mean(gen, exp(r*gen)), R=mean(exp(r*gen)), r=r)
@@ -21,10 +28,11 @@ generation.bootstrap <- function(data, level=0.95, nsim=1000) {
     
     case <- as.vector(table(data$week))
     
-    fit <- lm(log(case)~unique(data$week))
+    fit <- lm(log(case)~sort(unique(data$week)))
     r <- coef(fit)[2]/7
     
     res <- apply(replicate(nsim,bootfun(data)), 1, quantile, c(l, 1-l), na.rm=TRUE)
+    rownames(res) <- NULL
     
     data.frame(
         type=c("gen", "R", "r"),

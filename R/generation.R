@@ -61,5 +61,3 @@ generation.data <- function(x,
     
     df[df$week > cutoff,]
 }
-
-
