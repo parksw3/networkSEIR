@@ -9,8 +9,8 @@ reslist <- vector('list', nsim)
 i <- 1
 while (i <= nsim) {
     print(i)
-    rr <- seir.full(N, beta/N, sigma, gamma, I0 = 50, imax=1000)
-    if(nrow(rr$data) > 1500) {
+    rr <- seir.full(N, beta/N, sigma, gamma, I0 = 1)
+    if(nrow(rr$data) > 3000) {
         reslist[[i]] <- rr
         i <- i+1
     }

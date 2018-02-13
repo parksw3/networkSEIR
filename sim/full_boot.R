@@ -1,3 +1,5 @@
+library(bbmle)
+
 source("../sim/full_param2.R")
 source("../R/generation.R")
 source("../R/empirical.R")
@@ -16,7 +18,7 @@ for (i in 1:100) {
     cat(i)
     sim <- reslist[[i]]
     rlist[[i]] <- replicate(1, {
-        data <- generation.data(sim)
+        data <- generation.data(sim, tmax=90, cutoff=1)
         bres <- generation.bootstrap(data, method="half")
         
         bres$coverage <- c(
