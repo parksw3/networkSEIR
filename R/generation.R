@@ -37,29 +37,35 @@ network.generation <- function(x, plot=TRUE,
 }
 
 generation.data <- function(x,
-                            incidence.report=1,
-                            generation.report=1,
-                            cutoff=100,
-                            tmax=30
+                            imin=10,
+                            imax=100
                             ) {
     index <- which(!is.na(x$t_infected))
-    index <- index[tail(order(x$t_infected[index]), -cutoff)]
+    t_infected <- x$t_infected[index]
     
-    incidence.index <- index[runif(length(index)) < incidence.report]
+    tday <- table(floor(t_infected))
     
-    generation.index <- incidence.index[runif(length(incidence.index)) < generation.report]
+    day <- as.numeric(names(tday))
+    
+    case <- as.vector(tday)
+    
+    firstday <- day[head(which(case >= imin),1)]
+    lastday <- day[head(which(case >= imax),1)]
+    
+    index <- index[t_infected >= firstday & t_infected <= (lastday+1)]
+    
+    index <- index[order(x$t_infected[index])]
     
     df <- data.frame(
-        index=incidence.index,
-        t_infected=x$t_infected[incidence.index],
-        case=1:length(incidence.index)+cutoff,
+        index=index,
+        t_infected=x$t_infected[index],
+        case=1:length(index),
         gen=NA
     )
     
-    df$gen[match(generation.index, incidence.index)] <- x$t_infected[generation.index] - x$t_infected[x$infected_by[generation.index]]
+    df$gen <- x$t_infected[index] - x$t_infected[x$infected_by[index]]
     
-    df$week <- floor(df$t_infected/7)
     df$day <- floor(df$t_infected)
     
-    df[df$day > min(df$day) & df$day < min(df$day)+tmax,]
+    df
 }
