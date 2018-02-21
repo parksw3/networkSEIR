@@ -18,6 +18,7 @@
 
 \newcommand{\Ro}{\mathcal{R}_0}
 \newcommand{\Rr}{\mathcal{R}}
+\newcommand{\tsub}[2]{#1_{{\textrm{\tiny #2}}}}
 
 \begin{document}
 \maketitle
@@ -58,157 +59,55 @@ Then,
 c_t(\tau) = \frac{\Ro \int_{\tau}^t i(s-\tau) S(s) ds}{\int_0^t i(s) ds} g(\tau)
 \end{equation}
 
-During an early outbreak, incidence grows exponentially ($i(t) = i(0)\exp(rt)$) and proportion susceptible doesn't change very much. So we can write this as
+We are going to come back to these later. Rather we want to focus on temporal correction first.
+
+\section{Temporal correction}
+
+During an exponential growth period, censored generation interval can be written as follows:
 \begin{equation}
-c_t (\tau) = \Rr g(\tau) \exp(-r\tau) \frac{ \int_{\tau}^t \exp(r s) ds}{\int_0^t \exp(rs) ds},
+\tsub{g}{obs}(\tau) = \Rr g(\tau) \exp(-r\tau),
 \end{equation}
-where $\Rr = \Ro S$. Does this mean anything?
-
-We're also interested in $c_\infty(\tau)$. This is something people can study after the outbreak.
+This is generation interval distributions we expect to observe during an early outbreak (growing at rate $r$).
+Hence, to recover the intrinsic generation interval distributions, we can take the weighted distribution of the observed distribution:
 \begin{equation}
-c_\infty(\tau) = \frac{\Ro \int_{\tau}^\infty i(s-\tau) S(s) ds}{\int_0^\infty i(s) ds} g(\tau)
+g(\tau) = \frac{1}{\Rr} \tsub{g}{obs}(\tau) \exp(r\tau).
 \end{equation}
-
-\subsection{SIR model}
-
-First, let's start with the simplest case: SIR model.
+Furthermore, $\Rr$ should be estimated by
 \begin{equation}
-\begin{aligned}
-\frac{dS}{dt} &= - \frac{\beta}{N} S I\\
-\frac{dI}{dt} &= \frac{\beta}{N} SI - \gamma I\\
-\frac{dR}{dt} &= \gamma I
-\end{aligned}
+\Rr = \int_0^\infty \tsub{g}{obs}(\tau) \exp(r\tau) d\tau
 \end{equation}
-For this model, intrinsic generation interval distributions follows an exponential distribution with rate parameter $\gamma$.
-
-Let's see how mean censored GI changes
-
-<<load, warning=FALSE, message=FALSE, echo=FALSE>>==
-library(deSolve)
-library(igraph)
-source("../R/seir.R")
-source("../R/generation.R")
-@
-
-
-<<sir, echo=FALSE, fig.height=4, fig.width=6, cache=TRUE>>==
-seir.ode <- function(t, y, parms) {
-    with(as.list(c(y, parms)), {
-        dS <- -beta/N*S*I
-        dE <- beta/N*S*I - sigma*E
-        dI <- sigma*E - gamma*I
-        list(c(dS, dE, dI))
-    })
-}
-
-parms <- list(beta=2, sigma=0.5, gamma=1, N=20000)
-y <- c(S = parms$N-1, E=0, I=1)
-
-dt <- 0.01
-tmax <- 80
-t <- seq(0, tmax, dt)
-out <- as.data.frame(ode(y, t, seir.ode, parms))
-incidence <- parms$beta*out$S*out$I/parms$N*dt
-
-gen <- function(tau) parms$sigma*parms$gamma/(parms$sigma - parms$gamma) * (exp(-parms$gamma*tau)-exp(-parms$sigma*tau))
-
-cg <- function(tau, tmax) {
-    t <- t[t<tmax]
-    total <- sum(incidence)
-
-    i <- which(t>tau)
-
-    2*sum(incidence[1:length(i)] * out$S[i]/1000)/total*gen(tau)
-}
-
-ff <- function(tmax) {
-    t <- t[t <= tmax]
-    
-    dc <- sapply(t, cg, tmax=tmax)
-    sum(dc*t)/sum(dc)
-}
-
-tau <- seq(0.5, tmax, 0.5)
-cm <- sapply(tau, ff)
-
-plot(tau, cm, type="l", ylim=c(0,4), ylab="mean censored GI", xlab="time")
-abline(h=1/parms$gamma+1/parms$sigma, lty=2)
-@
-
-Let's compare this curve with what we observe on a homogeneous network ($\beta=2, \gamma=1, N=4000, I(0)=1$):
-
-<<network.sir, echo=FALSE, fig.height=4, fig.width=6, cache=TRUE>>==
-beta <- parms$beta/parms$N
-sigma <- parms$sigma
-gamma <- parms$gamma
-
-nsim <- 10
-
-set.seed(102)
-reslist <- vector('list', nsim)
-i <- 1
-while (i <= nsim) {
-    print(i)
-    rr <- seir.full(parms$N, beta, sigma, gamma, I0 = 1)
-    if(nrow(rr$data) > 100) {
-        reslist[[i]] <- rr
-        i <- i+1
-    }
-}
-
-di <- 1
-ii <- seq(0, 70, by=di)
-
-censor.interval <- vector('list', length(ii))
-censor.mean <- rep(NA, length(ii))
-
-for (i in 1:length(ii)) {
-    censor.interval[[i]] <- lapply(reslist, function(res){
-        network.generation(res, plot=FALSE, type="backward", interval=c(0, ii[i]+di))
-    }) 
-    censor.mean[i] <- mean(unlist(censor.interval[[i]]))
-}
-
-plot(ii+di, censor.mean, xlab="time", ylab="mean censored GI")
-lines(tau, cm, type="l", ylim=c(0,1), ylab="mean censored GI", xlab="time")
-abline(h=1/parms$gamma+1/parms$sigma, lty=2)
-@
-
-Other than noise due to stochasticity in the beginning, this looks pretty good. I think this brings an important point. People will often analyze epidemic data after it's over and what not and try to make inference but this tells us that using the contact tracing data based on the entire epidemic underestimate the mean generation intervals distribution and hence $\Ro$!
-
-\section{Adding network}
-
-Notice that we can also write
+This contrasts with the well-known Euler-Lotka equation:
 \begin{equation}
-c_t(\tau) = \frac{\int_{\tau}^t i(s-\tau) S(s) ds}{\int_0^t i(s) ds} K(\tau)
+\Rr = 1\left/\int_0^\infty g(\tau) \exp(-r\tau) d\tau\right.
 \end{equation}
-So my guess is that we can replace this with an approximated network kernel to obtain censored GI distributions on a network and use observed incidence? This might be a good place to go back to the tree network.
+Using this equation will lead to underestimation of $\Rr$ as well as mean generation interval (I think we can prove this using weighted AM-HM ineqaulity).
 
-\subsection{Recovering GI distributions}
+\subsection{Numerical analysis}
 
-In the exponential phase, we observe the following:
-\begin{equation}
-c_t (\tau) = K(\tau) \exp(-r\tau) \frac{ \int_{\tau}^t \exp(r s) ds}{\int_0^t \exp(rs) ds},
-\end{equation}
-Since we can measure everything, except the kernel, we should be able to recover parts of kernel (before time $t$) by solving this numerically.
-
-\subsubsection{Homogeneous network}
-
-<<>>===
-texp <- 6
-
-lapply(reslist, function(res){
-    df <- res$data
-    expdf <- df[df$infected > 200 & df$infected < 400,]
-    r <- lm(log(infected)~time, expdf)$coefficients[2]
-})
-
-which(ii==texp)
-
-exp.interval <- unlist(censor.interval[[texp]])
+Consider the Ebola epidemic. 
 
 
-@
+\subsection{Simulation study - deterministic framework}
+
+We simulate an epidemic with Ebola parameters assuming $\Rr = 2$ with a population size of 60000. We study the epidemic when daily cases range between 20 and 200. For simplicity, we do not assume any under-reportings.
+Little $r$ is estimated by fitting an exponential curve with negative binomial error through maximum likelihood.
+Confidence interval is constructed using normal approximation.
+Confidence interval for mean generation interval and $\Rr$ is constructed by bootstrapping sample of generation intervals and drawing a random value for $r$ from normal distribution using its estimated mean and standard error from MLE.
+
+First, we can look at the estimates:
+
+\includegraphics[width=\textwidth]{../fig/estimate.pdf}
+
+Everything is underestimated. It seems to be driven by underestimation of little $r$ but I'm not sure why (and this is probably affecting coverage). Maybe we want to simulate the epidemic longer? We can see that uncorrected estimates yield much lower mean generation interval (gen) and $\Rr$. Let's look at the coverage:
+
+\includegraphics[width=\textwidth]{../fig/coverage.pdf}
+
+Coverage also sucks. I used to get higher coverage when I was being less careful... I don't think it's possible to get nominal coverage using a deterministic framework (see \cite{king2015avoidable}). I was wondering whether underestimation of little $r$ (and hence its coverage) affects other estimates. So I tried taking simulations where true little $r$ is covered by confidence interval.
+
+\includegraphics[width=\textwidth]{../fig/coverage2.pdf}
+
+$\Rr$ coverage increases but mean generation interval coverage seems to stay the same. We need to think of a more statistically robust method that somehow accounts for process error and is simple. I want to stick with the intuition...
+
 
 
 

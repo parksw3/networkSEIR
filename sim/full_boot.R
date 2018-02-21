@@ -1,5 +1,7 @@
 library(bbmle)
 library(MASS)
+library(tidyr)
+library(dplyr)
 
 source("../sim/full_param2.R")
 source("../R/generation.R")
@@ -26,8 +28,11 @@ for (i in 1:100) {
         
         bres$coverage <- c(
             bres[1,3] < true.gen && true.gen < bres[1,4]
-            , bres[2,3] < true.R && true.R < bres[2,4]
-            , bres[3,3] < true.r && true.r < bres[3,4]
+            , bres[2,3] < true.r && true.r < bres[2,4]
+            , bres[3,3] < true.R && true.R < bres[3,4]
+            , bres[4,3] < true.gen && true.gen < bres[4,4]
+            , bres[5,3] < true.r && true.r < bres[5,4]
+            , bres[6,3] < true.R && true.R < bres[6,4]
         )
         
         if (verbose) print(bres)
