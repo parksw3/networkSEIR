@@ -23,8 +23,23 @@
 \begin{document}
 \maketitle
 
-\section{Censored generation interval distributions}
+\section{Generation interval}
 
+Let $K(t)$ be the infection kernel. Then, the basic reproduction number is defined as
+$$
+\Ro = \int_0^\infty K(t).
+$$
+The intrinsic generation interval distributions [CITE] can be written as
+$$
+g(t) = \frac{K(t)}{\Ro}.
+$$
+We can think of intrinsic generation interval distribution as an intrinsic characteristic of an infector, as suggested by its name.
+Here, we look at spatio-temporal components associated with generation interval distribution.
+
+\section{Temporal variation - Contact tracing}
+
+Generation and serial intervals are often sampled through contact tracing.
+For simplicity, suppose contact tracing is performed during an outbreak from the beginning of an epidemic to some time point.
 Following \cite{champredon2015intrinsic}, we can write the number of infection occuring at time $t$ caused by infectors who were themselves infected at time $s$ as
 \begin{equation}
 i_s(t) = K(t-s) i(s) S(t)
@@ -34,43 +49,44 @@ Writing the kernel as the product of the intrinsic genreation distributions and 
 i_s(t) = \Ro g(t-s) i(s) S(t)
 \end{equation}
 
-The censored generation interval distributions is what is often measured and we have to account for all infections that happen before time $t$.
+We define censored generation interval distributions as what is measured through contact tracing.
 Note that number of infection occuring at time $s$ caused by infectors who were themselves infected at time $s-\tau$ is given by 
 \begin{equation}
 i_{s-\tau}(s) = \Ro i(s-\tau) g(\tau) S(s)
 \end{equation}
-Normalizing this gives the backward generation interval distributions of the cohorts at time $s$ but we are interested in all infections that are $\tau$ time steps apart before time $t$:
+Note we are interested in total number of secondary infections that are $\tau$ time steps apart and occur before time $t$:
 \begin{equation}
 \Ro \int_\tau^t i(s-\tau) g(\tau) S(s) ds.
 \end{equation}
-Then, the censored generation interval is given by
+Then, the censored generation interval at time $t$ is given by
 \begin{equation}
-c_t(\tau)= \frac{\int_\tau^t i(s-\tau) g(\tau) S(s) ds}{\int_0^t \int_x^t i(s-x) g(x) S(s) ds dx}.
+c_t(\tau)= \frac{\Ro \int_\tau^t i(s-\tau) g(\tau) S(s) ds}{\Ro \int_0^t \int_x^t i(s-x) g(x) S(s) ds dx}.
 \end{equation}
-We note that the denominater is basically cumulative incidence up to time $t$ divided by $\Ro$. The stragihtforward intuition behind this is that we are normalizing by all incidence before time $t$. Mathematically, we have the following:
+We note that the expression in the denominater is equivalent to cumulative incidence at time $t$. 
+The intuition behind this is that we are normalizing acrosss all incidence before time $t$.
+Then, we have
 \begin{equation}
-\begin{aligned}
-\Ro \int_0^t \int_x^t i(s-x) g(x) S(s) ds dx &= \int_0^t \Ro S(s) \int_0^s i(s-x) g(x)  dx ds\\
-&= \int_0^t i(s) ds
-\end{aligned}
+c_t(\tau) = \frac{\Ro \int_\tau^t i(s-\tau) g(\tau) S(s) ds}{\int_0^t i(s) ds}.
 \end{equation}
-Then,
+For convenience, we ignore normalizing constants and write
 \begin{equation}
-c_t(\tau) = \frac{\Ro \int_{\tau}^t i(s-\tau) S(s) ds}{\int_0^t i(s) ds} g(\tau)
+c_t(\tau) \propto g(\tau) \int_{0}^t i(s-\tau) S(s) ds.
 \end{equation}
 
-We are going to come back to these later. Rather we want to focus on temporal correction first.
+Note that the observed mean generation interval through contact tracing will always be shorter be shorter than intrinsic mean generation interval.
+In the following subsection, we show how to correct for this.
 
-\section{Temporal correction}
+\subsection{Temporal correction}
 
-During an exponential growth period, censored generation interval can be written as follows:
+During an exponential growth period, we can write $i(\tau) \propto \exp(r t)$.
+Assuming that $S(t) \approx 1$, censored generation interval distribution can be written as follows:
 \begin{equation}
 \tsub{g}{obs}(\tau) = \Rr g(\tau) \exp(-r\tau),
 \end{equation}
 This is generation interval distributions we expect to observe during an early outbreak (growing at rate $r$).
 Hence, to recover the intrinsic generation interval distributions, we can take the weighted distribution of the observed distribution:
 \begin{equation}
-g(\tau) = \frac{1}{\Rr} \tsub{g}{obs}(\tau) \exp(r\tau).
+g(\tau) = \frac{1}{\Rr} \tsub{g}{exp}(\tau) \exp(r\tau).
 \end{equation}
 Furthermore, $\Rr$ should be estimated by
 \begin{equation}
@@ -80,35 +96,24 @@ This contrasts with the well-known Euler-Lotka equation:
 \begin{equation}
 \Rr = 1\left/\int_0^\infty g(\tau) \exp(-r\tau) d\tau\right.
 \end{equation}
-Using this equation will lead to underestimation of $\Rr$ as well as mean generation interval (I think we can prove this using weighted AM-HM ineqaulity).
-
-\subsection{Numerical analysis}
-
-Consider the Ebola epidemic. 
+Using the censored generation interval without correction leads to underestimation of $\Rr$ as well as mean generation interval.
 
 
-\subsection{Simulation study - deterministic framework}
+\section{Spatial variation - Effective generation interval}
 
-We simulate an epidemic with Ebola parameters assuming $\Rr = 2$ with a population size of 60000. We study the epidemic when daily cases range between 20 and 200. For simplicity, we do not assume any under-reportings.
-Little $r$ is estimated by fitting an exponential curve with negative binomial error through maximum likelihood.
-Confidence interval is constructed using normal approximation.
-Confidence interval for mean generation interval and $\Rr$ is constructed by bootstrapping sample of generation intervals and drawing a random value for $r$ from normal distribution using its estimated mean and standard error from MLE.
+Intrinsic generation interval distribution implicitly that an infector can exert all infectious contacts without wasting any throughout the infectious period. 
+In other words, it is conditional on the assumption that a contacted individual has not been contacted before.
+When the population is limited, we must take the probability that a susceptible individual can be found into account.
 
-First, we can look at the estimates:
-
-\includegraphics[width=\textwidth]{../fig/estimate.pdf}
-
-Everything is underestimated. It seems to be driven by underestimation of little $r$ but I'm not sure why (and this is probably affecting coverage). Maybe we want to simulate the epidemic longer? We can see that uncorrected estimates yield much lower mean generation interval (gen) and $\Rr$. Let's look at the coverage:
-
-\includegraphics[width=\textwidth]{../fig/coverage.pdf}
-
-Coverage also sucks. I used to get higher coverage when I was being less careful... I don't think it's possible to get nominal coverage using a deterministic framework (see \cite{king2015avoidable}). I was wondering whether underestimation of little $r$ (and hence its coverage) affects other estimates. So I tried taking simulations where true little $r$ is covered by confidence interval.
-
-\includegraphics[width=\textwidth]{../fig/coverage2.pdf}
-
-$\Rr$ coverage increases but mean generation interval coverage seems to stay the same. We need to think of a more statistically robust method that somehow accounts for process error and is simple. I want to stick with the intuition...
-
-
+Let $\beta(t)$ be infectious contact rate per pair. 
+The probability that a susceptible is still susceptible at time $t$ is given by
+$$
+\exp \left(-\int_0^t \beta(s) ds \right).
+$$
+Then, the effective generation interval distribution of an infected individual is proportional to the product of intrinsic generation interval distribution and this survival probability
+$$
+g_{\tiny\textrm{eff}}(\tau) \propto g(\tau) \exp \left(-\int_0^\tau \beta(s) ds \right).
+$$
 
 
 
