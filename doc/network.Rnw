@@ -115,6 +115,50 @@ $$
 g_{\tiny\textrm{eff}}(\tau) \propto g(\tau) \exp \left(-\int_0^\tau \beta(s) ds \right).
 $$
 
+Note that the previous formulation does not take into account presence of other potential infectors. 
+During an outbreak, we can imagine a susceptible individual being exposed to multiple infected individuals. 
+Since effective generation interval is conditional on the assumption that a contacted susceptible individual has not been contacted previously, we have to take this into account...
+Then, the previous formulation can be taken as an upper bound of the actual effective GI distribution...
+It is very difficult to formalize this idea but we use a numerical example to demonstrate the idea:
+
+\subsection{Numerical example}
+
+We can imagine contact structure being embedded in generation or serial intervals sampled through contact tracing. 
+Then, when we apply temporal correction, we expect to obtain the effective generation interval distributions rather than the intrinsic generation interval distribution.
+In particular, we claim that we must use effective generation interval distribution in order to estimate $\Rr$.
+
+[Example]
+
+
+\section{Wasted contacts}
+
+Finally, we want to formalize wasted contacts.
+At any given point in time $t$, the number of realized contact is equal to the cumulative incidence:
+$$
+\int_0^t i(s) ds.
+$$
+On the other hand, total potential kernel that could have been realized up to time $t$ is
+$$
+\int_0^t \int_s^t K(a-s) i(s) da ds
+$$
+Wasted contact up to time $t$ is then
+$$
+1 - \frac{\int_0^t i(s) ds}{\int_0^t \int_s^t K(a-s) i(s) da ds}
+$$
+where taking $t \to \infty$, we obtain
+$$
+1 - \frac{1}{\Ro}
+$$
+because number of realized contacts is equal to the final size, $Z$, and the number of potentially infectious contacts that would have been made is $\Ro Z$.
+
+
+\subsection{Forward waste??}
+
+Any infected individual that is infected at time $s$ has an intrinsic Kernel of $K(t)$.
+On the other hand, the number of infectious contacts that will be made by this individual is $\int_0^\infty K(t) S(s+t) dt$.
+Or we can think of this as being a distribution without integrating...
+
+
 
 
 \bibliography{network}
