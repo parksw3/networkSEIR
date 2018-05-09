@@ -37,35 +37,16 @@ network.generation <- function(x, plot=TRUE,
 }
 
 generation.data <- function(x,
-                            imin=10,
-                            imax=100
+                            tmax
                             ) {
-    index <- which(!is.na(x$t_infected))
-    t_infected <- x$t_infected[index]
-    
-    tday <- table(floor(t_infected))
-    
-    day <- as.numeric(names(tday))
-    
-    case <- as.vector(tday)
-    
-    firstday <- day[head(which(case >= imin),1)]
-    lastday <- day[head(which(case >= imax),1)]
-    
-    index <- index[t_infected >= firstday & t_infected <= (lastday+1)]
+    index <- which(x$t_infected < tmax)
     
     index <- index[order(x$t_infected[index])]
     
-    df <- data.frame(
+    data.frame(
         index=index,
         t_infected=x$t_infected[index],
-        case=1:length(index),
-        gen=NA
+        infected_by=x$infected_by[index],
+        generation=x$t_infected[index]-x$t_infected[x$infected_by[index]]
     )
-    
-    df$gen <- x$t_infected[index] - x$t_infected[x$infected_by[index]]
-    
-    df$day <- floor(df$t_infected)
-    
-    df
 }

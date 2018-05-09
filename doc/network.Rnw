@@ -98,6 +98,11 @@ This contrasts with the well-known Euler-Lotka equation:
 \end{equation}
 Using the censored generation interval without correction leads to underestimation of $\Rr$ as well as mean generation interval.
 
+The likelihood is given by
+$$
+\Rr^{n_e} \cdot \prod g(\tau_e) \cdot \exp \left(- \Rr \int_0^{c - t_{\tiny\textrm{inf}}} g(s) ds \right)
+$$
+
 
 \section{Spatial variation - Effective generation interval}
 
@@ -156,8 +161,19 @@ because number of realized contacts is equal to the final size, $Z$, and the num
 
 Any infected individual that is infected at time $s$ has an intrinsic Kernel of $K(t)$.
 On the other hand, the number of infectious contacts that will be made by this individual is $\int_0^\infty K(t) S(s+t) dt$.
-Or we can think of this as being a distribution without integrating...
+Or we can think of this as being a distribution without integrating... doesn't seem useful...
 
+
+\begin{itemize}
+    \item Call it right censored
+    \item time censored are different from backward but during exponential period, they are
+    \item local correction and full correction
+    \item 1) epidemic is growing, 2) I'm infecting people (local), 3) semi-local effect - sharing contact
+    \item unsolved problem of stats
+    \item relationship between R and beta
+    \item gamma distributed
+    \item fit at individual level (poisson level)
+\end{itemize}
 
 
 

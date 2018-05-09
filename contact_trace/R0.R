@@ -84,4 +84,3 @@ gest <- ggplot(estdf) +
 g1 <- arrangeGrob(gsim, gest, ncol=2)
 
 ggsave("figure1.pdf", g1, width=10, height=6)
-
