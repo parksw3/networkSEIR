@@ -1,25 +1,12 @@
 library(bbmle)
-source("../sim/full_param2.R")
+source("../sim/gamma_param.R")
 source("../R/generation.R")
 source("../R/empirical.R")
 
-load("../data/full_sim2.rda")
+load("../data/gamma_sim.rda")
 
 true.mean <- 1/sigma + 1/gamma
-
-set.seed(101)
-nQuant <- 10000
-q <- (2*(1:nQuant)-1)/(2*nQuant)
-
-lat <- qexp(q, rate=sigma)
-inf <- qexp(q, rate=gamma)
-
-ii <- sample(inf, prob=inf, replace=TRUE)
-
-gen <- lat + runif(nQuant, min=0, max=ii)
-
-## approximately true...
-true.shape <- true.mean^2/var(gen)
+true.shape <- 2
 
 true.R <- beta/gamma
 
@@ -63,7 +50,7 @@ for (i in 1:100) {
     
     tmax <- max(sim$data$time)
     
-    data <- generation.data(sim, tmax=tmax)
+    data <- generation.data(sim, tmax=tmax)[1:1000,]
     
     tmax <- max(data$t_infected)
     
@@ -84,8 +71,8 @@ for (i in 1:100) {
         method="conditional",
         param=c("R", "mean", "shape"),
         mean=c(NA, exp(cc1)),
-        upr=c(NA, exp(ci1)[,1]),
-        lwr=c(NA, exp(ci1)[,2]),
+        upr=c(NA, exp(ci1)[,2]),
+        lwr=c(NA, exp(ci1)[,1]),
         cover=c(
             NA,
             exp(ci1)[1,1] < true.mean && true.mean < exp(ci1)[1,2],
