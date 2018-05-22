@@ -31,7 +31,7 @@ g1 <- ggplot(df %>% filter(param=="mean", type=="gamma")) +
     geom_boxplot(aes(nsample, mean, fill=likelihood), width=0.4, alpha=0.5, position=position_dodge(0.5)) +
     geom_hline(yintercept=true.mean, lty=2) +
     ylab("mean generation (days)") +
-    xlab("Numer of samples") +
+    xlab("Number of samples") +
     ggtitle("Gamma") +
     theme(
         legend.position=c(0.7, 0.8)
@@ -41,7 +41,7 @@ g2 <- ggplot(df %>% filter(param=="shape", type=="gamma")) +
     geom_boxplot(aes(nsample, 1/sqrt(mean), fill=likelihood), width=0.4, alpha=0.5, position=position_dodge(0.5)) +
     geom_hline(yintercept=1/sqrt(true.shape), lty=2) +
     ylab("CV generation") +
-    xlab("Numer of samples") +
+    xlab("Number of samples") +
     ggtitle("") +
     theme(
         legend.position = "none"
@@ -67,7 +67,7 @@ g3 <- ggplot(coverdf %>% filter(type=="gamma")) +
     geom_point(aes(nsample, coverage, col=likelihood), position=position_dodge(0.5), size=2) +
     geom_errorbar(aes(nsample, col=likelihood, ymin=lwr, ymax=upr), position=position_dodge(0.5), width=0.2, lwd=1.1) +
     geom_hline(yintercept=0.95, lty=2) +
-    xlab("Numer of samples") +
+    xlab("Number of samples") +
     scale_y_continuous(limits=c(0,1)) +
     facet_wrap(~param, nrow=2) +
     theme(
