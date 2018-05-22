@@ -1,5 +1,5 @@
 \documentclass{article}
-\title{Notes on network/generation interval}
+\title{Temporal and spatial effects on measuring generation intervals through contact tracing}
 \author{Sang Woo Park}
 
 \usepackage{amsthm}
@@ -36,7 +36,7 @@ $$
 We can think of intrinsic generation interval distribution as an intrinsic characteristic of an infector, as suggested by its name.
 Here, we look at spatio-temporal components associated with generation interval distribution.
 
-\section{Temporal variation - Contact tracing}
+\section{Contact tracing}
 
 Generation and serial intervals are often sampled through contact tracing.
 For simplicity, suppose contact tracing is performed during an outbreak from the beginning of an epidemic to some time point.
@@ -49,7 +49,7 @@ Writing the kernel as the product of the intrinsic genreation distributions and 
 i_s(t) = \Ro g(t-s) i(s) S(t)
 \end{equation}
 
-We define censored generation interval distributions as what is measured through contact tracing.
+We define generation intervals measured through contact tracing as the \emph{right-censored generation interval distributions}.
 Note that number of infection occuring at time $s$ caused by infectors who were themselves infected at time $s-\tau$ is given by 
 \begin{equation}
 i_{s-\tau}(s) = \Ro i(s-\tau) g(\tau) S(s)
@@ -74,16 +74,18 @@ c_t(\tau) \propto g(\tau) \int_{0}^t i(s-\tau) S(s) ds.
 \end{equation}
 
 Note that the observed mean generation interval through contact tracing will always be shorter be shorter than intrinsic mean generation interval.
-In the following subsection, we show how to correct for this.
+There are two reasons for this.
+First, due to right censoring, we do not observe generation intervals that are longer than the time at which contact tracing was performed.
+Second, number of susceptibles decrease over the course of an epidemic and any infector is less likely to infect someone through long generation intervals \citep{champredon2015intrinsic}.
 
-\subsection{Temporal correction}
+\subsection{Non-parametric approach}
 
 During an exponential growth period, we can write $i(\tau) \propto \exp(r t)$.
 Assuming that $S(t) \approx 1$, censored generation interval distribution can be written as follows:
 \begin{equation}
 \tsub{g}{obs}(\tau) = \Rr g(\tau) \exp(-r\tau),
 \end{equation}
-This is generation interval distributions we expect to observe during an early outbreak (growing at rate $r$).
+This is the right-censored generation interval distributions that we expect to observe during an early outbreak (growing at rate $r$).
 Hence, to recover the intrinsic generation interval distributions, we can take the weighted distribution of the observed distribution:
 \begin{equation}
 g(\tau) = \frac{1}{\Rr} \tsub{g}{exp}(\tau) \exp(r\tau).
@@ -97,6 +99,8 @@ This contrasts with the well-known Euler-Lotka equation:
 \Rr = 1\left/\int_0^\infty g(\tau) \exp(-r\tau) d\tau\right.
 \end{equation}
 Using the censored generation interval without correction leads to underestimation of $\Rr$ as well as mean generation interval.
+
+\subsection{Parametric approach}
 
 The likelihood is given by
 $$
@@ -133,35 +137,6 @@ Then, when we apply temporal correction, we expect to obtain the effective gener
 In particular, we claim that we must use effective generation interval distribution in order to estimate $\Rr$.
 
 [Example]
-
-
-\section{Wasted contacts}
-
-Finally, we want to formalize wasted contacts.
-At any given point in time $t$, the number of realized contact is equal to the cumulative incidence:
-$$
-\int_0^t i(s) ds.
-$$
-On the other hand, total potential kernel that could have been realized up to time $t$ is
-$$
-\int_0^t \int_s^t K(a-s) i(s) da ds
-$$
-Wasted contact up to time $t$ is then
-$$
-1 - \frac{\int_0^t i(s) ds}{\int_0^t \int_s^t K(a-s) i(s) da ds}
-$$
-where taking $t \to \infty$, we obtain
-$$
-1 - \frac{1}{\Ro}
-$$
-because number of realized contacts is equal to the final size, $Z$, and the number of potentially infectious contacts that would have been made is $\Ro Z$.
-
-
-\subsection{Forward waste??}
-
-Any infected individual that is infected at time $s$ has an intrinsic Kernel of $K(t)$.
-On the other hand, the number of infectious contacts that will be made by this individual is $\int_0^\infty K(t) S(s+t) dt$.
-Or we can think of this as being a distribution without integrating... doesn't seem useful...
 
 
 \begin{itemize}

@@ -28,3 +28,14 @@ minuslogl.full <- function(log.R, log.mean, log.shape, data, tmax) {
         na.rm=TRUE
     ))
 }
+
+minuslogl.r <- function(log.lambda, log.r) {
+    r <- exp(log.r)
+    sum(
+        log.lambda +
+            r * data$t_infected
+    ) + sum(
+        - lambda * int_0^T 
+    )
+}
+
