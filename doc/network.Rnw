@@ -99,7 +99,6 @@ Hence, to recover the intrinsic generation interval distributions, we can take t
 g(\tau) = \frac{1}{\Rr} \tsub{g}{exp}(\tau) \exp(r\tau).
 \end{equation}
 
-
 Furthermore, $\Rr$ should be estimated by
 \begin{equation}
 \Rr = \int_0^\infty \tsub{g}{obs}(\tau) \exp(r\tau) d\tau
