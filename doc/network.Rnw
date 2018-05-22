@@ -1,6 +1,6 @@
 \documentclass{article}
 \title{Temporal and spatial effects on measuring generation intervals through contact tracing}
-\author{Sang Woo Park}
+\author{Sang Woo Park, David Champredon and Jonathan Dushoff}
 
 \usepackage{amsthm}
 \usepackage{amsmath}
@@ -25,13 +25,13 @@
 
 \section{Generation interval}
 
-Let $K(t)$ be the infection kernel. Then, the basic reproduction number is defined as
+Let $K(t)$ be the infection kernel. Then, the reproduction number is defined as
 $$
-\Ro = \int_0^\infty K(t).
+\Rr = \int_0^\infty K(t).
 $$
 The intrinsic generation interval distributions [CITE] can be written as
 $$
-g(t) = \frac{K(t)}{\Ro}.
+g(t) = \frac{K(t)}{\Rr}.
 $$
 We can think of intrinsic generation interval distribution as an intrinsic characteristic of an infector, as suggested by its name.
 Here, we look at spatio-temporal components associated with generation interval distribution.
@@ -44,39 +44,50 @@ Following \cite{champredon2015intrinsic}, we can write the number of infection o
 \begin{equation}
 i_s(t) = K(t-s) i(s) S(t)
 \end{equation}
-Writing the kernel as the product of the intrinsic genreation distributions and $\Ro$, we get
+Writing the kernel as the product of the intrinsic genreation distributions and $\Rr$, we get
 \begin{equation}
-i_s(t) = \Ro g(t-s) i(s) S(t)
+i_s(t) = \Rr g(t-s) i(s) S(t)
 \end{equation}
 
 We define generation intervals measured through contact tracing as the \emph{right-censored generation interval distributions}.
 Note that number of infection occuring at time $s$ caused by infectors who were themselves infected at time $s-\tau$ is given by 
 \begin{equation}
-i_{s-\tau}(s) = \Ro i(s-\tau) g(\tau) S(s)
+i_{s-\tau}(s) = \Rr i(s-\tau) g(\tau) S(s)
 \end{equation}
 Note we are interested in total number of secondary infections that are $\tau$ time steps apart and occur before time $t$:
 \begin{equation}
-\Ro \int_\tau^t i(s-\tau) g(\tau) S(s) ds.
+\Rr \int_\tau^t i(s-\tau) g(\tau) S(s) ds.
 \end{equation}
 Then, the censored generation interval at time $t$ is given by
 \begin{equation}
-c_t(\tau)= \frac{\Ro \int_\tau^t i(s-\tau) g(\tau) S(s) ds}{\Ro \int_0^t \int_x^t i(s-x) g(x) S(s) ds dx}.
+c_t(\tau)= \frac{\Rr \int_\tau^t i(s-\tau) g(\tau) S(s) ds}{\Rr \int_0^t \int_x^t i(s-x) g(x) S(s) ds dx}.
 \end{equation}
 We note that the expression in the denominater is equivalent to cumulative incidence at time $t$. 
 The intuition behind this is that we are normalizing acrosss all incidence before time $t$.
 Then, we have
 \begin{equation}
-c_t(\tau) = \frac{\Ro \int_\tau^t i(s-\tau) g(\tau) S(s) ds}{\int_0^t i(s) ds}.
+c_t(\tau) = \frac{\Rr \int_\tau^t i(s-\tau) g(\tau) S(s) ds}{\int_0^t i(s) ds}.
 \end{equation}
 For convenience, we ignore normalizing constants and write
 \begin{equation}
 c_t(\tau) \propto g(\tau) \int_{0}^t i(s-\tau) S(s) ds.
 \end{equation}
 
-Note that the observed mean generation interval through contact tracing will always be shorter be shorter than intrinsic mean generation interval.
+\begin{figure}
+\includegraphics[width=\textwidth]{../contact_trace/temporal_effect.pdf}
+\caption{Fill this out.}
+\label{fig:censor}
+\end{figure}
+
+Note that the observed mean generation interval through contact tracing will always be shorter be shorter than intrinsic mean generation interval (Figure~\ref{fig:censor}).
 There are two reasons for this.
 First, due to right censoring, we do not observe generation intervals that are longer than the time at which contact tracing was performed.
 Second, number of susceptibles decrease over the course of an epidemic and any infector is less likely to infect someone through long generation intervals \citep{champredon2015intrinsic}.
+Due to the second reason, even if we could contact trace through an entire epidemic, we will still underestimate mean generation interval.
+
+
+
+In the following sections, we introduce different ways to recover intrinsic generation interval distributions from the right-censored genration interval samples.
 
 \subsection{Non-parametric approach}
 
@@ -101,6 +112,7 @@ This contrasts with the well-known Euler-Lotka equation:
 Using the censored generation interval without correction leads to underestimation of $\Rr$ as well as mean generation interval.
 
 \subsection{Parametric approach}
+
 
 The likelihood is given by
 $$
