@@ -84,9 +84,6 @@ There are two reasons for this.
 First, due to right censoring, we do not observe generation intervals that are longer than the time at which contact tracing was performed.
 Second, number of susceptibles decrease over the course of an epidemic and any infector is less likely to infect someone through long generation intervals \citep{champredon2015intrinsic}.
 Due to the second reason, even if we could contact trace through an entire epidemic, we will still underestimate mean generation interval.
-
-
-
 In the following sections, we introduce different ways to recover intrinsic generation interval distributions from the right-censored genration interval samples.
 
 \subsection{Non-parametric approach}
@@ -97,10 +94,12 @@ Assuming that $S(t) \approx 1$, censored generation interval distribution can be
 \tsub{g}{obs}(\tau) = \Rr g(\tau) \exp(-r\tau),
 \end{equation}
 This is the right-censored generation interval distributions that we expect to observe during an early outbreak (growing at rate $r$).
-Hence, to recover the intrinsic generation interval distributions, we can take the weighted distribution of the observed distribution:
+Hence, to recover the intrinsic generation interval distributions, we can take the weighted distribution of the observed distribution (Fig~???):
 \begin{equation}
 g(\tau) = \frac{1}{\Rr} \tsub{g}{exp}(\tau) \exp(r\tau).
 \end{equation}
+
+
 Furthermore, $\Rr$ should be estimated by
 \begin{equation}
 \Rr = \int_0^\infty \tsub{g}{obs}(\tau) \exp(r\tau) d\tau
@@ -113,12 +112,18 @@ Using the censored generation interval without correction leads to underestimati
 
 \subsection{Parametric approach}
 
+Conditional likelihood...
 
 The likelihood is given by
 $$
 \Rr^{n_e} \cdot \prod g(\tau_e) \cdot \exp \left(- \Rr \int_0^{c - t_{\tiny\textrm{inf}}} g(s) ds \right)
 $$
 
+\begin{figure}
+\includegraphics[width=\textwidth]{../contact_trace/compare.pdf}
+\caption{Fill this out as well.}
+\label{fig:parametric}
+\end{figure}
 
 \section{Spatial variation - Effective generation interval}
 

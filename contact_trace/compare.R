@@ -3,6 +3,9 @@ library(ggplot2); theme_set(theme_bw())
 library(gridExtra)
 source("ebola_param.R")
 
+scale_colour_discrete <- function(...,palette="Dark2") scale_colour_brewer(...,palette=palette)
+scale_fill_discrete <- function(...,palette="Dark2") scale_fill_brewer(...,palette=palette)
+
 mlelist <- vector('list', 2)
 
 load("poisson_mle.rda")
