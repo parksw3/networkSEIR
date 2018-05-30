@@ -46,4 +46,3 @@ bootfun <- function(data, nrep=500) {
         upr=cidata[2,]
     )
 }
-
