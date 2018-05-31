@@ -6,6 +6,24 @@ source("minuslogl.R")
 
 load("seir_sim.rda")
 
+set.seed(101)
+nQuant <- 100000
+q <- (2*(1:nQuant)-1)/(2*nQuant)
+
+lat <- qexp(q, rate=sigma)
+inf <- qexp(q, rate=gamma)
+
+ii <- sample(inf, prob=inf, replace=TRUE)
+
+gen <- lat + runif(nQuant, min=0, max=ii)
+
+m <- mle2(gen~dgamma(shape=exp(log.shape), scale=exp(log.mean)/exp(log.shape)),
+          data=data.frame(gen=gen),
+          start=list(log.shape=log(true.shape), log.mean=log(true.mean)))
+
+mle.shape <- exp(coef(m)[1])
+mle.mean <- exp(coef(m)[2])
+
 rlist <- vector('list', 3)
 
 nsample <- c(100, 500, 999)
@@ -42,12 +60,17 @@ for (j in 1:length(nsample)) {
             method="conditional",
             param=c("R", "mean", "shape"),
             mean=c(NA, exp(cc1)),
-            upr=c(NA, exp(ci1)[,1]),
-            lwr=c(NA, exp(ci1)[,2]),
+            upr=c(NA, exp(ci1)[,2]),
+            lwr=c(NA, exp(ci1)[,1]),
             cover=c(
                 NA,
                 exp(ci1)[1,1] < true.mean && true.mean < exp(ci1)[1,2],
                 exp(ci1)[2,1] < true.shape && true.shape < exp(ci1)[2,2]
+            ),
+            cover.mle=c(
+                NA,
+                exp(ci1)[1,1] < mle.mean && mle.mean < exp(ci1)[1,2],
+                exp(ci1)[2,1] < mle.shape && mle.shape < exp(ci1)[2,2]
             )
         )
         
@@ -75,6 +98,11 @@ for (j in 1:length(nsample)) {
             cover=c(
                 exp(ci2)[,1] < c(true.R, true.mean, true.shape) &
                     exp(ci2)[,2] > c(true.R, true.mean, true.shape)
+            ),
+            cover.mle=c(
+                NA,
+                exp(ci2)[2,1] < mle.mean && mle.mean < exp(ci2)[2,2],
+                exp(ci2)[3,1] < mle.shape && mle.shape < exp(ci2)[3,2]
             )
         )
         
@@ -88,4 +116,4 @@ for (j in 1:length(nsample)) {
     rlist[[j]] <- subrlist
 }    
 
-save("rlist", file="seir_mle.rda")
+save("rlist", "mle.mean", "mle.shape", file="seir_mle.rda")

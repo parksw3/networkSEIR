@@ -5,18 +5,12 @@ N <- 60000
 
 true.mean <- 1/sigma + 1/gamma
 
-set.seed(101)
-nQuant <- 10000
-q <- (2*(1:nQuant)-1)/(2*nQuant)
+intrinsic_fun <- function(tau) {
+    sigma*gamma/(gamma-sigma) * (exp(-sigma*tau)-exp(-gamma*tau))
+}
 
-lat <- qexp(q, rate=sigma)
-inf <- qexp(q, rate=gamma)
+true.var <- integrate(function(x) intrinsic_fun(x) * (x-true.mean)^2, lower=0, upper=1000)[[1]]
 
-ii <- sample(inf, prob=inf, replace=TRUE)
-
-gen <- lat + runif(nQuant, min=0, max=ii)
-
-## approximately true...
-true.shape <- true.mean^2/var(gen)
+true.shape <- true.mean^2/true.var
 
 true.R <- beta/gamma
