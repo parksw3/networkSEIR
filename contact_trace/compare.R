@@ -93,3 +93,4 @@ gfinal <- arrangeGrob(
 )
 
 ggsave("compare.pdf", gfinal, width=8, height=6)
+s

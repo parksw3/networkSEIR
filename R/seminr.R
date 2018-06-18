@@ -12,17 +12,19 @@ sample2 <- function(x, size) {
 ##' @param g igraph object
 ##' @param beta contact rate
 ##' @param sigma 1/(latent period)
+##' @param m.sigma number of boxes for latent period
 ##' @param gamma 1/(infectious period)
+##' @param n.gamma number of boxes for infectious period
 ##' @param imax maximum number of infected individuals
-seir <- function(g,
-                 beta,
-                 sigma,
-                 gamma,
-                 I0,
-                 initial_infected,
-                 seed=NULL,
-                 imax,
-                 keep.intrinsic=FALSE){
+seminr <- function(g,
+                   beta,
+                   sigma, m.sigma,
+                   gamma, n.gamma,
+                   I0,
+                   initial_infected,
+                   seed=NULL,
+                   imax,
+                   keep.intrinsic=FALSE){
     if(class(g) != "igraph"){
         stop("g must be an igraph object")
     }
@@ -74,7 +76,7 @@ seir <- function(g,
         
         t <- queue_t[j.index]; t_gillespie <- c(t_gillespie, t)
         
-        latent <- rexp(1, sigma)
+        latent <- rgamma(1, m.sigma, sigma*m.sigma)
         t_infectious[j] <- t + latent
         
         c_infected <- c_infected +1
@@ -82,23 +84,26 @@ seir <- function(g,
         n <- as.vector(neighbors(g, j))
         if (!keep.intrinsic) n <- n[!done[n]]
         
-        rate <- length(n) * beta + gamma
+        rate <- length(n) * beta + gamma*n.gamma
         
-        prob <- gamma/rate
+        prob <- gamma*n.gamma/rate
         
-        ncontact <- rnbinom(1, size=1, prob=prob)
+        ncontact <- rgeom(n.gamma, prob)
         
-        time_between <- rexp(ncontact+1, rate=rate)
-        c_time <- latent + cumsum(time_between)
-        if (keep.intrinsic) intrinsic_generation[[j]] <- c_time[1:ncontact]
+        time_between <- lapply(ncontact, function(x) rexp(x+1, rate=rate))
         
-        if (ncontact > 0) {
-            contact <- sample2(n, ncontact)
+        c_time <- latent + cumsum(unlist(time_between))
+        c_time2 <- c_time[-cumsum(ncontact + 1)]
+        
+        if (keep.intrinsic) intrinsic_generation[[j]] <- c_time2
+        
+        if (sum(ncontact) > 0) {
+            contact <- sample2(n, sum(ncontact))
             filter <- which(!duplicated(contact))
             
             queue_v <- c(queue_v, contact[filter])
-            queue_infector <- c(queue_infector, rep(j, length(contact[filter])))
-            queue_t <- c(queue_t, t + c_time[filter])
+            queue_infector <- c(queue_infector, rep(j, length(filter)))
+            queue_t <- c(queue_t, t + c_time2[filter])
         }
         
         t_recovered[j] <- t+tail(c_time,1)
@@ -128,15 +133,15 @@ seir <- function(g,
 }
 
 ## creating a full graph takes up a lot of memory
-## so here's an optimized version that doesn't rely on igraph but does the same thing
-seir.full <- function(size,
-                      beta,
-                      sigma,
-                      gamma,
-                      I0,
-                      seed = NULL,
-                      imax,
-                      keep.intrinsic=FALSE){
+## so here's an optimized (?) version that doesn't rely on igraph but does the same thing
+seminr.full <- function(size,
+                        beta,
+                        sigma, m.sigma,
+                        gamma, n.gamma,
+                        I0,
+                        seed = NULL,
+                        imax,
+                        keep.intrinsic=FALSE){
     
     if (!is.null(seed)) set.seed(seed)
     
@@ -181,7 +186,7 @@ seir.full <- function(size,
         
         t <- queue_t[j.index]; t_gillespie <- c(t_gillespie, t)
         
-        latent <- rexp(1, sigma)
+        latent <- rgamma(1, m.sigma, sigma*m.sigma)
         t_infectious[j] <- t + latent
         
         c_infected <- c_infected +1
@@ -189,23 +194,26 @@ seir.full <- function(size,
         n <- V[V != j]
         if (!keep.intrinsic) n <- n[!done[n]]
         
-        rate <- length(n) * beta + gamma
+        rate <- length(n) * beta + gamma*n.gamma
         
-        prob <- gamma/rate
+        prob <- gamma*n.gamma/rate
         
-        ncontact <- rnbinom(1, size=1, prob=prob)
-        if (ncontact > 0) {
-            queue_v <- c(queue_v, sample2(n, ncontact))
-            queue_infector <- c(queue_infector, rep(j, ncontact))
+        ncontact <- rgeom(n.gamma, prob)
+
+        if (sum(ncontact) > 0) {
+            queue_v <- c(queue_v, sample2(n, sum(ncontact)))
+            queue_infector <- c(queue_infector, rep(j, sum(ncontact)))
         }
         
-        time_between <- rexp(ncontact+1, rate=rate)
-        c_time <- latent + cumsum(time_between)
+        time_between <- lapply(ncontact, function(x) rexp(x+1, rate=rate))
         
-        if (keep.intrinsic) intrinsic_generation[[j]] <- c_time[1:ncontact]
+        c_time <- latent + cumsum(unlist(time_between))
+        c_time2 <- c_time[-cumsum(ncontact + 1)]
         
-        if (ncontact > 0) {
-            queue_t <- c(queue_t, t + c_time[1:ncontact])
+        if (keep.intrinsic) intrinsic_generation[[j]] <- c_time2
+        
+        if (sum(ncontact) > 0) {
+            queue_t <- c(queue_t, t + c_time2)
         }
         
         t_recovered[j] <- t+tail(c_time,1)
