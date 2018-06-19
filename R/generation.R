@@ -37,16 +37,32 @@ network.generation <- function(x, plot=TRUE,
 }
 
 generation.data <- function(x,
-                            tmax
+                            tmax,
+                            method=c("backward", "forward")
                             ) {
-    index <- which(x$t_infected < tmax)
+    method <- match.arg(method)
     
-    index <- index[order(x$t_infected[index])]
-    
-    data.frame(
-        index=index,
-        t_infected=x$t_infected[index],
-        infected_by=x$infected_by[index],
-        generation=x$t_infected[index]-x$t_infected[x$infected_by[index]]
-    )
+    if (method=="backward") {
+        index <- which(x$t_infected < tmax)
+        
+        index <- index[order(x$t_infected[index])]
+        
+        data.frame(
+            index=index,
+            t_infected=x$t_infected[index],
+            infected_by=x$infected_by[index],
+            generation=x$t_infected[index]-x$t_infected[x$infected_by[index]]
+        )
+    } else {
+        index <- which(x$t_infected < tmax)
+        
+        index <- index[order(x$t_infected[index])]
+        
+        data.frame(
+            index=x$infected_by[index],
+            t_infected=x$t_infected[x$infected_by[index]],
+            infected=index,
+            generation=x$t_infected[index]-x$t_infected[x$infected_by[index]]
+        )
+    }
 }

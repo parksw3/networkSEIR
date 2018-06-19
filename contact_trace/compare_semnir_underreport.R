@@ -30,7 +30,7 @@ g1 <- ggplot(df %>% filter(param=="mean", mean < 1e7)) +
     ylab("mean generation (days)") +
     xlab("Type") +
     theme(
-        legend.position=c(0.4, 0.9)
+        legend.position=c(0.2, 0.8)
     )
 
 g2 <- ggplot(df %>% filter(param=="shape")) +
@@ -65,7 +65,6 @@ coverdf <- df %>%
 g3 <- ggplot(df %>% filter(param=="R", likelihood=="full")) +
     geom_boxplot(aes(type, mean), width=0.4, alpha=0.5, position=position_dodge(0.5), fill="#D95F02") +
     geom_hline(yintercept=true.R, lty=2) +
-    ylab("mean generation (days)") +
     xlab("Type") +
     theme(
         legend.position="none"
