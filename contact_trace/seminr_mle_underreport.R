@@ -17,7 +17,7 @@ rlist <- vector('list', 1)
 
 nsample <- c(999)
 
-report <- 0.1
+report <- 0.2
 
 set.seed(101)
 for (j in 1:length(nsample)) {
@@ -33,6 +33,8 @@ for (j in 1:length(nsample)) {
         data <- generation.data(sim, tmax=tmax)[1:nsample[j],]
         
         data <- data[runif(nsample[j]) < report,]
+        
+        data$generation <- data$t_infected - data$t_infected[match(data$infected_by, data$index)]
         
         tmax <- max(data$t_infected)
         

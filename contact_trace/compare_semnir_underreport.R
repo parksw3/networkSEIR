@@ -24,7 +24,7 @@ df <- reslist  %>%
     bind_rows(.id="type") %>%
     rename(likelihood=method)
 
-g1 <- ggplot(df %>% filter(param=="mean", mean < 1e7)) +
+g1 <- ggplot(df %>% filter(param=="mean")) +
     geom_boxplot(aes(type, mean, fill=likelihood), width=0.4, alpha=0.5, position=position_dodge(0.5)) +
     geom_hline(yintercept=true.mean, lty=2) +
     ylab("mean generation (days)") +

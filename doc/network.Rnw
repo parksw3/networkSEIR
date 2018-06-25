@@ -50,7 +50,7 @@ i_s(t) = \Rr g(t-s) i(s) S(t)
 \end{equation}
 
 We define generation intervals measured through contact tracing as the \emph{right-censored generation interval distributions}.
-Note that number of infection occuring at time $s$ caused by infectors who were themselves infected at time $s-\tau$ is given by 
+Note that number of infection occuring at time $s$ caused by infectors who were themselves infected at time $s-\tau$ is given by
 \begin{equation}
 i_{s-\tau}(s) = \Rr i(s-\tau) g(\tau) S(s)
 \end{equation}
@@ -62,7 +62,7 @@ Then, the censored generation interval at time $t$ is given by
 \begin{equation}
 c_t(\tau)= \frac{\Rr \int_\tau^t i(s-\tau) g(\tau) S(s) ds}{\Rr \int_0^t \int_x^t i(s-x) g(x) S(s) ds dx}.
 \end{equation}
-We note that the expression in the denominater is equivalent to cumulative incidence at time $t$. 
+We note that the expression in the denominater is equivalent to cumulative incidence at time $t$.
 The intuition behind this is that we are normalizing acrosss all incidence before time $t$.
 Then, we have
 \begin{equation}
@@ -126,11 +126,11 @@ $$
 
 \section{Spatial variation - Effective generation interval}
 
-Intrinsic generation interval distribution implicitly that an infector can exert all infectious contacts without wasting any throughout the infectious period. 
+Intrinsic generation interval distribution implicitly that an infector can exert all infectious contacts without wasting any throughout the infectious period.
 In other words, it is conditional on the assumption that a contacted individual has not been contacted before.
 When the population is limited, we must take the probability that a susceptible individual can be found into account.
 
-Let $\beta(t)$ be infectious contact rate per pair. 
+Let $\beta(t)$ be infectious contact rate per pair.
 The probability that a susceptible is still susceptible at time $t$ is given by
 $$
 \exp \left(-\int_0^t \beta(s) ds \right).
@@ -140,15 +140,15 @@ $$
 g_{\tiny\textrm{eff}}(\tau) \propto g(\tau) \exp \left(-\int_0^\tau \beta(s) ds \right).
 $$
 
-Note that the previous formulation does not take into account presence of other potential infectors. 
-During an outbreak, we can imagine a susceptible individual being exposed to multiple infected individuals. 
+Note that the previous formulation does not take into account presence of other potential infectors.
+During an outbreak, we can imagine a susceptible individual being exposed to multiple infected individuals.
 Since effective generation interval is conditional on the assumption that a contacted susceptible individual has not been contacted previously, we have to take this into account...
 Then, the previous formulation can be taken as an upper bound of the actual effective GI distribution...
 It is very difficult to formalize this idea but we use a numerical example to demonstrate the idea:
 
 \subsection{Numerical example}
 
-We can imagine contact structure being embedded in generation or serial intervals sampled through contact tracing. 
+We can imagine contact structure being embedded in generation or serial intervals sampled through contact tracing.
 Then, when we apply temporal correction, we expect to obtain the effective generation interval distributions rather than the intrinsic generation interval distribution.
 In particular, we claim that we must use effective generation interval distribution in order to estimate $\Rr$.
 
@@ -164,7 +164,20 @@ In particular, we claim that we must use effective generation interval distribut
     \item relationship between R and beta
     \item gamma distributed
     \item fit at individual level (poisson level)
+    \item we should focus on r-R
+    \item Gamma-network simulation
+    \item Coverage on ???
+    \item SEmInR
 \end{itemize}
+
+\section{Individual level bootstrap}
+
+Any GI that I observe, what proportion of infector were observed for at least that long
+
+- JD observed 100 individuals
+- I infected Mike after 8 day
+- weight = 1/prop of ppl that were observed that long (whose censorship time is greater than the observed generation interval of that individual)
+
 
 
 
