@@ -133,30 +133,36 @@ Therefore, applying the Lotka-Euler equation using the observed generation inter
 \begin{equation}
 \int_0^\infty \tsub{g}{exp}(\tau) \exp(r\tau) d\tau > \left(\int_0^\infty \tsub{g}{exp}(\tau) \exp(-r\tau) d\tau\right)^{-1}
 \end{equation}
+This method provides a non-parametric approach for inferring the intrinsic generation interval distribution and the reproductive number from contact tracing data.
 
-This contrasts with the well-known Euler-Lotka equation:
+\swp{Need to rewrite this section. It's merely a place holder for now:}
+While the non-parametric method is simple, it does not use all available information from contact tracing data.
+In particular, it does not take into account who infected whom.
+Assuming a poisson process, we can obtain a likelihood for observing infections:
 \begin{equation}
-\RR = 1\left/\int_0^\infty g(\tau) \exp(-r\tau) d\tau\right.
-\end{equation}
-Using the censored generation interval without correction leads to underestimation of $\RR$ as well as mean generation interval.
-
-\subsection{Parametric approach}
-
-Conditional likelihood...
-
-The likelihood is given by
-$$
 \RR^{n_e} \cdot \prod g(\tau_e) \cdot \exp \left(- \RR \int_0^{c - t_{\tiny\textrm{inf}}} g(s) ds \right)
-$$
+\end{equation}
+This method requires us to make an assumption about the generation interval distributions... See example...
+
+\subsection*{Examples}
 
 \begin{figure}
-\includegraphics[width=\textwidth]{../contact_trace/compare.pdf}
-\caption{Fill this out as well.}
-\label{fig:parametric}
+\includegraphics[width=\textwidth]{../contact_trace/temporal_effect.pdf}
+\caption{Fill this out and re-do simulation with realistic Ebola parameters for consistency.}
+\label{fig:censor}
 \end{figure}
 
-\section{Spatial variation - Effective generation interval}
+Note that the observed mean generation interval through contact tracing will always be shorter be shorter than intrinsic mean generation interval (Figure~\ref{fig:censor}).
+There are two reasons for this phenomenon.
+First, as contact tracing is performed up to time $t$, any infection events that occur after time $t$ are not observed.
+Any individuals that are infected before time $t$ can only complete infection events that are shorter than time $t$ and the distribution of all infection events that occur before time $t$ will be concentrated on shorter intervals.
+Second, number of susceptibles decrease over the course of an epidemic and any infector is less likely to infect susceptible individuals through long generation intervals than it would have in a fully susceptible population \citep{champredon2015intrinsic}.
+As a result, even if contact tracing is performed through an entire epidemic, mean generation interval will be underestimated.
 
+
+\subsection{Spatial variation - Effective generation interval}
+
+\swp{Moved here for now; this text is old}
 Intrinsic generation interval distribution implicitly that an infector can exert all infectious contacts without wasting any throughout the infectious period.
 In other words, it is conditional on the assumption that a contacted individual has not been contacted before.
 When the population is limited, we must take the probability that a susceptible individual can be found into account.
@@ -177,53 +183,6 @@ Since effective generation interval is conditional on the assumption that a cont
 Then, the previous formulation can be taken as an upper bound of the actual effective GI distribution...
 It is very difficult to formalize this idea but we use a numerical example to demonstrate the idea:
 
-\subsection{Numerical example}
-
-We can imagine contact structure being embedded in generation or serial intervals sampled through contact tracing.
-Then, when we apply temporal correction, we expect to obtain the effective generation interval distributions rather than the intrinsic generation interval distribution.
-In particular, we claim that we must use effective generation interval distribution in order to estimate $\RR$.
-
-[Example]
-
-
-\begin{itemize}
-    \item Call it right censored
-    \item time censored are different from backward but during exponential period, they are
-    \item local correction and full correction
-    \item 1) epidemic is growing, 2) I'm infecting people (local), 3) semi-local effect - sharing contact
-    \item unsolved problem of stats
-    \item relationship between R and beta
-    \item gamma distributed
-    \item fit at individual level (poisson level)
-    \item we should focus on r-R
-    \item Gamma-network simulation
-    \item Coverage on ???
-    \item SEmInR
-\end{itemize}
-
-\section{Individual level bootstrap}
-
-Any GI that I observe, what proportion of infector were observed for at least that long
-
-- JD observed 100 individuals
-- I infected Mike after 8 day
-- weight = 1/prop of ppl that were observed that long (whose censorship time is greater than the observed generation interval of that individual)
-
-
-\subsection*{Examples}
-
-\begin{figure}
-\includegraphics[width=\textwidth]{../contact_trace/temporal_effect.pdf}
-\caption{Fill this out and re-do simulation with realistic Ebola parameters for consistency.}
-\label{fig:censor}
-\end{figure}
-
-Note that the observed mean generation interval through contact tracing will always be shorter be shorter than intrinsic mean generation interval (Figure~\ref{fig:censor}).
-There are two reasons for this phenomenon.
-First, as contact tracing is performed up to time $t$, any infection events that occur after time $t$ are not observed.
-Any individuals that are infected before time $t$ can only complete infection events that are shorter than time $t$ and the distribution of all infection events that occur before time $t$ will be concentrated on shorter intervals.
-Second, number of susceptibles decrease over the course of an epidemic and any infector is less likely to infect susceptible individuals through long generation intervals than it would have in a fully susceptible population \citep{champredon2015intrinsic}.
-As a result, even if contact tracing is performed through an entire epidemic, mean generation interval will be underestimated.
 
 \section{Methods}
 
