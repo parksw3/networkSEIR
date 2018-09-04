@@ -1,5 +1,5 @@
 \documentclass{article}
-\title{Inferring generation interval distributions from contact tracing data}
+\title{Inferring generation-interval distributions from contact tracing data}
 \author{Sang Woo Park, David Champredon and Jonathan Dushoff}
 
 \usepackage{amsthm}
@@ -42,23 +42,27 @@ Generation interval is defined as the time between when a person becomes infecte
 As each individual experiences different course of infection, \emph{individual} generation interval distribution varies among infectors [CITE sven].
 Hence, the \emph{intrinsic} generation interval distribution, which provides link between $r$ and \RR, is a pooled distribution across all potential infections.
 
-Due to individual variation in infection time, the observed generation interval distribution can change depending on when and how it is measured \citep{champredon2015intrinsic}.
-Generation interval can be measured \emph{forward} in time by looking at all infections that were caused by infectors that were infected at the same period of time.
-Early in the epidemic when depletion of susceptible is negligible, we expect the forward generation interval distribution to be similar to the intrinsic generation interval distribution.
-As epidemic progresses, an infector is less likely to infect individuals later in time due to decrease in susceptibles and the forward generation interval will be shorter, overall.
+Due to individual variation in infection time, the observed generation interval distribution can change depending on when and how it is measured \citep{champredon2015intrinsic}. \jd{Other cites first. Maybe cite us later when talking about qualitative effects. We need to talk clearly also about censored intervals}
+There are important distinctions to be made when estimating generation intervals: \emph{intrinsic} generation intervals are measured by evaluating the infectiousness of infected people,
+%% without regard to actual infection events,
+while \emph{observed} generation intervals refer to the time between actual infection events. hs
+Observed generation intervals in turn can be \emph{aggregated} across time, measured \emph{forward} in time by looking at a cohort of individuals infected at the same time and asking when they infected others, or measured \emph{backward in time} by look at a cohort and asking when their infectors were infected.
+When aggregated generation intervals are observed until a given time in an ongoing epidemic, we refer to these as \emph{censored} (or right-censored) intervals.
 
-On the other hand, generation intervals can be measured \emph{backward} in time by considering all infectees that were infected at the same time period and comparing when their infectors were infected.
-When epidemic is growing, a susceptible individual is more likely to be infected by a newly infected individual and the backward generation interval will be short.
+Early in the epidemic when depletion of susceptible is negligible, we expect the forward generation interval distribution to be similar to the intrinsic generation interval distribution.
+As epidemic progresses, an infector is less likely to infect individuals later in time due to decrease in susceptibles and the distribution of forward generation intervals will be shorter than the intrinsic distribution.
+
+Conversely, when an epidemic is growing exponentially, as often occurs near the beginning of an outbreak, the number of newly infected individuals will be large relative to the number infected earlier on. 
+A susceptible individual is thus relatively more likely to be infected by a newly infected individual, and the distribution of backward generation intervals will be shorter than the intrinsic distribution.
 When epidemic is subsiding, most infections are caused by the remaining infectors, rather than new infectors, and the backward generation interval will be long.
 
-In practice, generation interval is often measured via contact tracing [CITE].
-Unlike forward or backward generation interval, which focus on individuals that were infected during a short period of time and their corresponding infectees or infectors, 
-contact tracing is often performed over a long period of time.
-Ideally, contact tracing will be performed from the beginning of an epidemic to a certain time period, whether the epidemic is still ongoing or not.
-Therefore, generation interval distribution obtained from contact tracing, which we will refer to as the observed generation interval distribution, can be thought of as weighted average of backward generation interval distribution;
-the observed generation interval distribution will be affected by the temporal variation of the backward generation interval.
+In practice, generation intervals are usually aggregated to increase the amount of information available. 
+\jd{I kind of feel like, if you go on forever, aggregated GIs approach intrinsic GIs. This obviously isn't true for a single epidemic (observed GIs are shorter overall). On the other hand, it obviously \emph{is} true if you add births and get to a stable equilibrium. So I guess the remaining question is, do we get convergence if we have stable cycles? What we think about this will affect how we write the rest of this P.} 
+If observation goes on throughout the disease cycle, then (something about something).
+On the other hand, if calculations are being done based on early-outbreak data, the available censored data is best thought of as a weighted average of backward generation-interval distributions; like them, the observed censored intervals will be shorter than intrinsic distributions.
 
 \swp{Need a paragraph about spatial effect?}
+\jd{Yes, we do!}
 
 In this study, we explore the temporal and spatial effect in the observed generation interval obtained from contact tracing.
 We show that using the observed generation interval distribution directly will always underestimate the reproductive number \swp{need to confirm this statement when we're done with the ms}. 
@@ -68,8 +72,8 @@ We provide a statistical framework of recovering the intrinsic generation interv
 
 \subsection*{Intrinsic generation interval}
 
-This section serves to introduce notation from previous work [CITE].
-Let $K(t)$ be the infection kernel. The reproduction number is defined as
+Following [CITE], let $K(t)$ be the infection kernel. 
+The reproduction number is defined as
 $$
 \RR = \int_0^\infty K(t).
 $$
@@ -77,7 +81,7 @@ Then, the intrinsic generation interval distributions is defined as
 $$
 g(t) = \frac{K(t)}{\RR}.
 $$
-Intrinsic generation interval distribution can be considered as an intrinsic characteristic of a single average infector in a fully susceptible population.
+Intrinsic generation-interval distribution can be considered as an intrinsic characteristic of a single average infector in a fully susceptible population.
 
 \swp{Insert renewal equation approach}
 
@@ -92,7 +96,7 @@ Then, total number of secondary infections that are $\tau$ time steps apart and 
 \begin{equation}
 \RR \int_\tau^t i(s-\tau) g(\tau) S(s) ds.
 \end{equation}
-Then, the observed generation interval distribution via contact tracing at time $t$ is given by
+Then, the observed generation-interval distribution via contact tracing at time $t$ is given by
 \begin{equation}
 g_t(\tau)= \frac{\RR \int_\tau^t i(s-\tau) g(\tau) S(s) ds}{\RR \int_0^t \int_x^t i(s-x) g(x) S(s) ds dx}.
 \end{equation}
@@ -109,7 +113,7 @@ g_t(\tau) \propto g(\tau) \int_{0}^t i(s-\tau) S(s) ds.
 
 \subsection*{Recovering intrinsic generation interval}
 
-The observed generation interval distribution is a weighted intrinsic generation interval distribution (equation~\ref{eq:obsg}),
+The observed generation-interval distribution is a weighted intrinsic generation-interval distribution (equation~\ref{eq:obsg}),
 Then, the intrinsic generation interval can be recovered by taking the inverse weights:
 \begin{equation}
 g(\tau) \propto g_t(\tau) \frac{1}{\int_{0}^t i(s-\tau) S(s) ds}
@@ -117,11 +121,11 @@ g(\tau) \propto g_t(\tau) \frac{1}{\int_{0}^t i(s-\tau) S(s) ds}
 However, this method requires a knowledge of susceptible dynamics and may not be feasible in practice.
 
 During exponential growth period, we can write $i(\tau) \propto \exp(r t)$, where $r$ is the exponential growth rate.
-Assuming that $S(t) \approx 1$, the observed generation interval distribution during growth period can be written as follows:
+Assuming that $S(t) \approx 1$, the observed generation-interval distribution during growth period can be written as follows:
 \begin{equation}
 \tsub{g}{exp}(\tau) \propto g(\tau) \exp(-r\tau),
 \end{equation}
-Taking the inverse weight, we obtain the following expression for the intrinsic generation interval distribution:
+Taking the inverse weight, we obtain the following expression for the intrinsic generation-interval distribution:
 \begin{equation}
 g(\tau) \propto \tsub{g}{exp}(\tau) \exp(r\tau)
 \end{equation}
@@ -133,7 +137,7 @@ Therefore, applying the Lotka-Euler equation using the observed generation inter
 \begin{equation}
 \int_0^\infty \tsub{g}{exp}(\tau) \exp(r\tau) d\tau > \left(\int_0^\infty \tsub{g}{exp}(\tau) \exp(-r\tau) d\tau\right)^{-1}
 \end{equation}
-This method provides a non-parametric approach for inferring the intrinsic generation interval distribution and the reproductive number from contact tracing data.
+This method provides a non-parametric approach for inferring the intrinsic generation-interval distribution and the reproductive number from contact tracing data.
 
 \swp{Need to rewrite this section. It's merely a place holder for now:}
 While the non-parametric method is simple, it does not use all available information from contact tracing data.
@@ -142,7 +146,7 @@ Assuming a poisson process, we can obtain a likelihood for observing infections:
 \begin{equation}
 \RR^{n_e} \cdot \prod g(\tau_e) \cdot \exp \left(- \RR \int_0^{c - t_{\tiny\textrm{inf}}} g(s) ds \right)
 \end{equation}
-This method requires us to make an assumption about the generation interval distributions... See example...
+This method requires us to make an assumption about the generation-interval distributions... See example...
 
 \subsection*{Examples}
 
@@ -163,7 +167,7 @@ As a result, even if contact tracing is performed through an entire epidemic, me
 \subsection{Spatial variation - Effective generation interval}
 
 \swp{Moved here for now; this text is old}
-Intrinsic generation interval distribution implicitly that an infector can exert all infectious contacts without wasting any throughout the infectious period.
+Intrinsic generation-interval distribution implicitly that an infector can exert all infectious contacts without wasting any throughout the infectious period.
 In other words, it is conditional on the assumption that a contacted individual has not been contacted before.
 When the population is limited, we must take the probability that a susceptible individual can be found into account.
 
@@ -172,7 +176,7 @@ The probability that a susceptible is still susceptible at time $t$ is given by
 $$
 \exp \left(-\int_0^t \beta(s) ds \right).
 $$
-Then, the effective generation interval distribution of an infected individual is proportional to the product of intrinsic generation interval distribution and this survival probability
+Then, the effective generation-interval distribution of an infected individual is proportional to the product of intrinsic generation-interval distribution and this survival probability
 $$
 g_{\tiny\textrm{eff}}(\tau) \propto g(\tau) \exp \left(-\int_0^\tau \beta(s) ds \right).
 $$
