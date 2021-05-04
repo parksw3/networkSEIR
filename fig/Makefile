@@ -14,13 +14,10 @@ Sources = Makefile .gitignore README.md LICENSE.md
 ## Content
 
 Sources += diagram.tex simple.tex
+Ignore += diagram.pdf simple.pdf
 
 diagram.pdf: diagram.tex
 simple.pdf: simple.tex
-
-# pull: cleanfigs
-cleanfigs:
-	git checkout master -- diagram.pdf
 
 ######################################################################
 
